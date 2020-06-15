@@ -731,16 +731,14 @@ public class LearnerHandler extends ZooKeeperThread {
     protected void startSendingPackets() {
         if (!sendingThreadStarted) {
             // Start sending packets
-            new Thread() {
-                public void run() {
-                    Thread.currentThread().setName("Sender-" + sock.getRemoteSocketAddress());
-                    try {
-                        sendPackets();
-                    } catch (InterruptedException e) {
-                        LOG.warn("Unexpected interruption", e);
-                    }
+            new Thread(() -> {
+                Thread.currentThread().setName("Sender-" + sock.getRemoteSocketAddress());
+                try {
+                    sendPackets();
+                } catch (InterruptedException e) {
+                    LOG.warn("Unexpected interruption", e);
                 }
-            }.start();
+            }).start();
             sendingThreadStarted = true;
         } else {
             LOG.error("Attempting to start sending thread after it already started");

@@ -197,9 +197,7 @@ public abstract class QuorumZooKeeperServer extends ZooKeeperServer {
 
         MetricsContext rootContext = ServerMetrics.getMetrics().getMetricsProvider().getRootContext();
 
-        rootContext.registerGauge("quorum_size", () -> {
-            return self.getQuorumSize();
-        });
+        rootContext.registerGauge("quorum_size", self::getQuorumSize);
     }
 
     @Override

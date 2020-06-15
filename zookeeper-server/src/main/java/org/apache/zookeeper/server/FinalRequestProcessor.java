@@ -526,6 +526,8 @@ public class FinalRequestProcessor implements RequestProcessor {
                     rsp = new GetEphemeralsResponse(ephemerals);
                     break;
                 }
+                default:
+                    break;
             }
         } catch (SessionMovedException e) {
             // session moved is a connection level error, we need to tear
@@ -632,6 +634,7 @@ public class FinalRequestProcessor implements RequestProcessor {
         return request.cnxn == null;
     }
 
+    @Override
     public void shutdown() {
         // we are the final link in the chain
         LOG.info("shutdown of request processor complete");

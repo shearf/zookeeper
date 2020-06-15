@@ -28,6 +28,7 @@ import java.util.Map;
 
 /**
  * Parent class for all ZooKeeperServers for Learners
+ * @author ZK
  */
 public abstract class LearnerZooKeeperServer extends QuorumZooKeeperServer {
 
@@ -57,8 +58,7 @@ public abstract class LearnerZooKeeperServer extends QuorumZooKeeperServer {
         if (sessionTracker != null) {
             return ((LearnerSessionTracker) sessionTracker).snapshot();
         }
-        Map<Long, Integer> map = Collections.emptyMap();
-        return map;
+        return Collections.emptyMap();
     }
 
     /**

@@ -207,8 +207,8 @@ public class CommitProcessor extends ZooKeeperCriticalThread implements RequestP
              * possible to endlessly poll read requests from queuedRequests, and
              * that will lead to a starvation of non-local committed requests.
              */
-            int requestsToProcess = 0;
-            boolean commitIsWaiting = false;
+            int requestsToProcess;
+            boolean commitIsWaiting;
             do {
                 /*
                  * Since requests are placed in the queue before being sent to
@@ -557,6 +557,7 @@ public class CommitProcessor extends ZooKeeperCriticalThread implements RequestP
             }
         }
 
+        @Override
         public void doWork() throws RequestProcessorException {
             try {
                 processCommitMetrics(request, needCommit(request));
@@ -632,6 +633,7 @@ public class CommitProcessor extends ZooKeeperCriticalThread implements RequestP
         }
     }
 
+    @Override
     public void shutdown() {
         LOG.info("Shutting down");
 
