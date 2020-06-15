@@ -18,13 +18,14 @@
 
 package org.apache.zookeeper.server.auth;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.server.ServerCnxn;
 import org.apache.zookeeper.server.ServerMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This is not a true AuthenticationProvider in the strict sense. it does

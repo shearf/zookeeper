@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.server.admin;
 
+import org.apache.zookeeper.server.ZooKeeperServer;
+
 import java.util.Map;
 import java.util.Set;
-import org.apache.zookeeper.server.ZooKeeperServer;
 
 /**
  * Interface implemented by all commands runnable by JettyAdminServer.
@@ -52,7 +53,7 @@ public interface Command {
 
     /**
      * @return true if the command requires an active ZooKeeperServer or a
-     *     synced peer in order to resolve
+     * synced peer in order to resolve
      */
     boolean isServerRequired();
 
@@ -65,10 +66,10 @@ public interface Command {
      * map with an appropriate message rather than throwing an exception.
      *
      * @param zkServer
-     * @param kwargs keyword -&gt; argument value mapping
+     * @param kwargs   keyword -&gt; argument value mapping
      * @return Map representing response to command containing at minimum:
-     *    - "command" key containing the command's primary name
-     *    - "error" key containing a String error message or null if no error
+     * - "command" key containing the command's primary name
+     * - "error" key containing a String error message or null if no error
      */
     CommandResponse run(ZooKeeperServer zkServer, Map<String, String> kwargs);
 

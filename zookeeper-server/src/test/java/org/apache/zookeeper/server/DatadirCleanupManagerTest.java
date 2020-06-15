@@ -18,16 +18,16 @@
 
 package org.apache.zookeeper.server;
 
-import static org.apache.zookeeper.server.DatadirCleanupManager.PurgeTaskStatus.COMPLETED;
-import static org.apache.zookeeper.server.DatadirCleanupManager.PurgeTaskStatus.NOT_STARTED;
-import static org.apache.zookeeper.server.DatadirCleanupManager.PurgeTaskStatus.STARTED;
-import static org.junit.Assert.assertEquals;
-import java.io.File;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+
+import static org.apache.zookeeper.server.DatadirCleanupManager.PurgeTaskStatus.*;
+import static org.junit.Assert.assertEquals;
 
 public class DatadirCleanupManagerTest extends ZKTestCase {
 

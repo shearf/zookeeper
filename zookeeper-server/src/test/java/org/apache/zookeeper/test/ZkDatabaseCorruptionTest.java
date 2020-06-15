@@ -18,18 +18,7 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Arrays;
-import org.apache.zookeeper.AsyncCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.ZKTestCase;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.server.SyncRequestProcessor;
 import org.apache.zookeeper.server.ZKDatabase;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
@@ -40,6 +29,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Arrays;
+
+import static org.junit.Assert.*;
 
 public class ZkDatabaseCorruptionTest extends ZKTestCase {
 
@@ -90,7 +86,7 @@ public class ZkDatabaseCorruptionTest extends ZKTestCase {
         SyncRequestProcessor.setSnapCount(100);
         for (int i = 0; i < 2000; i++) {
             zk.create("/0-"
-                              + i, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, new NoopStringCallback(), null);
+                    + i, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, new NoopStringCallback(), null);
         }
         zk.close();
 
@@ -164,7 +160,7 @@ public class ZkDatabaseCorruptionTest extends ZKTestCase {
         SyncRequestProcessor.setSnapCount(100);
         for (int i = 2000; i < 4000; i++) {
             zk.create("/0-"
-                              + i, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, new NoopStringCallback(), null);
+                    + i, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, new NoopStringCallback(), null);
         }
         zk.close();
 

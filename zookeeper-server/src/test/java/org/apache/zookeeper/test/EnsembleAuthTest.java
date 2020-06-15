@@ -18,7 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import java.io.IOException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.server.auth.EnsembleAuthenticationProvider;
@@ -26,6 +25,8 @@ import org.apache.zookeeper.server.auth.ProviderRegistry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
 
 public class EnsembleAuthTest extends ClientBase {
 

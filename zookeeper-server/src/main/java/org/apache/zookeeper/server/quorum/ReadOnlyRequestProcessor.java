@@ -18,18 +18,15 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.io.IOException;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.ZooDefs.OpCode;
 import org.apache.zookeeper.proto.ReplyHeader;
-import org.apache.zookeeper.server.Request;
-import org.apache.zookeeper.server.RequestProcessor;
-import org.apache.zookeeper.server.ZooKeeperCriticalThread;
-import org.apache.zookeeper.server.ZooKeeperServer;
-import org.apache.zookeeper.server.ZooTrace;
+import org.apache.zookeeper.server.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This processor is at the beginning of the ReadOnlyZooKeeperServer's
@@ -74,28 +71,28 @@ public class ReadOnlyRequestProcessor extends ZooKeeperCriticalThread implements
 
                 // filter read requests
                 switch (request.type) {
-                case OpCode.sync:
-                case OpCode.create:
-                case OpCode.create2:
-                case OpCode.createTTL:
-                case OpCode.createContainer:
-                case OpCode.delete:
-                case OpCode.deleteContainer:
-                case OpCode.setData:
-                case OpCode.reconfig:
-                case OpCode.setACL:
-                case OpCode.multi:
-                case OpCode.check:
-                    ReplyHeader hdr = new ReplyHeader(
-                        request.cxid,
-                        zks.getZKDatabase().getDataTreeLastProcessedZxid(),
-                        Code.NOTREADONLY.intValue());
-                    try {
-                        request.cnxn.sendResponse(hdr, null, null);
-                    } catch (IOException e) {
-                        LOG.error("IO exception while sending response", e);
-                    }
-                    continue;
+                    case OpCode.sync:
+                    case OpCode.create:
+                    case OpCode.create2:
+                    case OpCode.createTTL:
+                    case OpCode.createContainer:
+                    case OpCode.delete:
+                    case OpCode.deleteContainer:
+                    case OpCode.setData:
+                    case OpCode.reconfig:
+                    case OpCode.setACL:
+                    case OpCode.multi:
+                    case OpCode.check:
+                        ReplyHeader hdr = new ReplyHeader(
+                                request.cxid,
+                                zks.getZKDatabase().getDataTreeLastProcessedZxid(),
+                                Code.NOTREADONLY.intValue());
+                        try {
+                            request.cnxn.sendResponse(hdr, null, null);
+                        } catch (IOException e) {
+                            LOG.error("IO exception while sending response", e);
+                        }
+                        continue;
                 }
 
                 // proceed to the next processor

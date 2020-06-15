@@ -18,11 +18,12 @@
 
 package org.apache.zookeeper;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import org.apache.zookeeper.client.ZKClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 /**
  * Computes the Server Principal for a SASL client.
@@ -33,7 +34,8 @@ public class SaslServerPrincipal {
 
     /**
      * Get the name of the server principal for a SASL client.
-     * @param addr the address of the host.
+     *
+     * @param addr         the address of the host.
      * @param clientConfig the configuration for the client.
      * @return the name of the principal.
      */
@@ -43,7 +45,8 @@ public class SaslServerPrincipal {
 
     /**
      * Get the name of the server principal for a SASL client.  This is visible for testing purposes.
-     * @param addr the address of the host.
+     *
+     * @param addr         the address of the host.
      * @param clientConfig the configuration for the client.
      * @return the name of the principal.
      */
@@ -54,22 +57,22 @@ public class SaslServerPrincipal {
             return configuredServerPrincipal;
         }
         String principalUserName = clientConfig.getProperty(
-            ZKClientConfig.ZK_SASL_CLIENT_USERNAME,
-            ZKClientConfig.ZK_SASL_CLIENT_USERNAME_DEFAULT);
+                ZKClientConfig.ZK_SASL_CLIENT_USERNAME,
+                ZKClientConfig.ZK_SASL_CLIENT_USERNAME_DEFAULT);
         String hostName = addr.getHostName();
 
         boolean canonicalize = true;
         String canonicalizeText = clientConfig.getProperty(
-            ZKClientConfig.ZK_SASL_CLIENT_CANONICALIZE_HOSTNAME,
-            ZKClientConfig.ZK_SASL_CLIENT_CANONICALIZE_HOSTNAME_DEFAULT);
+                ZKClientConfig.ZK_SASL_CLIENT_CANONICALIZE_HOSTNAME,
+                ZKClientConfig.ZK_SASL_CLIENT_CANONICALIZE_HOSTNAME_DEFAULT);
         try {
             canonicalize = Boolean.parseBoolean(canonicalizeText);
         } catch (IllegalArgumentException ea) {
             LOG.warn(
-                "Could not parse config {} \"{}\" into a boolean using default {}",
-                ZKClientConfig.ZK_SASL_CLIENT_CANONICALIZE_HOSTNAME,
-                canonicalizeText,
-                canonicalize);
+                    "Could not parse config {} \"{}\" into a boolean using default {}",
+                    ZKClientConfig.ZK_SASL_CLIENT_CANONICALIZE_HOSTNAME,
+                    canonicalizeText,
+                    canonicalize);
         }
 
         if (canonicalize) {

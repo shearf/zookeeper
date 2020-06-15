@@ -18,16 +18,15 @@
 
 package org.apache.zookeeper.server.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.zookeeper.server.DataTree;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.zookeeper.server.DataTree;
-import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * This test checks that the server does not create empty snapshot files if the

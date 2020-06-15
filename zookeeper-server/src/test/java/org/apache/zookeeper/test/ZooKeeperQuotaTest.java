@@ -18,21 +18,17 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import java.io.IOException;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.Quotas;
-import org.apache.zookeeper.StatsTrack;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.cli.MalformedPathException;
 import org.apache.zookeeper.cli.SetQuotaCommand;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 public class ZooKeeperQuotaTest extends ClientBase {
 
@@ -71,7 +67,7 @@ public class ZooKeeperQuotaTest extends ClientBase {
         startServer();
         ZooKeeperServer server = serverFactory.getZooKeeperServer();
         assertNotNull("Quota is still set", server.getZKDatabase().getDataTree().getMaxPrefixWithQuota(path)
-                                                           != null);
+                != null);
     }
 
     @Test

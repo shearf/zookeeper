@@ -17,14 +17,13 @@
 
 package org.apache.zookeeper.server.util;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.zookeeper.ZKTestCase;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class BitHashSetTest extends ZKTestCase {
 

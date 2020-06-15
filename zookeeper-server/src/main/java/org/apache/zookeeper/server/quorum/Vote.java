@@ -112,9 +112,9 @@ public class Vote {
 
         if ((state == ServerState.LOOKING) || (other.state == ServerState.LOOKING)) {
             return id == other.id
-                   && zxid == other.zxid
-                   && electionEpoch == other.electionEpoch
-                   && peerEpoch == other.peerEpoch;
+                    && zxid == other.zxid
+                    && electionEpoch == other.electionEpoch
+                    && peerEpoch == other.peerEpoch;
         } else {
             /*
              * There are two things going on in the logic below:

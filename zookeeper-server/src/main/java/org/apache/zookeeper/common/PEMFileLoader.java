@@ -18,12 +18,13 @@
 
 package org.apache.zookeeper.common;
 
+import org.apache.zookeeper.util.PemReader;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Optional;
-import org.apache.zookeeper.util.PemReader;
 
 /**
  * Implementation of {@link FileKeyStoreLoader} that loads from PEM files.
@@ -31,10 +32,10 @@ import org.apache.zookeeper.util.PemReader;
 class PEMFileLoader extends FileKeyStoreLoader {
 
     private PEMFileLoader(
-        String keyStorePath,
-        String trustStorePath,
-        String keyStorePassword,
-        String trustStorePassword) {
+            String keyStorePath,
+            String trustStorePath,
+            String keyStorePassword,
+            String trustStorePassword) {
         super(keyStorePath, trustStorePath, keyStorePassword, trustStorePassword);
     }
 

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,8 @@
 
 package org.apache.zookeeper.server.jersey.resources;
 
+import org.apache.zookeeper.server.jersey.jaxb.ZError;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -25,15 +27,12 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.zookeeper.server.jersey.jaxb.ZError;
-
 /**
  * Map RuntimeException to HTTP status codes
  */
 @Provider
 public class RuntimeExceptionMapper
-    implements ExceptionMapper<RuntimeException>
-{
+        implements ExceptionMapper<RuntimeException> {
     private UriInfo ui;
 
     public RuntimeExceptionMapper(@Context UriInfo ui) {
@@ -42,14 +41,14 @@ public class RuntimeExceptionMapper
 
     public Response toResponse(RuntimeException e) {
         // don't try to handle jersey exceptions ourselves
-        if (e instanceof WebApplicationException) { 
-            WebApplicationException ie =(WebApplicationException) e; 
-            return ie.getResponse(); 
-        } 
+        if (e instanceof WebApplicationException) {
+            WebApplicationException ie = (WebApplicationException) e;
+            return ie.getResponse();
+        }
 
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(
                 new ZError(ui.getRequestUri().toString(),
                         "Error processing request due to " + e
-                        )).build();
+                )).build();
     }
 }

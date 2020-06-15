@@ -18,14 +18,16 @@
 
 package org.apache.zookeeper;
 
-import static org.junit.Assert.assertTrue;
+import org.apache.zookeeper.client.HostProvider;
+import org.apache.zookeeper.test.ClientBase;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.zookeeper.client.HostProvider;
-import org.apache.zookeeper.test.ClientBase;
-import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class CustomHostProviderTest extends ZKTestCase {
 
@@ -39,13 +41,16 @@ public class CustomHostProviderTest extends ZKTestCase {
         public int size() {
             return 1;
         }
+
         @Override
         public InetSocketAddress next(long spinDelay) {
             return new InetSocketAddress("127.0.0.1", 2181);
         }
+
         @Override
         public void onConnected() {
         }
+
         @Override
         public boolean updateServerList(Collection<InetSocketAddress> serverAddresses, InetSocketAddress currentHost) {
             counter.decrementAndGet();
@@ -62,10 +67,10 @@ public class CustomHostProviderTest extends ZKTestCase {
         counter.set(expectedCounter);
 
         ZooKeeper zkDefaults = new ZooKeeper(
-            "127.0.0.1:" + CLIENT_PORT,
-            ClientBase.CONNECTION_TIMEOUT,
-            DummyWatcher.INSTANCE,
-            false);
+                "127.0.0.1:" + CLIENT_PORT,
+                ClientBase.CONNECTION_TIMEOUT,
+                DummyWatcher.INSTANCE,
+                false);
 
         ZooKeeper zkSpecial = new ZooKeeper(
                 "127.0.0.1:" + CLIENT_PORT,

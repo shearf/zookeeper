@@ -18,18 +18,6 @@
 
 package org.apache.zookeeper.server.admin;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.zookeeper.metrics.MetricsUtils;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ServerStats;
@@ -39,6 +27,17 @@ import org.apache.zookeeper.server.quorum.BufferStats;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class CommandsTest extends ClientBase {
 
     /**
@@ -46,12 +45,9 @@ public class CommandsTest extends ClientBase {
      * that all specified keys are present with values of the specified types
      * and that there are no extra entries.
      *
-     * @param cmdName
-     *            - the primary name of the command
-     * @param kwargs
-     *            - keyword arguments to the command
-     * @param fields
-     *            - the fields that are expected in the returned Map
+     * @param cmdName - the primary name of the command
+     * @param kwargs  - keyword arguments to the command
+     * @param fields  - the fields that are expected in the returned Map
      * @throws IOException
      * @throws InterruptedException
      */
@@ -68,22 +64,22 @@ public class CommandsTest extends ClientBase {
         for (Field field : fields) {
             String k = field.key;
             assertTrue("Result from command "
-                               + cmdName
-                               + " missing field \""
-                               + k
-                               + "\""
-                               + "\n"
-                               + result, result.containsKey(k));
+                    + cmdName
+                    + " missing field \""
+                    + k
+                    + "\""
+                    + "\n"
+                    + result, result.containsKey(k));
             Class<?> t = field.type;
             Object v = result.remove(k);
             assertTrue("\""
-                               + k
-                               + "\" field from command "
-                               + cmdName
-                               + " should be of type "
-                               + t
-                               + ", is actually of type "
-                               + v.getClass(), t.isAssignableFrom(v.getClass()));
+                    + k
+                    + "\" field from command "
+                    + cmdName
+                    + " should be of type "
+                    + t
+                    + ", is actually of type "
+                    + v.getClass(), t.isAssignableFrom(v.getClass()));
         }
 
         assertTrue("Result from command " + cmdName + " contains extra fields: " + result, result.isEmpty());
@@ -97,6 +93,7 @@ public class CommandsTest extends ClientBase {
 
         String key;
         Class<?> type;
+
         Field(String key, Class<?> type) {
             this.key = key;
             this.type = type;
@@ -221,13 +218,13 @@ public class CommandsTest extends ClientBase {
     @Test
     public void testStat() throws IOException, InterruptedException {
         testCommand("stats",
-                    new Field("version", String.class),
-                    new Field("read_only", Boolean.class),
-                    new Field("server_stats", ServerStats.class),
-                    new Field("node_count", Integer.class),
-                    new Field("connections", Iterable.class),
-                    new Field("secure_connections", Iterable.class),
-                    new Field("client_response", BufferStats.class));
+                new Field("version", String.class),
+                new Field("read_only", Boolean.class),
+                new Field("server_stats", ServerStats.class),
+                new Field("node_count", Integer.class),
+                new Field("connections", Iterable.class),
+                new Field("secure_connections", Iterable.class),
+                new Field("client_response", BufferStats.class));
     }
 
     @Test
@@ -253,7 +250,7 @@ public class CommandsTest extends ClientBase {
     @Test
     public void testVotingViewCommand() throws IOException, InterruptedException {
         testCommand("voting_view",
-                    new Field("current_config", Map.class));
+                new Field("current_config", Map.class));
     }
 
     @Test

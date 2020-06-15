@@ -18,28 +18,10 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.apache.zookeeper.AsyncCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
-import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ZooKeeperServer;
@@ -48,6 +30,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.*;
 
 public class SessionTest extends ZKTestCase {
 
@@ -153,9 +145,11 @@ public class SessionTest extends ZKTestCase {
     private class MyWatcher implements Watcher {
 
         private String name;
+
         public MyWatcher(String name) {
             this.name = name;
         }
+
         public void process(WatchedEvent event) {
             LOG.info("{} event:{} {} {}", name, event.getState(), event.getType(), event.getPath());
             if (event.getState() == KeeperState.SyncConnected && startSignal != null && startSignal.getCount() > 0) {
@@ -203,12 +197,14 @@ public class SessionTest extends ZKTestCase {
 
         AsyncCallback.DataCallback cb = new AsyncCallback.DataCallback() {
             String status = "not done";
+
             public void processResult(int rc, String p, Object c, byte[] b, Stat s) {
                 synchronized (this) {
                     status = KeeperException.Code.get(rc).toString();
                     this.notify();
                 }
             }
+
             public String toString() {
                 return status;
             }
@@ -240,7 +236,7 @@ public class SessionTest extends ZKTestCase {
             zk.dontReconnect();
             // This should stomp the zk handle
             DisconnectableZooKeeper zknew = new DisconnectableZooKeeper(hostPorts[(i + 1)
-                                                                                          % hostPorts.length], CONNECTION_TIMEOUT, new MyWatcher(Integer.toString(
+                    % hostPorts.length], CONNECTION_TIMEOUT, new MyWatcher(Integer.toString(
                     i
                             + 1)), zk.getSessionId(), zk.getSessionPasswd());
             final int[] result = new int[1];
@@ -270,6 +266,7 @@ public class SessionTest extends ZKTestCase {
         }
         zk.close();
     }
+
     /**
      * This test makes sure that duplicate state changes are not communicated
      * to the client watcher. For example we should not notify state as
@@ -332,6 +329,7 @@ public class SessionTest extends ZKTestCase {
     private class DupWatcher extends CountdownWatcher {
 
         public List<WatchedEvent> states = new LinkedList<WatchedEvent>();
+
         public void process(WatchedEvent event) {
             super.process(event);
             if (event.getType() == EventType.None) {

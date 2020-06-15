@@ -59,21 +59,20 @@ public class Version implements org.apache.zookeeper.version.Info {
 
     public static void printUsage() {
         System.out.print("Usage:\tjava -cp ... org.apache.zookeeper.Version "
-                         + "[--full | --short | --revision],\n\tPrints --full version "
-                         + "info if no arg specified.");
+                + "[--full | --short | --revision],\n\tPrints --full version "
+                + "info if no arg specified.");
         ServiceUtils.requestSystemExit(ExitCode.UNEXPECTED_ERROR.getValue());
     }
 
     /**
      * Prints the current version, revision and build date to the standard out.
      *
-     * @param args
-     *            <ul>
-     *            <li> --short - prints a short version string "1.2.3"
-     *            <li> --revision - prints a short version string with the Git
-     *            repository revision "1.2.3-${revision_hash}"
-     *            <li> --full - prints the revision and the build date
-     *            </ul>
+     * @param args <ul>
+     *                        <li> --short - prints a short version string "1.2.3"
+     *                        <li> --revision - prints a short version string with the Git
+     *                        repository revision "1.2.3-${revision_hash}"
+     *                        <li> --full - prints the revision and the build date
+     *                        </ul>
      */
     public static void main(String[] args) {
         if (args.length > 1) {

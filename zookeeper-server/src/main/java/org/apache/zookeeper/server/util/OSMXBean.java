@@ -18,6 +18,9 @@
 
 package org.apache.zookeeper.server.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +29,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Method;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is a wrapper for the implementation of
@@ -68,6 +69,7 @@ public class OSMXBean {
     /**
      * Load the implementation of UnixOperatingSystemMXBean for sun jvm
      * and runs the desired method.
+     *
      * @param mBeanMethodName : method to run from the interface UnixOperatingSystemMXBean
      * @return the method result
      */
@@ -93,6 +95,7 @@ public class OSMXBean {
      * Get the number of opened filed descriptor for the runtime jvm.
      * If sun java, it will use the com.sun.management interfaces.
      * Otherwise, this methods implements it (linux only).
+     *
      * @return number of open file descriptors for the jvm
      */
     public long getOpenFileDescriptorCount() {
@@ -111,7 +114,7 @@ public class OSMXBean {
 
             //using linux bash commands to retrieve info
             Process p = Runtime.getRuntime()
-                               .exec(new String[]{"bash", "-c", "ls /proc/" + pidhost[0] + "/fdinfo | wc -l"});
+                    .exec(new String[]{"bash", "-c", "ls /proc/" + pidhost[0] + "/fdinfo | wc -l"});
             InputStream in = p.getInputStream();
             BufferedReader output = new BufferedReader(new InputStreamReader(in));
 
@@ -135,6 +138,7 @@ public class OSMXBean {
      * Get the number of the maximum file descriptors the system can use.
      * If sun java, it will use the com.sun.management interfaces.
      * Otherwise, this methods implements it (linux only).
+     *
      * @return max number of file descriptors the operating system can use.
      */
     public long getMaxFileDescriptorCount() {

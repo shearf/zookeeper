@@ -18,18 +18,17 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Properties;
 import org.apache.zookeeper.common.ClientX509Util;
 import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class QuorumPeerConfigTest {
 
@@ -51,7 +50,6 @@ public class QuorumPeerConfigTest {
     }
 
     /**
-     *
      * Test case for https://issues.apache.org/jira/browse/ZOOKEEPER-2264
      */
     @Test

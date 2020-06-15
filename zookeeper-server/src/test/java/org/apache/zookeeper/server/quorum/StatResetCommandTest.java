@@ -18,20 +18,19 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.server.command.AbstractFourLetterCommand.ZK_NOT_SERVING;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import org.apache.zookeeper.server.ServerCnxn;
 import org.apache.zookeeper.server.ServerStats;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.command.StatResetCommand;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static org.apache.zookeeper.server.command.AbstractFourLetterCommand.ZK_NOT_SERVING;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class StatResetCommandTest {
 

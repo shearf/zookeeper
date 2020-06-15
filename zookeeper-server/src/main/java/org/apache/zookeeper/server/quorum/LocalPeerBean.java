@@ -18,10 +18,12 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.common.NetUtils.formatInetAddr;
-import java.util.stream.Collectors;
 import org.apache.zookeeper.common.NetUtils;
 import org.apache.zookeeper.server.ServerCnxnHelper;
+
+import java.util.stream.Collectors;
+
+import static org.apache.zookeeper.common.NetUtils.formatInetAddr;
 
 /**
  * Implementation of the local peer MBean interface.

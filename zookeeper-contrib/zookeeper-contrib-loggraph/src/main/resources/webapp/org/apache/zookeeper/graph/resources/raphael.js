@@ -4,7 +4,7 @@
  * Copyright (c) 2009 Dmitry Baranovskiy (http://raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
- 
+
 Raphael = (function () {
     var separator = /[, ]+/,
         elements = /^(circle|rect|path|ellipse|text|image)$/,
@@ -29,7 +29,8 @@ Raphael = (function () {
             }
             return create[apply](R, arguments);
         },
-        Paper = function () {},
+        Paper = function () {
+        },
         appendChild = "appendChild",
         apply = "apply",
         concat = "concat",
@@ -57,8 +58,70 @@ Raphael = (function () {
         toFloat = parseFloat,
         toInt = parseInt,
         upperCase = String[proto].toUpperCase,
-        availableAttrs = {blur: 0, "clip-rect": "0 0 1e9 1e9", cursor: "default", cx: 0, cy: 0, fill: "#fff", "fill-opacity": 1, font: '10px "Arial"', "font-family": '"Arial"', "font-size": "10", "font-style": "normal", "font-weight": 400, gradient: 0, height: 0, href: "http://raphaeljs.com/", opacity: 1, path: "M0,0", r: 0, rotation: 0, rx: 0, ry: 0, scale: "1 1", src: "", stroke: "#000", "stroke-dasharray": "", "stroke-linecap": "butt", "stroke-linejoin": "butt", "stroke-miterlimit": 0, "stroke-opacity": 1, "stroke-width": 1, target: "_blank", "text-anchor": "middle", title: "Raphael", translation: "0 0", width: 0, x: 0, y: 0},
-        availableAnimAttrs = {along: "along", blur: nu, "clip-rect": "csv", cx: nu, cy: nu, fill: "colour", "fill-opacity": nu, "font-size": nu, height: nu, opacity: nu, path: "path", r: nu, rotation: "csv", rx: nu, ry: nu, scale: "csv", stroke: "colour", "stroke-opacity": nu, "stroke-width": nu, translation: "csv", width: nu, x: nu, y: nu},
+        availableAttrs = {
+            blur: 0,
+            "clip-rect": "0 0 1e9 1e9",
+            cursor: "default",
+            cx: 0,
+            cy: 0,
+            fill: "#fff",
+            "fill-opacity": 1,
+            font: '10px "Arial"',
+            "font-family": '"Arial"',
+            "font-size": "10",
+            "font-style": "normal",
+            "font-weight": 400,
+            gradient: 0,
+            height: 0,
+            href: "http://raphaeljs.com/",
+            opacity: 1,
+            path: "M0,0",
+            r: 0,
+            rotation: 0,
+            rx: 0,
+            ry: 0,
+            scale: "1 1",
+            src: "",
+            stroke: "#000",
+            "stroke-dasharray": "",
+            "stroke-linecap": "butt",
+            "stroke-linejoin": "butt",
+            "stroke-miterlimit": 0,
+            "stroke-opacity": 1,
+            "stroke-width": 1,
+            target: "_blank",
+            "text-anchor": "middle",
+            title: "Raphael",
+            translation: "0 0",
+            width: 0,
+            x: 0,
+            y: 0
+        },
+        availableAnimAttrs = {
+            along: "along",
+            blur: nu,
+            "clip-rect": "csv",
+            cx: nu,
+            cy: nu,
+            fill: "colour",
+            "fill-opacity": nu,
+            "font-size": nu,
+            height: nu,
+            opacity: nu,
+            path: "path",
+            r: nu,
+            rotation: "csv",
+            rx: nu,
+            ry: nu,
+            scale: "csv",
+            stroke: "colour",
+            "stroke-opacity": nu,
+            "stroke-width": nu,
+            translation: "csv",
+            width: nu,
+            x: nu,
+            y: nu
+        },
         rp = "replace";
     R.version = "1.3.2";
     R.type = (win.SVGAngle || doc.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1") ? "SVG" : "VML");
@@ -96,7 +159,7 @@ Raphael = (function () {
                     docum.write("<body>");
                     docum.close();
                     bod = docum.body;
-                } catch(e) {
+                } catch (e) {
                     bod = win.createPopup().document.body;
                 }
                 var range = bod.createTextRange();
@@ -105,7 +168,7 @@ Raphael = (function () {
                     var value = range.queryCommandValue("ForeColor");
                     value = ((value & 255) << 16) | (value & 65280) | ((value & 16711680) >>> 16);
                     return "#" + ("000000" + value[toString](16)).slice(-6);
-                } catch(e) {
+                } catch (e) {
                     return "none";
                 }
             });
@@ -122,11 +185,11 @@ Raphael = (function () {
         return toHex(color);
     };
     var hsbtoString = function () {
-        return "hsb(" + [this.h, this.s, this.b] + ")";
-    },
-    rgbtoString = function () {
-        return this.hex;
-    };
+            return "hsb(" + [this.h, this.s, this.b] + ")";
+        },
+        rgbtoString = function () {
+            return this.hex;
+        };
     R.hsb2rgb = cacher(function (hue, saturation, brightness) {
         if (R.is(hue, "object") && "h" in hue && "s" in hue && "b" in hue) {
             brightness = hue.b;
@@ -209,6 +272,7 @@ Raphael = (function () {
     R._path2string = function () {
         return this.join(",")[rp](p2s, "$1");
     };
+
     function cacher(f, scope, postprocessor) {
         function newf() {
             var arg = Array[proto].slice.call(arguments, 0),
@@ -223,9 +287,10 @@ Raphael = (function () {
             cache[args] = f[apply](scope, arg);
             return postprocessor ? postprocessor(cache[args]) : cache[args];
         }
+
         return newf;
     }
- 
+
     R.getRGB = cacher(function (colour) {
         if (!colour || !!((colour = colour + E).indexOf("-") + 1)) {
             return {r: -1, g: -1, b: -1, hex: "none", error: 1};
@@ -352,42 +417,50 @@ Raphael = (function () {
             cy = (1 - t) * c2y + t * p2y,
             alpha = (90 - math.atan((mx - nx) / (my - ny)) * 180 / math.PI);
         (mx > nx || my < ny) && (alpha += 180);
-        return {x: x, y: y, m: {x: mx, y: my}, n: {x: nx, y: ny}, start: {x: ax, y: ay}, end: {x: cx, y: cy}, alpha: alpha};
+        return {
+            x: x,
+            y: y,
+            m: {x: mx, y: my},
+            n: {x: nx, y: ny},
+            start: {x: ax, y: ay},
+            end: {x: cx, y: cy},
+            alpha: alpha
+        };
     };
     var pathDimensions = cacher(function (path) {
-        if (!path) {
-            return {x: 0, y: 0, width: 0, height: 0};
-        }
-        path = path2curve(path);
-        var x = 0, 
-            y = 0,
-            X = [],
-            Y = [],
-            p;
-        for (var i = 0, ii = path[length]; i < ii; i++) {
-            p = path[i];
-            if (p[0] == "M") {
-                x = p[1];
-                y = p[2];
-                X[push](x);
-                Y[push](y);
-            } else {
-                var dim = curveDim(x, y, p[1], p[2], p[3], p[4], p[5], p[6]);
-                X = X[concat](dim.min.x, dim.max.x);
-                Y = Y[concat](dim.min.y, dim.max.y);
-                x = p[5];
-                y = p[6];
+            if (!path) {
+                return {x: 0, y: 0, width: 0, height: 0};
             }
-        }
-        var xmin = mmin[apply](0, X),
-            ymin = mmin[apply](0, Y);
-        return {
-            x: xmin,
-            y: ymin,
-            width: mmax[apply](0, X) - xmin,
-            height: mmax[apply](0, Y) - ymin
-        };
-    }),
+            path = path2curve(path);
+            var x = 0,
+                y = 0,
+                X = [],
+                Y = [],
+                p;
+            for (var i = 0, ii = path[length]; i < ii; i++) {
+                p = path[i];
+                if (p[0] == "M") {
+                    x = p[1];
+                    y = p[2];
+                    X[push](x);
+                    Y[push](y);
+                } else {
+                    var dim = curveDim(x, y, p[1], p[2], p[3], p[4], p[5], p[6]);
+                    X = X[concat](dim.min.x, dim.max.x);
+                    Y = Y[concat](dim.min.y, dim.max.y);
+                    x = p[5];
+                    y = p[6];
+                }
+            }
+            var xmin = mmin[apply](0, X),
+                ymin = mmin[apply](0, Y);
+            return {
+                x: xmin,
+                y: ymin,
+                width: mmax[apply](0, X) - xmin,
+                height: mmax[apply](0, Y) - ymin
+            };
+        }),
         pathClone = function (pathArray) {
             var res = [];
             if (!R.is(pathArray, "array") || !R.is(pathArray && pathArray[0], "array")) { // rough assumption
@@ -554,13 +627,13 @@ Raphael = (function () {
             var _13 = 1 / 3,
                 _23 = 2 / 3;
             return [
-                    _13 * x1 + _23 * ax,
-                    _13 * y1 + _23 * ay,
-                    _13 * x2 + _23 * ax,
-                    _13 * y2 + _23 * ay,
-                    x2,
-                    y2
-                ];
+                _13 * x1 + _23 * ax,
+                _13 * y1 + _23 * ay,
+                _13 * x2 + _23 * ax,
+                _13 * y2 + _23 * ay,
+                x2,
+                y2
+            ];
         },
         a2c = function (x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
             // for more information of where this math came from visit:
@@ -715,7 +788,7 @@ Raphael = (function () {
                     if (!path) {
                         return ["C", d.x, d.y, d.x, d.y, d.x, d.y];
                     }
-                    !(path[0] in {T:1, Q:1}) && (d.qx = d.qy = null);
+                    !(path[0] in {T: 1, Q: 1}) && (d.qx = d.qy = null);
                     switch (path[0]) {
                         case "M":
                             d.X = path[1];
@@ -860,16 +933,18 @@ Raphael = (function () {
                     switch (typeof add[prop]) {
                         case "function":
                             (function (f) {
-                                con[prop] = con === that ? f : function () { return f[apply](that, arguments); };
+                                con[prop] = con === that ? f : function () {
+                                    return f[apply](that, arguments);
+                                };
                             })(add[prop]);
-                        break;
+                            break;
                         case "object":
                             con[prop] = con[prop] || {};
                             plugins.call(this, con[prop], add[prop]);
-                        break;
+                            break;
                         default:
                             con[prop] = add[prop];
-                        break;
+                            break;
                     }
                 }
             }
@@ -922,7 +997,7 @@ Raphael = (function () {
             };
         },
         radial_gradient = /^r(?:\(([^,]+?)\s*,\s*([^\)]+?)\))?/;
- 
+
     // SVG
     if (R.svg) {
         Paper[proto].svgns = "http://www.w3.org/2000/svg";
@@ -931,31 +1006,31 @@ Raphael = (function () {
             return +num + (~~num === num) * .5;
         };
         var roundPath = function (path) {
-            for (var i = 0, ii = path[length]; i < ii; i++) {
-                if (lowerCase.call(path[i][0]) != "a") {
-                    for (var j = 1, jj = path[i][length]; j < jj; j++) {
-                        path[i][j] = round(path[i][j]);
+                for (var i = 0, ii = path[length]; i < ii; i++) {
+                    if (lowerCase.call(path[i][0]) != "a") {
+                        for (var j = 1, jj = path[i][length]; j < jj; j++) {
+                            path[i][j] = round(path[i][j]);
+                        }
+                    } else {
+                        path[i][6] = round(path[i][6]);
+                        path[i][7] = round(path[i][7]);
+                    }
+                }
+                return path;
+            },
+            $ = function (el, attr) {
+                if (attr) {
+                    for (var key in attr) {
+                        if (attr[has](key)) {
+                            el[setAttribute](key, attr[key] + E);
+                        }
                     }
                 } else {
-                    path[i][6] = round(path[i][6]);
-                    path[i][7] = round(path[i][7]);
+                    return doc.createElementNS(Paper[proto].svgns, el);
                 }
-            }
-            return path;
-        },
-        $ = function (el, attr) {
-            if (attr) {
-                for (var key in attr) {
-                    if (attr[has](key)) {
-                        el[setAttribute](key, attr[key] + E);
-                    }
-                }
-            } else {
-                return doc.createElementNS(Paper[proto].svgns, el);
-            }
-        };
+            };
         R[toString] = function () {
-            return  "Your browser supports SVG.\nYou are running Rapha\xebl " + this.version;
+            return "Your browser supports SVG.\nYou are running Rapha\xebl " + this.version;
         };
         var thePath = function (pathString, SVG) {
             var el = $("path");
@@ -976,9 +1051,9 @@ Raphael = (function () {
                     fy = toFloat(_fy);
                     var dir = ((fy > .5) * 2 - 1);
                     pow(fx - .5, 2) + pow(fy - .5, 2) > .25 &&
-                        (fy = math.sqrt(.25 - pow(fx - .5, 2)) * dir + .5) &&
-                        fy != .5 &&
-                        (fy = fy.toFixed(5) - 1e-5 * dir);
+                    (fy = math.sqrt(.25 - pow(fx - .5, 2)) * dir + .5) &&
+                    fy != .5 &&
+                    (fy = fy.toFixed(5) - 1e-5 * dir);
                 }
                 return E;
             });
@@ -1009,7 +1084,7 @@ Raphael = (function () {
             var id = o.getAttribute("fill");
             id = id.match(/^url\(#(.*)\)$/);
             id && SVG.defs.removeChild(doc.getElementById(id[1]));
-            
+
             var el = $(type + "Gradient");
             el.id = "r" + (R._id++)[toString](36);
             $(el, type == "radial" ? {fx: fx, fy: fy} : {x1: vector[0], y1: vector[1], x2: vector[2], y2: vector[3]});
@@ -1058,7 +1133,11 @@ Raphael = (function () {
                     value = dasharray[lowerCase.call(value)];
                     if (value) {
                         var width = o.attrs["stroke-width"] || "1",
-                            butt = {round: width, square: width, butt: 0}[o.attrs["stroke-linecap"] || params["stroke-linecap"]] || 0,
+                            butt = {
+                                round: width,
+                                square: width,
+                                butt: 0
+                            }[o.attrs["stroke-linecap"] || params["stroke-linecap"]] || 0,
                             dashes = [];
                         var i = value[length];
                         while (i--) {
@@ -1130,7 +1209,7 @@ Raphael = (function () {
                                 $(node, {"clip-path": E});
                                 delete o.clip;
                             }
-                        break;
+                            break;
                         case "path":
                             if (o.type == "path") {
                                 $(node, {d: value ? attrs.path = roundPath(pathToAbsolute(value)) : "M0,0"});
@@ -1225,7 +1304,7 @@ Raphael = (function () {
                                 $(ig, {x: 0, y: 0});
                                 ig.setAttributeNS(o.paper.xlink, "href", isURL[1]);
                                 el[appendChild](ig);
- 
+
                                 var img = doc.createElement("img");
                                 img.style.cssText = "position:absolute;left:-9999em;top-9999em";
                                 img.onload = function () {
@@ -1247,12 +1326,15 @@ Raphael = (function () {
                                 delete params.gradient;
                                 delete attrs.gradient;
                                 !R.is(attrs.opacity, "undefined") &&
-                                    R.is(params.opacity, "undefined") &&
-                                    $(node, {opacity: attrs.opacity});
+                                R.is(params.opacity, "undefined") &&
+                                $(node, {opacity: attrs.opacity});
                                 !R.is(attrs["fill-opacity"], "undefined") &&
-                                    R.is(params["fill-opacity"], "undefined") &&
-                                    $(node, {"fill-opacity": attrs["fill-opacity"]});
-                            } else if ((({circle: 1, ellipse: 1})[has](o.type) || (value + E).charAt() != "r") && addGradientFill(node, value, o.paper)) {
+                                R.is(params["fill-opacity"], "undefined") &&
+                                $(node, {"fill-opacity": attrs["fill-opacity"]});
+                            } else if ((({
+                                circle: 1,
+                                ellipse: 1
+                            })[has](o.type) || (value + E).charAt() != "r") && addGradientFill(node, value, o.paper)) {
                                 attrs.gradient = value;
                                 attrs.fill = "none";
                                 break;
@@ -1261,7 +1343,10 @@ Raphael = (function () {
                             node[setAttribute](att, R.getRGB(value).hex);
                             break;
                         case "gradient":
-                            (({circle: 1, ellipse: 1})[has](o.type) || (value + E).charAt() != "r") && addGradientFill(node, value, o.paper);
+                            (({
+                                circle: 1,
+                                ellipse: 1
+                            })[has](o.type) || (value + E).charAt() != "r") && addGradientFill(node, value, o.paper);
                             break;
                         case "opacity":
                         case "fill-opacity":
@@ -1285,7 +1370,7 @@ Raphael = (function () {
                     }
                 }
             }
-            
+
             tuneText(o, params);
             if (rotxy) {
                 o.rotate(rotxy.join(S));
@@ -1294,60 +1379,60 @@ Raphael = (function () {
             }
         };
         var leading = 1.2,
-        tuneText = function (el, params) {
-            if (el.type != "text" || !(params[has]("text") || params[has]("font") || params[has]("font-size") || params[has]("x") || params[has]("y"))) {
-                return;
-            }
-            var a = el.attrs,
-                node = el.node,
-                fontSize = node.firstChild ? toInt(doc.defaultView.getComputedStyle(node.firstChild, E).getPropertyValue("font-size"), 10) : 10;
- 
-            if (params[has]("text")) {
-                a.text = params.text;
-                while (node.firstChild) {
-                    node.removeChild(node.firstChild);
+            tuneText = function (el, params) {
+                if (el.type != "text" || !(params[has]("text") || params[has]("font") || params[has]("font-size") || params[has]("x") || params[has]("y"))) {
+                    return;
                 }
-                var texts = (params.text + E)[split]("\n");
-                for (var i = 0, ii = texts[length]; i < ii; i++) if (texts[i]) {
-                    var tspan = $("tspan");
-                    i && $(tspan, {dy: fontSize * leading, x: a.x});
-                    tspan[appendChild](doc.createTextNode(texts[i]));
-                    node[appendChild](tspan);
+                var a = el.attrs,
+                    node = el.node,
+                    fontSize = node.firstChild ? toInt(doc.defaultView.getComputedStyle(node.firstChild, E).getPropertyValue("font-size"), 10) : 10;
+
+                if (params[has]("text")) {
+                    a.text = params.text;
+                    while (node.firstChild) {
+                        node.removeChild(node.firstChild);
+                    }
+                    var texts = (params.text + E)[split]("\n");
+                    for (var i = 0, ii = texts[length]; i < ii; i++) if (texts[i]) {
+                        var tspan = $("tspan");
+                        i && $(tspan, {dy: fontSize * leading, x: a.x});
+                        tspan[appendChild](doc.createTextNode(texts[i]));
+                        node[appendChild](tspan);
+                    }
+                } else {
+                    texts = node.getElementsByTagName("tspan");
+                    for (i = 0, ii = texts[length]; i < ii; i++) {
+                        i && $(texts[i], {dy: fontSize * leading, x: a.x});
+                    }
                 }
-            } else {
-                texts = node.getElementsByTagName("tspan");
-                for (i = 0, ii = texts[length]; i < ii; i++) {
-                    i && $(texts[i], {dy: fontSize * leading, x: a.x});
-                }
-            }
-            $(node, {y: a.y});
-            var bb = el.getBBox(),
-                dif = a.y - (bb.y + bb.height / 2);
-            dif && isFinite(dif) && $(node, {y: a.y + dif});
-        },
-        Element = function (node, svg) {
-            var X = 0,
-                Y = 0;
-            this[0] = node;
-            this.id = R._oid++;
-            this.node = node;
-            node.raphael = this;
-            this.paper = svg;
-            this.attrs = this.attrs || {};
-            this.transformations = []; // rotate, translate, scale
-            this._ = {
-                tx: 0,
-                ty: 0,
-                rt: {deg: 0, cx: 0, cy: 0},
-                sx: 1,
-                sy: 1
+                $(node, {y: a.y});
+                var bb = el.getBBox(),
+                    dif = a.y - (bb.y + bb.height / 2);
+                dif && isFinite(dif) && $(node, {y: a.y + dif});
+            },
+            Element = function (node, svg) {
+                var X = 0,
+                    Y = 0;
+                this[0] = node;
+                this.id = R._oid++;
+                this.node = node;
+                node.raphael = this;
+                this.paper = svg;
+                this.attrs = this.attrs || {};
+                this.transformations = []; // rotate, translate, scale
+                this._ = {
+                    tx: 0,
+                    ty: 0,
+                    rt: {deg: 0, cx: 0, cy: 0},
+                    sx: 1,
+                    sy: 1
+                };
+                !svg.bottom && (svg.bottom = this);
+                this.prev = svg.top;
+                svg.top && (svg.top.next = this);
+                svg.top = this;
+                this.next = null;
             };
-            !svg.bottom && (svg.bottom = this);
-            this.prev = svg.top;
-            svg.top && (svg.top.next = this);
-            svg.top = this;
-            this.next = null;
-        };
         Element[proto].rotate = function (deg, cx, cy) {
             if (this.removed) {
                 return this;
@@ -1418,7 +1503,7 @@ Raphael = (function () {
             var bbox = {};
             try {
                 bbox = this.node.getBBox();
-            } catch(e) {
+            } catch (e) {
                 // Firefox 3.0.x plays badly here
             } finally {
                 bbox = bbox || {};
@@ -1561,7 +1646,17 @@ Raphael = (function () {
             var el = $("rect");
             svg.canvas && svg.canvas[appendChild](el);
             var res = new Element(el, svg);
-            res.attrs = {x: x, y: y, width: w, height: h, r: r || 0, rx: r || 0, ry: r || 0, fill: "none", stroke: "#000"};
+            res.attrs = {
+                x: x,
+                y: y,
+                width: w,
+                height: h,
+                r: r || 0,
+                rx: r || 0,
+                ry: r || 0,
+                fill: "none",
+                stroke: "#000"
+            };
             res.type = "rect";
             $(el, res.attrs);
             return res;
@@ -1592,7 +1687,15 @@ Raphael = (function () {
             $(el, {x: x, y: y, "text-anchor": "middle"});
             svg.canvas && svg.canvas[appendChild](el);
             var res = new Element(el, svg);
-            res.attrs = {x: x, y: y, "text-anchor": "middle", text: text, font: availableAttrs.font, stroke: "none", fill: "#000"};
+            res.attrs = {
+                x: x,
+                y: y,
+                "text-anchor": "middle",
+                text: text,
+                font: availableAttrs.font,
+                stroke: "none",
+                fill: "#000"
+            };
             res.type = "text";
             setFillAndStroke(res, res.attrs);
             return res;
@@ -1667,7 +1770,7 @@ Raphael = (function () {
             coordsize = 1e3 + S + 1e3,
             zoom = 10,
             path2vml = function (path) {
-                var total =  /[ahqstv]/ig,
+                var total = /[ahqstv]/ig,
                     command = pathToAbsolute;
                 (path + E).match(total) && (command = path2curve);
                 total = /[clmz]/g;
@@ -1700,9 +1803,9 @@ Raphael = (function () {
                 }
                 return res[join](S);
             };
-        
+
         R[toString] = function () {
-            return  "Your browser doesn\u2019t support SVG. Falling down to VML.\nYou are running Rapha\xebl " + this.version;
+            return "Your browser doesn\u2019t support SVG. Falling down to VML.\nYou are running Rapha\xebl " + this.version;
         };
         thePath = function (pathString, vml) {
             var g = createNode("group");
@@ -1752,8 +1855,8 @@ Raphael = (function () {
                 xy = (params.translation + E)[split](separator);
                 translate.call(o, xy[0], xy[1]);
                 if (o._.rt.cx != null) {
-                    o._.rt.cx +=+ xy[0];
-                    o._.rt.cy +=+ xy[1];
+                    o._.rt.cx += +xy[0];
+                    o._.rt.cy += +xy[1];
                     o.setBox(o.attrs, xy[0], xy[1]);
                 }
             }
@@ -1797,7 +1900,7 @@ Raphael = (function () {
             params["font-size"] && (s.fontSize = params["font-size"]);
             params["font-weight"] && (s.fontWeight = params["font-weight"]);
             params["font-style"] && (s.fontStyle = params["font-style"]);
-            if (params.opacity != null || 
+            if (params.opacity != null ||
                 params["stroke-width"] != null ||
                 params.fill != null ||
                 params.stroke != null ||
@@ -1831,7 +1934,10 @@ Raphael = (function () {
                         fill.color = R.getRGB(params.fill).hex;
                         fill.src = E;
                         fill.type = "solid";
-                        if (R.getRGB(params.fill).error && (res.type in {circle: 1, ellipse: 1} || (params.fill + E).charAt() != "r") && addGradientFill(res, params.fill)) {
+                        if (R.getRGB(params.fill).error && (res.type in {
+                            circle: 1,
+                            ellipse: 1
+                        } || (params.fill + E).charAt() != "r") && addGradientFill(res, params.fill)) {
                             a.fill = "none";
                             a.gradient = params.fill;
                         }
@@ -1839,7 +1945,7 @@ Raphael = (function () {
                 }
                 newfill && node[appendChild](fill);
                 var stroke = (node.getElementsByTagName("stroke") && node.getElementsByTagName("stroke")[0]),
-                newstroke = false;
+                    newstroke = false;
                 !stroke && (newstroke = stroke = createNode("stroke"));
                 if ((params.stroke && params.stroke != "none") ||
                     params["stroke-width"] ||
@@ -1860,7 +1966,7 @@ Raphael = (function () {
                 params["stroke-width"] && (stroke.weight = width);
                 width && width < 1 && (opacity *= width) && (stroke.weight = 1);
                 stroke.opacity = opacity;
-                
+
                 params["stroke-linejoin"] && (stroke.joinstyle = params["stroke-linejoin"] || "miter");
                 stroke.miterlimit = params["stroke-miterlimit"] || 8;
                 params["stroke-linecap"] && (stroke.endcap = params["stroke-linecap"] == "butt" ? "flat" : params["stroke-linecap"] == "square" ? "square" : "round");
@@ -1893,20 +1999,20 @@ Raphael = (function () {
                 res.H = a.h = res.paper.span.offsetHeight;
                 res.X = a.x;
                 res.Y = a.y + round(res.H / 2);
- 
+
                 // text-anchor emulationm
                 switch (a["text-anchor"]) {
                     case "start":
                         res.node.style["v-text-align"] = "left";
                         res.bbx = round(res.W / 2);
-                    break;
+                        break;
                     case "end":
                         res.node.style["v-text-align"] = "right";
                         res.bbx = -round(res.W / 2);
-                    break;
+                        break;
                     default:
                         res.node.style["v-text-align"] = "center";
-                    break;
+                        break;
                 }
             }
         };
@@ -1979,7 +2085,7 @@ Raphael = (function () {
             this._ = {
                 tx: 0,
                 ty: 0,
-                rt: {deg:0},
+                rt: {deg: 0},
                 sx: 1,
                 sy: 1
             };
@@ -2215,7 +2321,10 @@ Raphael = (function () {
                     this.node.string = params.text;
                 }
                 setFillAndStroke(this, params);
-                if (params.gradient && (({circle: 1, ellipse: 1})[has](this.type) || (params.gradient + E).charAt() != "r")) {
+                if (params.gradient && (({
+                    circle: 1,
+                    ellipse: 1
+                })[has](this.type) || (params.gradient + E).charAt() != "r")) {
                     addGradientFill(this, params.gradient);
                 }
                 (this.type != "path" || this._.rt.deg) && this.setBox(this.attrs);
@@ -2272,7 +2381,7 @@ Raphael = (function () {
                 delete this.attrs.blur;
             }
         };
- 
+
         theCircle = function (vml, x, y, r) {
             var g = createNode("group"),
                 o = createNode("oval"),
@@ -2458,18 +2567,21 @@ Raphael = (function () {
             return true;
         };
     }
- 
+
     // rest
     // Safari or Chrome (WebKit) rendering bug workaround method
     if ((/^Apple|^Google/).test(win.navigator.vendor) && !(win.navigator.userAgent.indexOf("Version/4.0") + 1)) {
         Paper[proto].safari = function () {
             var rect = this.rect(-99, -99, this.width + 99, this.height + 99);
-            win.setTimeout(function () {rect.remove();});
+            win.setTimeout(function () {
+                rect.remove();
+            });
         };
     } else {
-        Paper[proto].safari = function () {};
+        Paper[proto].safari = function () {
+        };
     }
- 
+
     // Events
     var addEvent = (function () {
         if (doc.addEventListener) {
@@ -2502,7 +2614,11 @@ Raphael = (function () {
             Element[proto][eventName] = function (fn) {
                 if (R.is(fn, "function")) {
                     this.events = this.events || [];
-                    this.events.push({name: eventName, f: fn, unbind: addEvent(this.shape || this.node, eventName, fn, this)});
+                    this.events.push({
+                        name: eventName,
+                        f: fn,
+                        unbind: addEvent(this.shape || this.node, eventName, fn, this)
+                    });
                 }
                 return this;
             };
@@ -2551,9 +2667,11 @@ Raphael = (function () {
     Paper[proto].setSize = setSize;
     Paper[proto].top = Paper[proto].bottom = null;
     Paper[proto].raphael = R;
+
     function x_y() {
         return this.x + S + this.y;
     }
+
     Element[proto].scale = function (x, y, cx, cy) {
         if (x == null && y == null) {
             return {
@@ -2630,7 +2748,7 @@ Raphael = (function () {
                             for (j = 1, jj = p[length]; j < jj; j++) {
                                 p[j] *= ky;
                             }
-                         } else {
+                        } else {
                             for (j = 1, jj = p[length]; j < jj; j++) {
                                 p[j] *= (j % 2) ? kx : ky;
                             }
@@ -2642,9 +2760,9 @@ Raphael = (function () {
                     path[0][1] += dx;
                     path[0][2] += dy;
                     this.attr({path: path});
-                break;
+                    break;
             }
-            if (this.type in {text: 1, image:1} && (dirx != 1 || diry != 1)) {
+            if (this.type in {text: 1, image: 1} && (dirx != 1 || diry != 1)) {
                 if (this.transformations) {
                     this.transformations[2] = "scale("[concat](dirx, ",", diry, ")");
                     this.node[setAttribute]("transform", this.transformations[join](S));
@@ -2683,81 +2801,89 @@ Raphael = (function () {
         return this.paper[this.type]().attr(attr);
     };
     var getPointAtSegmentLength = cacher(function (p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, length) {
-        var len = 0,
-            old;
-        for (var i = 0; i < 1.001; i+=.001) {
-            var dot = R.findDotsAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, i);
-            i && (len += pow(pow(old.x - dot.x, 2) + pow(old.y - dot.y, 2), .5));
-            if (len >= length) {
-                return dot;
-            }
-            old = dot;
-        }
-    }),
-    getLengthFactory = function (istotal, subpath) {
-        return function (path, length, onlystart) {
-            path = path2curve(path);
-            var x, y, p, l, sp = "", subpaths = {}, point,
-                len = 0;
-            for (var i = 0, ii = path.length; i < ii; i++) {
-                p = path[i];
-                if (p[0] == "M") {
-                    x = +p[1];
-                    y = +p[2];
-                } else {
-                    l = segmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6]);
-                    if (len + l > length) {
-                        if (subpath && !subpaths.start) {
-                            point = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6], length - len);
-                            sp += ["C", point.start.x, point.start.y, point.m.x, point.m.y, point.x, point.y];
-                            if (onlystart) {return sp;}
-                            subpaths.start = sp;
-                            sp = ["M", point.x, point.y + "C", point.n.x, point.n.y, point.end.x, point.end.y, p[5], p[6]][join]();
-                            len += l;
-                            x = +p[5];
-                            y = +p[6];
-                            continue;
-                        }
-                        if (!istotal && !subpath) {
-                            point = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6], length - len);
-                            return {x: point.x, y: point.y, alpha: point.alpha};
-                        }
-                    }
-                    len += l;
-                    x = +p[5];
-                    y = +p[6];
+            var len = 0,
+                old;
+            for (var i = 0; i < 1.001; i += .001) {
+                var dot = R.findDotsAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, i);
+                i && (len += pow(pow(old.x - dot.x, 2) + pow(old.y - dot.y, 2), .5));
+                if (len >= length) {
+                    return dot;
                 }
-                sp += p;
+                old = dot;
             }
-            subpaths.end = sp;
-            point = istotal ? len : subpath ? subpaths : R.findDotsAtSegment(x, y, p[1], p[2], p[3], p[4], p[5], p[6], 1);
-            point.alpha && (point = {x: point.x, y: point.y, alpha: point.alpha});
-            return point;
-        };
-    },
-    segmentLength = cacher(function (p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) {
-        var old = {x: 0, y: 0},
-            len = 0;
-        for (var i = 0; i < 1.01; i+=.01) {
-            var dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, i);
-            i && (len += pow(pow(old.x - dot.x, 2) + pow(old.y - dot.y, 2), .5));
-            old = dot;
-        }
-        return len;
-    });
+        }),
+        getLengthFactory = function (istotal, subpath) {
+            return function (path, length, onlystart) {
+                path = path2curve(path);
+                var x, y, p, l, sp = "", subpaths = {}, point,
+                    len = 0;
+                for (var i = 0, ii = path.length; i < ii; i++) {
+                    p = path[i];
+                    if (p[0] == "M") {
+                        x = +p[1];
+                        y = +p[2];
+                    } else {
+                        l = segmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6]);
+                        if (len + l > length) {
+                            if (subpath && !subpaths.start) {
+                                point = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6], length - len);
+                                sp += ["C", point.start.x, point.start.y, point.m.x, point.m.y, point.x, point.y];
+                                if (onlystart) {
+                                    return sp;
+                                }
+                                subpaths.start = sp;
+                                sp = ["M", point.x, point.y + "C", point.n.x, point.n.y, point.end.x, point.end.y, p[5], p[6]][join]();
+                                len += l;
+                                x = +p[5];
+                                y = +p[6];
+                                continue;
+                            }
+                            if (!istotal && !subpath) {
+                                point = getPointAtSegmentLength(x, y, p[1], p[2], p[3], p[4], p[5], p[6], length - len);
+                                return {x: point.x, y: point.y, alpha: point.alpha};
+                            }
+                        }
+                        len += l;
+                        x = +p[5];
+                        y = +p[6];
+                    }
+                    sp += p;
+                }
+                subpaths.end = sp;
+                point = istotal ? len : subpath ? subpaths : R.findDotsAtSegment(x, y, p[1], p[2], p[3], p[4], p[5], p[6], 1);
+                point.alpha && (point = {x: point.x, y: point.y, alpha: point.alpha});
+                return point;
+            };
+        },
+        segmentLength = cacher(function (p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y) {
+            var old = {x: 0, y: 0},
+                len = 0;
+            for (var i = 0; i < 1.01; i += .01) {
+                var dot = findDotAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, i);
+                i && (len += pow(pow(old.x - dot.x, 2) + pow(old.y - dot.y, 2), .5));
+                old = dot;
+            }
+            return len;
+        });
     var getTotalLength = getLengthFactory(1),
         getPointAtLength = getLengthFactory(),
         getSubpathsAtLength = getLengthFactory(0, 1);
     Element[proto].getTotalLength = function () {
-        if (this.type != "path") {return;}
+        if (this.type != "path") {
+            return;
+        }
         return getTotalLength(this.attrs.path);
     };
     Element[proto].getPointAtLength = function (length) {
-        if (this.type != "path") {return;}
+        if (this.type != "path") {
+            return;
+        }
         return getPointAtLength(this.attrs.path, length);
     };
     Element[proto].getSubpath = function (from, to) {
-        if (this.type != "path") {return;}
+        if (this.type != "path") {
+            return;
+        }
         if (math.abs(this.getTotalLength() - to) < 1e-6) {
             return getSubpathsAtLength(this.attrs.path, from).end;
         }
@@ -2824,8 +2950,8 @@ Raphael = (function () {
             return l;
         }
     };
- 
-    var animationElements = {length : 0},
+
+    var animationElements = {length: 0},
         animation = function () {
             var Now = +new Date;
             for (var l in animationElements) if (l != "length" && animationElements[has](l)) {
@@ -2890,21 +3016,21 @@ Raphael = (function () {
                                         t.x += x;
                                         t.y += y;
                                         now = x + S + y;
-                                    break;
+                                        break;
                                     case "rotation":
                                         now = +from[attr][0] + pos * ms * diff[attr][0];
                                         from[attr][1] && (now += "," + from[attr][1] + "," + from[attr][2]);
-                                    break;
+                                        break;
                                     case "scale":
                                         now = [+from[attr][0] + pos * ms * diff[attr][0], +from[attr][1] + pos * ms * diff[attr][1], (2 in to[attr] ? to[attr][2] : E), (3 in to[attr] ? to[attr][3] : E)][join](S);
-                                    break;
+                                        break;
                                     case "clip-rect":
                                         now = [];
                                         i = 4;
                                         while (i--) {
                                             now[i] = +from[attr][i] + pos * ms * diff[attr][i];
                                         }
-                                    break;
+                                        break;
                                 }
                                 break;
                         }
@@ -2955,7 +3081,7 @@ Raphael = (function () {
                     path[0][1] += +x;
                     path[0][2] += +y;
                     this.attr({path: path});
-                break;
+                    break;
             }
             return this;
         };
@@ -2965,6 +3091,7 @@ Raphael = (function () {
     };
     Element[proto].animateAlong = along();
     Element[proto].animateAlongBack = along(1);
+
     function along(isBack) {
         return function (path, ms, rotate, callback) {
             var params = {back: isBack};
@@ -2974,6 +3101,7 @@ Raphael = (function () {
             return this.animate(params, ms, callback);
         };
     }
+
     Element[proto].onAnimation = function (f) {
         this._run = f || 0;
         return this;
@@ -3036,16 +3164,16 @@ Raphael = (function () {
                             case "translation":
                                 from[attr] = [0, 0];
                                 diff[attr] = [values[0] / ms, values[1] / ms];
-                            break;
+                                break;
                             case "rotation":
                                 from[attr] = (from2[1] == values[1] && from2[2] == values[2]) ? from2 : [0, values[1], values[2]];
                                 diff[attr] = [(values[0] - from[attr][0]) / ms, 0, 0];
-                            break;
+                                break;
                             case "scale":
                                 params[attr] = values;
                                 from[attr] = (from[attr] + E)[split](separator);
                                 diff[attr] = [(values[0] - from[attr][0]) / ms, (values[1] - from[attr][1]) / ms, 0, 0];
-                            break;
+                                break;
                             case "clip-rect":
                                 from[attr] = (from[attr] + E)[split](separator);
                                 diff[attr] = [];
@@ -3053,7 +3181,7 @@ Raphael = (function () {
                                 while (i--) {
                                     diff[attr][i] = (values[i] - from[attr][i]) / ms;
                                 }
-                            break;
+                                break;
                         }
                         to[attr] = values;
                 }
@@ -3087,7 +3215,7 @@ Raphael = (function () {
         return "Rapha\xebl\u2019s object";
     };
     R.ae = animationElements;
- 
+
     // Set
     var Set = function (items) {
         this.items = [];
@@ -3218,8 +3346,8 @@ Raphael = (function () {
                     w: path.w,
                     k: {},
                     d: path.d && "M" + path.d[rp](/[mlcxtrv]/g, function (command) {
-                            return {l: "L", c: "C", x: "z", t: "m", r: "l", v: "c"}[command] || "M";
-                        }) + "z"
+                        return {l: "L", c: "C", x: "z", t: "m", r: "l", v: "c"}[command] || "M";
+                    }) + "z"
                 };
                 if (path.k) {
                     for (var k in path.k) if (path[has](k)) {
@@ -3272,7 +3400,11 @@ Raphael = (function () {
                 var prev = i && font.glyphs[letters[i - 1]] || {},
                     curr = font.glyphs[letters[i]];
                 shift += i ? (prev.w || font.w) + (prev.k && prev.k[letters[i]] || 0) : 0;
-                curr && curr.d && out[push](this.path(curr.d).attr({fill: "#000", stroke: "none", translation: [shift, 0]}));
+                curr && curr.d && out[push](this.path(curr.d).attr({
+                    fill: "#000",
+                    stroke: "none",
+                    translation: [shift, 0]
+                }));
             }
             out.scale(scale, scale, top, height).translate(x - top, y - height);
         }

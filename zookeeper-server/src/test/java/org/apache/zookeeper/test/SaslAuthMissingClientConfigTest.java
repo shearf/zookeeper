@@ -18,16 +18,18 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.client.ZKClientConfig;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import static org.junit.Assert.fail;
 
 public class SaslAuthMissingClientConfigTest extends ClientBase {
 
@@ -43,19 +45,19 @@ public class SaslAuthMissingClientConfigTest extends ClientBase {
             FileWriter fwriter = new FileWriter(saslConfFile);
 
             fwriter.write(""
-                                  + "Server {\n"
-                                  + "          org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                                  + "          user_myuser=\"mypassword\";\n"
-                                  + "};\n"
-                                  + "Client {\n"
-                                  + /* this 'Client' section has the correct password, but we're not configured
+                    + "Server {\n"
+                    + "          org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                    + "          user_myuser=\"mypassword\";\n"
+                    + "};\n"
+                    + "Client {\n"
+                    + /* this 'Client' section has the correct password, but we're not configured
                                   to  use it - we're configured instead by the above
                                   System.setProperty(...LOGIN_CONTEXT_NAME_KEY...) to
                                   use the (nonexistent) 'MyZookeeperClient' section. */
-                                  "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                                  + "       username=\"myuser\"\n"
-                                  + "       password=\"mypassword\";\n"
-                                  + "};\n");
+                    "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                    + "       username=\"myuser\"\n"
+                    + "       password=\"mypassword\";\n"
+                    + "};\n");
             fwriter.close();
             System.setProperty("java.security.auth.login.config", saslConfFile.getAbsolutePath());
         } catch (IOException e) {

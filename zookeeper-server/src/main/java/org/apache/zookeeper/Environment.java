@@ -18,15 +18,15 @@
 
 package org.apache.zookeeper;
 
+import org.slf4j.Logger;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
 
 /**
  * Provide insight into the runtime environment.
- *
  */
 public class Environment {
 
@@ -36,13 +36,16 @@ public class Environment {
 
         private String k;
         private String v;
+
         public Entry(String k, String v) {
             this.k = k;
             this.v = v;
         }
+
         public String getKey() {
             return k;
         }
+
         public String getValue() {
             return v;
         }

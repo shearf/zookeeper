@@ -18,20 +18,22 @@
 
 package org.apache.zookeeper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Testing remove watches using command line
@@ -137,9 +139,9 @@ public class RemoveWatchesCmdTest extends ClientBase {
         assertTrue("Removewatches cmd fails to remove pre-create watches", zkMain.processZKCmd(zkMain.cl));
         myWatcher1.matches();
         assertEquals("Failed to remove pre-create watches :"
-                                    + zk.getExistWatches(), 1, zk.getExistWatches().size());
+                + zk.getExistWatches(), 1, zk.getExistWatches().size());
         assertTrue("Failed to remove pre-create watches :"
-                                  + zk.getExistWatches(), zk.getExistWatches().contains("/testnode1/testnode2"));
+                + zk.getExistWatches(), zk.getExistWatches().contains("/testnode1/testnode2"));
 
         String cmdstring2 = "removewatches /testnode1/testnode2 -d";
         LOG.info("Remove watchers using shell command : {}", cmdstring2);
@@ -148,7 +150,7 @@ public class RemoveWatchesCmdTest extends ClientBase {
 
         myWatcher2.matches();
         assertEquals("Failed to remove pre-create watches : "
-                                    + zk.getExistWatches(), 0, zk.getExistWatches().size());
+                + zk.getExistWatches(), 0, zk.getExistWatches().size());
     }
 
     /**
@@ -197,7 +199,7 @@ public class RemoveWatchesCmdTest extends ClientBase {
         assertEquals("Failed to remove child watches : " + zk.getChildWatches(), 1, zk.getChildWatches().size());
 
         assertTrue("Failed to remove child watches :"
-                                  + zk.getChildWatches(), zk.getChildWatches().contains("/testnode1/testnode2"));
+                + zk.getChildWatches(), zk.getChildWatches().contains("/testnode1/testnode2"));
 
         // verify node delete watcher
         zk.delete("/testnode1/testnode2", -1);
@@ -230,21 +232,21 @@ public class RemoveWatchesCmdTest extends ClientBase {
             @Override
             public void process(WatchedEvent event) {
                 switch (event.getType()) {
-                case ChildWatchRemoved:
-                case DataWatchRemoved:
-                    addWatchNotifications(pathVsEvent, event);
-                    watcherLatch.countDown();
-                    break;
-                case NodeChildrenChanged:
-                case NodeDataChanged:
-                    addWatchNotifications(pathVsEvent, event);
-                    break;
+                    case ChildWatchRemoved:
+                    case DataWatchRemoved:
+                        addWatchNotifications(pathVsEvent, event);
+                        watcherLatch.countDown();
+                        break;
+                    case NodeChildrenChanged:
+                    case NodeDataChanged:
+                        addWatchNotifications(pathVsEvent, event);
+                        break;
                 }
             }
 
             private void addWatchNotifications(Map<String, List<EventType>> pathVsEvent, WatchedEvent event) {
                 pathVsEvent.computeIfAbsent(event.getPath(), k -> new ArrayList<>())
-                           .add(event.getType());
+                        .add(event.getType());
             }
         };
         zk.create("/testnode1", "data".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);

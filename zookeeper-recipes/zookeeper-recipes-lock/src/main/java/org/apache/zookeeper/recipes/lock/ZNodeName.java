@@ -18,10 +18,11 @@
 
 package org.apache.zookeeper.recipes.lock;
 
-import java.util.Objects;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents an immutable ephemeral znode name which has an ordered sequence
@@ -72,8 +73,8 @@ class ZNodeName implements Comparable<ZNodeName> {
 
     @Override
     public String toString() {
-      return "ZNodeName [name=" + name + ", prefix=" + prefix + ", sequence="
-          + sequence + "]";
+        return "ZNodeName [name=" + name + ", prefix=" + prefix + ", sequence="
+                + sequence + "]";
     }
 
     @Override
@@ -100,8 +101,8 @@ class ZNodeName implements Comparable<ZNodeName> {
      *
      * @param that other znode to compare to
      * @return the difference between their sequence numbers: a positive value if this
-     *         znode has a larger sequence number, 0 if they have the same sequence number
-     *         or a negative number if this znode has a lower sequence number
+     * znode has a larger sequence number, 0 if they have the same sequence number
+     * or a negative number if this znode has a lower sequence number
      */
     public int compareTo(final ZNodeName that) {
         if (this.sequence.isPresent() && that.sequence.isPresent()) {

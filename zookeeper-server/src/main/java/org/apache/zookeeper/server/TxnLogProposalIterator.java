@@ -18,8 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import java.io.IOException;
-import java.util.Iterator;
 import org.apache.zookeeper.server.persistence.TxnLog.TxnIterator;
 import org.apache.zookeeper.server.persistence.Util;
 import org.apache.zookeeper.server.quorum.Leader;
@@ -28,13 +26,15 @@ import org.apache.zookeeper.server.quorum.QuorumPacket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.Iterator;
+
 /**
  * This class provides an iterator interface to access Proposal deserialized
  * from on-disk txnlog. The iterator deserializes one proposal at a time
  * to reduce memory footprint. Note that the request part of the proposal
  * is not initialized and set to null since we don't need it during
  * follower sync-up.
- *
  */
 public class TxnLogProposalIterator implements Iterator<Proposal> {
 

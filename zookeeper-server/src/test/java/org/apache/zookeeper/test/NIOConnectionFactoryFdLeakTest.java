@@ -18,8 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertTrue;
-import java.net.InetSocketAddress;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.NIOServerCnxnFactory;
@@ -27,6 +25,10 @@ import org.apache.zookeeper.server.util.OSMXBean;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * ZOOKEEPER-1620 - Acceptor and Selector thread don't call selector.close()

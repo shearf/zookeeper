@@ -18,11 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooDefs.Ids;
@@ -33,12 +28,19 @@ import org.apache.zookeeper.proto.CreateRequest;
 import org.apache.zookeeper.proto.RequestHeader;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+
+import static org.junit.Assert.assertEquals;
+
 public class SessionInvalidationTest extends ClientBase {
 
     /**
      * Test solution for ZOOKEEPER-1208. Verify that operations are not
      * accepted after a close session.
-     *
+     * <p>
      * We're using our own marshalling here in order to force an operation
      * after the session is closed (ZooKeeper.class will not allow this). Also
      * by filling the pipe with operations it increases the likelyhood that

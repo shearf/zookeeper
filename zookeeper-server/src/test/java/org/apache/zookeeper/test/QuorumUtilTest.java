@@ -18,10 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.IOException;
-import java.util.Set;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.jmx.MBeanRegistry;
 import org.apache.zookeeper.jmx.ZKMBeanInfo;
@@ -29,6 +25,12 @@ import org.apache.zookeeper.server.quorum.QuorumPeer;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This class is intented to ensure the correct functionality of
@@ -59,22 +61,22 @@ public class QuorumUtilTest extends ZKTestCase {
         int secondFollowerIndex = 0;
 
         switch (leaderIndex) {
-        case 1:
-            firstFollowerIndex = 2;
-            secondFollowerIndex = 3;
-            break;
-        case 2:
-            firstFollowerIndex = 1;
-            secondFollowerIndex = 3;
-            break;
-        case 3:
-            firstFollowerIndex = 1;
-            secondFollowerIndex = 2;
-            break;
+            case 1:
+                firstFollowerIndex = 2;
+                secondFollowerIndex = 3;
+                break;
+            case 2:
+                firstFollowerIndex = 1;
+                secondFollowerIndex = 3;
+                break;
+            case 3:
+                firstFollowerIndex = 1;
+                secondFollowerIndex = 2;
+                break;
 
-        default:
-            fail("Unexpected leaderIndex value: " + leaderIndex);
-            break;
+            default:
+                fail("Unexpected leaderIndex value: " + leaderIndex);
+                break;
         }
 
         LOG.info(">-->> Shuting down server [{}]", firstFollowerIndex);

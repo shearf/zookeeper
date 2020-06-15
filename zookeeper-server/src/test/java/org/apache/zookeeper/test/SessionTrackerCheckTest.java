@@ -18,8 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.fail;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.zookeeper.KeeperException.SessionExpiredException;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.SessionTracker.Session;
@@ -32,6 +30,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.junit.Assert.fail;
 
 /**
  * Validate various type of sessions against leader session tracker and learner

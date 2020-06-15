@@ -21,33 +21,33 @@
  * <script type="text/javascript" language="JavaScript" src="menu.js"></script>
  */
 
-function getFileName(url){
-    var fileName = url.substring(url.lastIndexOf('/')+1);
+function getFileName(url) {
+    var fileName = url.substring(url.lastIndexOf('/') + 1);
     return fileName;
 }
 
-function init(){
-    var url = window .location.pathname;
+function init() {
+    var url = window.location.pathname;
     var fileName = getFileName(url);
 
     var menuItemGroup = document.getElementById("menu").children;
 
     for (i = 0; i < menuItemGroup.length; i++) {
-        if("menutitle" === menuItemGroup[i].className){
+        if ("menutitle" === menuItemGroup[i].className) {
             continue;
         }
         var menuItem = menuItemGroup[i].children;
-        if(menuItem.length>0){
+        if (menuItem.length > 0) {
             for (j = 0; j < menuItem.length; j++) {
-                if(menuItem[j].firstElementChild != null){
+                if (menuItem[j].firstElementChild != null) {
                     var linkItem = menuItem[j].firstElementChild;
-                    if('a' === linkItem.localName){
+                    if ('a' === linkItem.localName) {
                         var linkFile = getFileName(linkItem.href);
-                        if(fileName === linkFile && linkItem.href.lastIndexOf("apidocs/zookeeper-server/index.html")<0){
+                        if (fileName === linkFile && linkItem.href.lastIndexOf("apidocs/zookeeper-server/index.html") < 0) {
                             linkItem.className = "selected";
                             linkItem.parentNode.parentNode.className = "selectedmenuitemgroup";
-                            var title = document.getElementById(linkItem.parentNode.parentNode.id+"Title");
-                            title.className="menutitle selected";
+                            var title = document.getElementById(linkItem.parentNode.parentNode.id + "Title");
+                            title.className = "menutitle selected";
                         }
                     }
                 }

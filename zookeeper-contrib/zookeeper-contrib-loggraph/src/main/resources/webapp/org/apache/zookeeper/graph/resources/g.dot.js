@@ -11,6 +11,7 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
         +ax[2] && (ax[2] = paper.g.axis(x + gutter, y + height - gutter + maxR, width - 2 * gutter, minx, maxx, opts.axisxstep || Math.floor((width - 2 * gutter) / 20), 0, opts.axisxlabels || null, opts.axisxtype || "t"));
         +ax[3] && (ax[3] = paper.g.axis(x + gutter - maxR, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, opts.axisylabels || null, opts.axisytype || "t"));
     }
+
     opts = opts || {};
     var xdim = this.g.snapEnds(Math.min.apply(Math, valuesx), Math.max.apply(Math, valuesx), valuesx.length - 1),
         minx = xdim.from,
@@ -61,7 +62,11 @@ Raphael.fn.g.dotchart = function (x, y, width, height, valuesx, valuesy, size, o
         var sym = this.raphael.is(symbol, "array") ? symbol[i] : symbol,
             X = x + gutter + (valuesx[i] - minx) * kx,
             Y = y + height - gutter - (valuesy[i] - miny) * ky;
-        sym && R[i] && series.push(this.g[sym](X, Y, R[i]).attr({fill: opts.heat ? this.g.colorValue(R[i], maxR) : Raphael.fn.g.colors[0], "fill-opacity": opts.opacity ? R[i] / max : 1, stroke: "none"}));
+        sym && R[i] && series.push(this.g[sym](X, Y, R[i]).attr({
+            fill: opts.heat ? this.g.colorValue(R[i], maxR) : Raphael.fn.g.colors[0],
+            "fill-opacity": opts.opacity ? R[i] / max : 1,
+            stroke: "none"
+        }));
     }
     var covers = this.set();
     for (var i = 0, ii = valuesy.length; i < ii; i++) {

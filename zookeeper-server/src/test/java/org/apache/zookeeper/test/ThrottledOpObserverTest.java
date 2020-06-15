@@ -18,12 +18,13 @@
 
 package org.apache.zookeeper.test;
 
-import java.io.IOException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.IOException;
 
 public class ThrottledOpObserverTest extends QuorumBase {
     @BeforeClass

@@ -18,16 +18,13 @@
 
 package org.apache.zookeeper.server.quorum;
 
+import org.apache.zookeeper.jmx.MBeanRegistry;
+import org.apache.zookeeper.server.*;
+import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
-import org.apache.zookeeper.jmx.MBeanRegistry;
-import org.apache.zookeeper.server.DataTreeBean;
-import org.apache.zookeeper.server.ServerCnxn;
-import org.apache.zookeeper.server.SyncRequestProcessor;
-import org.apache.zookeeper.server.ZKDatabase;
-import org.apache.zookeeper.server.ZooKeeperServerBean;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 
 /**
  * Parent class for all ZooKeeperServers for Learners
@@ -55,7 +52,6 @@ public abstract class LearnerZooKeeperServer extends QuorumZooKeeperServer {
     /**
      * Returns the current state of the session tracker. This is only currently
      * used by a Learner to build a ping response packet.
-     *
      */
     protected Map<Long, Integer> getTouchSnapshot() {
         if (sessionTracker != null) {
@@ -77,12 +73,12 @@ public abstract class LearnerZooKeeperServer extends QuorumZooKeeperServer {
     @Override
     public void createSessionTracker() {
         sessionTracker = new LearnerSessionTracker(
-            this,
-            getZKDatabase().getSessionWithTimeOuts(),
-            this.tickTime,
-            self.getId(),
-            self.areLocalSessionsEnabled(),
-            getZooKeeperServerListener());
+                this,
+                getZKDatabase().getSessionWithTimeOuts(),
+                this.tickTime,
+                self.getId(),
+                self.areLocalSessionsEnabled(),
+                getZooKeeperServerListener());
     }
 
     @Override

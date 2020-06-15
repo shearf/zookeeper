@@ -27,10 +27,10 @@ import java.security.KeyStoreException;
 class PKCS12FileLoader extends StandardTypeFileKeyStoreLoader {
 
     private PKCS12FileLoader(
-        String keyStorePath,
-        String trustStorePath,
-        String keyStorePassword,
-        String trustStorePassword) {
+            String keyStorePath,
+            String trustStorePath,
+            String keyStorePassword,
+            String trustStorePassword) {
         super(keyStorePath, trustStorePath, keyStorePassword, trustStorePassword);
     }
 

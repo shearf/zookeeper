@@ -18,20 +18,20 @@
 
 package org.apache.zookeeper.server;
 
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Properties;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.apache.zookeeper.metrics.impl.DefaultMetricsProvider;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.Properties;
+
 /**
  * Server configuration storage.
- *
+ * <p>
  * We use this instead of Properties as it's typed.
- *
  */
 @InterfaceAudience.Public
 public class ServerConfig {
@@ -46,27 +46,42 @@ public class ServerConfig {
     protected File dataLogDir;
     protected int tickTime = ZooKeeperServer.DEFAULT_TICK_TIME;
     protected int maxClientCnxns;
-    /** defaults to -1 if not set explicitly */
+    /**
+     * defaults to -1 if not set explicitly
+     */
     protected int minSessionTimeout = -1;
-    /** defaults to -1 if not set explicitly */
+    /**
+     * defaults to -1 if not set explicitly
+     */
     protected int maxSessionTimeout = -1;
     protected String metricsProviderClassName = DefaultMetricsProvider.class.getName();
     protected Properties metricsProviderConfiguration = new Properties();
-    /** defaults to -1 if not set explicitly */
+    /**
+     * defaults to -1 if not set explicitly
+     */
     protected int listenBacklog = -1;
     protected String initialConfig;
 
-    /** JVM Pause Monitor feature switch */
+    /**
+     * JVM Pause Monitor feature switch
+     */
     protected boolean jvmPauseMonitorToRun = false;
-    /** JVM Pause Monitor warn threshold in ms */
+    /**
+     * JVM Pause Monitor warn threshold in ms
+     */
     protected long jvmPauseWarnThresholdMs;
-    /** JVM Pause Monitor info threshold in ms */
+    /**
+     * JVM Pause Monitor info threshold in ms
+     */
     protected long jvmPauseInfoThresholdMs;
-    /** JVM Pause Monitor sleep time in ms */
+    /**
+     * JVM Pause Monitor sleep time in ms
+     */
     protected long jvmPauseSleepTimeMs;
 
     /**
      * Parse arguments for server configuration
+     *
      * @param args clientPort dataDir and optional tickTime and maxClientCnxns
      * @throws IllegalArgumentException on invalid usage
      */
@@ -88,6 +103,7 @@ public class ServerConfig {
 
     /**
      * Parse a ZooKeeper configuration file
+     *
      * @param path the patch of the configuration file
      * @throws ConfigException error processing configuration
      */
@@ -102,6 +118,7 @@ public class ServerConfig {
 
     /**
      * Read attributes from a QuorumPeerConfig.
+     *
      * @param config
      */
     public void readFrom(QuorumPeerConfig config) {
@@ -126,26 +143,37 @@ public class ServerConfig {
     public InetSocketAddress getClientPortAddress() {
         return clientPortAddress;
     }
+
     public InetSocketAddress getSecureClientPortAddress() {
         return secureClientPortAddress;
     }
+
     public File getDataDir() {
         return dataDir;
     }
+
     public File getDataLogDir() {
         return dataLogDir;
     }
+
     public int getTickTime() {
         return tickTime;
     }
+
     public int getMaxClientCnxns() {
         return maxClientCnxns;
     }
-    /** minimum session timeout in milliseconds, -1 if unset */
+
+    /**
+     * minimum session timeout in milliseconds, -1 if unset
+     */
     public int getMinSessionTimeout() {
         return minSessionTimeout;
     }
-    /** maximum session timeout in milliseconds, -1 if unset */
+
+    /**
+     * maximum session timeout in milliseconds, -1 if unset
+     */
     public int getMaxSessionTimeout() {
         return maxSessionTimeout;
     }
@@ -153,22 +181,30 @@ public class ServerConfig {
     public long getJvmPauseInfoThresholdMs() {
         return jvmPauseInfoThresholdMs;
     }
+
     public long getJvmPauseWarnThresholdMs() {
         return jvmPauseWarnThresholdMs;
     }
+
     public long getJvmPauseSleepTimeMs() {
         return jvmPauseSleepTimeMs;
     }
+
     public boolean isJvmPauseMonitorToRun() {
         return jvmPauseMonitorToRun;
     }
+
     public String getMetricsProviderClassName() {
         return metricsProviderClassName;
     }
+
     public Properties getMetricsProviderConfiguration() {
         return metricsProviderConfiguration;
     }
-    /** Maximum number of pending socket connections to read, -1 if unset */
+
+    /**
+     * Maximum number of pending socket connections to read, -1 if unset
+     */
     public int getClientPortListenBacklog() {
         return listenBacklog;
     }

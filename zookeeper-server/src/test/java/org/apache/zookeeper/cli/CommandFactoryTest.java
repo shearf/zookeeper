@@ -18,8 +18,9 @@
 
 package org.apache.zookeeper.cli;
 
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for {@link CommandFactory}.

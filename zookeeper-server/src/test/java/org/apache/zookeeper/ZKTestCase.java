@@ -18,10 +18,6 @@
 
 package org.apache.zookeeper;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.time.LocalDateTime;
 import org.apache.zookeeper.util.ServiceUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -31,9 +27,15 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.time.LocalDateTime;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * Base class for a non-parameterized ZK test.
- *
+ * <p>
  * Basic utilities shared by all tests. Also logging of various events during
  * the test execution (start/stop/success/failure/etc...)
  */
@@ -58,15 +60,15 @@ public class ZKTestCase {
     public static void before() {
         if (!testBaseDir.exists()) {
             assertTrue(
-                "Cannot properly create test base directory " + testBaseDir.getAbsolutePath(),
-                testBaseDir.mkdirs());
+                    "Cannot properly create test base directory " + testBaseDir.getAbsolutePath(),
+                    testBaseDir.mkdirs());
         } else if (!testBaseDir.isDirectory()) {
             assertTrue(
-                "Cannot properly delete file with duplicate name of test base directory " + testBaseDir.getAbsolutePath(),
-                testBaseDir.delete());
+                    "Cannot properly delete file with duplicate name of test base directory " + testBaseDir.getAbsolutePath(),
+                    testBaseDir.delete());
             assertTrue(
-                "Cannot properly create test base directory " + testBaseDir.getAbsolutePath(),
-                testBaseDir.mkdirs());
+                    "Cannot properly create test base directory " + testBaseDir.getAbsolutePath(),
+                    testBaseDir.mkdirs());
         }
     }
 
@@ -115,6 +117,7 @@ public class ZKTestCase {
     /**
      * Wait for condition to be true; otherwise fail the test if it exceed
      * timeout
+     *
      * @param msg       error message to print when fail
      * @param condition condition to evaluate
      * @param timeout   timeout in seconds

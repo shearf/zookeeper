@@ -18,11 +18,6 @@
 
 package org.apache.zookeeper.server.quorum.auth;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZooDefs.Ids;
@@ -38,24 +33,31 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+
 public class QuorumDigestAuthTest extends QuorumAuthTestBase {
 
     static {
         String jaasEntries = "QuorumServer {\n"
-                             + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                             + "       user_test=\"mypassword\";\n"
-                             + "};\n"
-                             + "QuorumLearner {\n"
-                             + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                             + "       username=\"test\"\n"
-                             + "       password=\"mypassword\";\n"
-                             + "};\n"
-                             + "QuorumLearnerInvalid {\n"
-                             + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                             + "       username=\"test\"\n"
-                             + "       password=\"invalid\";\n"
-                             + "};"
-                             + "\n";
+                + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                + "       user_test=\"mypassword\";\n"
+                + "};\n"
+                + "QuorumLearner {\n"
+                + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                + "       username=\"test\"\n"
+                + "       password=\"mypassword\";\n"
+                + "};\n"
+                + "QuorumLearnerInvalid {\n"
+                + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                + "       username=\"test\"\n"
+                + "       password=\"invalid\";\n"
+                + "};"
+                + "\n";
         setupJaasConfig(jaasEntries);
     }
 

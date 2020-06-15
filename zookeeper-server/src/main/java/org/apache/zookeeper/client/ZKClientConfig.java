@@ -18,14 +18,16 @@
 
 package org.apache.zookeeper.client;
 
-import java.io.File;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.common.ZKConfig;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 
+import java.io.File;
+
 /**
  * Handles client specific properties
+ *
  * @since 3.5.2
  */
 @InterfaceAudience.Public
@@ -125,14 +127,11 @@ public class ZKClientConfig extends ZKConfig {
      * If property is not set, the provided <code>defaultValue</code> is
      * returned
      *
-     * @param key
-     *            property key.
-     * @param defaultValue
-     *            default value.
-     * @throws NumberFormatException
-     *             when the value is invalid
+     * @param key          property key.
+     * @param defaultValue default value.
      * @return return property value as an <code>long</code>, or
-     *         <code>defaultValue</code>
+     * <code>defaultValue</code>
+     * @throws NumberFormatException when the value is invalid
      */
     public long getLong(String key, long defaultValue) {
         String value = getProperty(key);

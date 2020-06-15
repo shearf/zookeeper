@@ -18,9 +18,20 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.jute.BinaryOutputArchive;
+import org.apache.zookeeper.ZKTestCase;
+import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.ZooDefs.OpCode;
+import org.apache.zookeeper.data.Id;
+import org.apache.zookeeper.proto.CreateRequest;
+import org.apache.zookeeper.proto.GetDataRequest;
+import org.apache.zookeeper.server.*;
+import org.apache.zookeeper.test.ClientBase;
+import org.junit.After;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -31,32 +42,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import org.apache.jute.BinaryOutputArchive;
-import org.apache.zookeeper.ZKTestCase;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooDefs.OpCode;
-import org.apache.zookeeper.data.Id;
-import org.apache.zookeeper.proto.CreateRequest;
-import org.apache.zookeeper.proto.GetDataRequest;
-import org.apache.zookeeper.server.FinalRequestProcessor;
-import org.apache.zookeeper.server.PrepRequestProcessor;
-import org.apache.zookeeper.server.Request;
-import org.apache.zookeeper.server.RequestProcessor;
-import org.apache.zookeeper.server.ZooKeeperServer;
-import org.apache.zookeeper.test.ClientBase;
-import org.junit.After;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
 
 /**
  * The following are invariant regardless of the particular implementation
  * of the CommitProcessor, and are tested for:
- *
+ * <p>
  * 1. For each session, requests are processed and the client sees its
- *    responses in order.
+ * responses in order.
  * 2. Write requests are processed in zxid order across all sessions.
- *
+ * <p>
  * The following are also tested for here, but are specific to this
  * particular implementation. The underlying issue is that watches can be
  * reset while reading the data. For reads/writes on two different sessions
@@ -64,7 +60,7 @@ import org.slf4j.LoggerFactory;
  * happen in any order relative to the writes. For a read in one session that
  * resets a watch that is triggered by a write on another session, however,
  * we need to ensure that there is no race condition
- *
+ * <p>
  * 3. The pipeline needs to be drained before a write request can enter.
  * 4. No in-flight write requests while processing a read request.
  */
@@ -98,10 +94,10 @@ public class CommitProcessorTest extends ZKTestCase {
     }
 
     public void setUp(
-        int numCommitThreads,
-        int numReadOnlyClientThreads,
-        int mixWorkloadClientThreads,
-        int writePercent) throws Exception {
+            int numCommitThreads,
+            int numReadOnlyClientThreads,
+            int mixWorkloadClientThreads,
+            int writePercent) throws Exception {
         stopped = false;
         System.setProperty(CommitProcessor.ZOOKEEPER_COMMIT_PROC_NUM_WORKER_THREADS, Integer.toString(numCommitThreads));
         tmpDir = ClientBase.createTmpDir();
@@ -155,9 +151,9 @@ public class CommitProcessorTest extends ZKTestCase {
             ByteArrayOutputStream boas = new ByteArrayOutputStream();
             BinaryOutputArchive boa = BinaryOutputArchive.getArchive(boas);
             CreateRequest createReq = new CreateRequest("/session"
-                                                        + Long.toHexString(sessionId)
-                                                        + "-"
-                                                        + (++nodeId), new byte[0], Ids.OPEN_ACL_UNSAFE, 1);
+                    + Long.toHexString(sessionId)
+                    + "-"
+                    + (++nodeId), new byte[0], Ids.OPEN_ACL_UNSAFE, 1);
             createReq.serialize(boa, "request");
             ByteBuffer bb = ByteBuffer.wrap(boas.toByteArray());
             Request req = new Request(null, sessionId, ++cxid, OpCode.create, bb, new ArrayList<Id>());
@@ -169,9 +165,9 @@ public class CommitProcessorTest extends ZKTestCase {
             ByteArrayOutputStream boas = new ByteArrayOutputStream();
             BinaryOutputArchive boa = BinaryOutputArchive.getArchive(boas);
             GetDataRequest getDataRequest = new GetDataRequest("/session"
-                                                               + Long.toHexString(sessionId)
-                                                               + "-"
-                                                               + nodeId, false);
+                    + Long.toHexString(sessionId)
+                    + "-"
+                    + nodeId, false);
             getDataRequest.serialize(boa, "request");
             ByteBuffer bb = ByteBuffer.wrap(boas.toByteArray());
             Request req = new Request(null, sessionId, ++cxid, OpCode.getData, bb, new ArrayList<Id>());
@@ -279,6 +275,7 @@ public class CommitProcessorTest extends ZKTestCase {
     }
 
     volatile boolean fail = false;
+
     private synchronized void failTest(String reason) {
         fail = true;
         notifyAll();
@@ -397,9 +394,9 @@ public class CommitProcessorTest extends ZKTestCase {
                 LOG.debug("Starting write request zxid={}", request.zxid);
             } else {
                 LOG.debug(
-                    "Starting read request cxid={} for session 0x{}",
-                    request.cxid,
-                    Long.toHexString(request.sessionId));
+                        "Starting read request cxid={} for session 0x{}",
+                        request.cxid,
+                        Long.toHexString(request.sessionId));
                 outstandingReadRequests.incrementAndGet();
                 validateReadRequestVariant(request);
             }
@@ -423,9 +420,9 @@ public class CommitProcessorTest extends ZKTestCase {
             } else {
                 outstandingReadRequests.decrementAndGet();
                 LOG.debug(
-                    "Done read request cxid={} for session 0x{}",
-                    request.cxid,
-                    Long.toHexString(request.sessionId));
+                        "Done read request cxid={} for session 0x{}",
+                        request.cxid,
+                        Long.toHexString(request.sessionId));
                 processedReadRequests.incrementAndGet();
             }
             validateRequest(request);
@@ -442,13 +439,13 @@ public class CommitProcessorTest extends ZKTestCase {
             int readRequests = outstandingReadRequests.get();
             if (readRequests != 0) {
                 failTest("There are " + readRequests + " outstanding"
-                         + " read requests while issuing a write request zxid=" + zxid);
+                        + " read requests while issuing a write request zxid=" + zxid);
             }
             int writeRequests = outstandingWriteRequests.get();
             if (writeRequests > 1) {
                 failTest("There are " + writeRequests + " outstanding"
-                         + " write requests while issuing a write request zxid=" + zxid
-                         + " (expected one)");
+                        + " write requests while issuing a write request zxid=" + zxid
+                        + " (expected one)");
             }
         }
 
@@ -460,8 +457,8 @@ public class CommitProcessorTest extends ZKTestCase {
             int writeRequests = outstandingWriteRequests.get();
             if (writeRequests != 0) {
                 failTest("There are " + writeRequests + " outstanding"
-                         + " write requests while issuing a read request cxid=" + request.cxid
-                         + " for session 0x" + Long.toHexString(request.sessionId));
+                        + " write requests while issuing a read request cxid=" + request.cxid
+                        + " for session 0x" + Long.toHexString(request.sessionId));
             }
         }
 
@@ -483,11 +480,11 @@ public class CommitProcessorTest extends ZKTestCase {
                 AtomicInteger existingSessionCxid = cxidMap.putIfAbsent(request.sessionId, sessionCxid);
                 if (existingSessionCxid != null) {
                     failTest("Race condition adding cxid="
-                             + request.cxid
-                             + " for session 0x"
-                             + Long.toHexString(request.sessionId)
-                             + " with other_cxid="
-                             + existingSessionCxid.get());
+                            + request.cxid
+                            + " for session 0x"
+                            + Long.toHexString(request.sessionId)
+                            + " with other_cxid="
+                            + existingSessionCxid.get());
                 }
             } else {
                 if (!sessionCxid.compareAndSet(request.cxid, request.cxid + 1)) {

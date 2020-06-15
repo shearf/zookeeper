@@ -18,43 +18,27 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketOptions;
-import java.security.Security;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
-import org.apache.zookeeper.common.ClientX509Util;
-import org.apache.zookeeper.common.KeyStoreFileType;
-import org.apache.zookeeper.common.X509KeyType;
-import org.apache.zookeeper.common.X509TestContext;
-import org.apache.zookeeper.common.X509Util;
+import org.apache.zookeeper.common.*;
 import org.apache.zookeeper.test.ClientBase;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.*;
+import java.security.Security;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.*;
+
+import static org.junit.Assert.*;
 
 /**
  * This test makes sure that certain operations on a UnifiedServerSocket do not

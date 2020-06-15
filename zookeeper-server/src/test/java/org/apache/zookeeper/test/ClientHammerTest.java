@@ -18,10 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs.Ids;
@@ -30,6 +26,12 @@ import org.apache.zookeeper.common.Time;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class ClientHammerTest extends ClientBase {
 
@@ -117,6 +119,7 @@ public class ClientHammerTest extends ClientBase {
     /**
      * Separate threads each creating a number of nodes. Each thread
      * is using a non-shared (owned by thread) client for all node creations.
+     *
      * @throws Throwable
      */
     @Test
@@ -149,6 +152,7 @@ public class ClientHammerTest extends ClientBase {
     /**
      * Separate threads each creating a number of nodes. Each thread
      * is creating a new client for each node creation.
+     *
      * @throws Throwable
      */
     @Test
@@ -210,9 +214,9 @@ public class ClientHammerTest extends ClientBase {
         for (HammerThread h : threads) {
             final int safetyFactor = 3;
             verifyThreadTerminated(h, (long) threads.length
-                                              * (long) childCount
-                                              * HAMMERTHREAD_LATENCY
-                                              * (long) safetyFactor);
+                    * (long) childCount
+                    * HAMMERTHREAD_LATENCY
+                    * (long) safetyFactor);
         }
         LOG.info("{} Total time {}", new Date(), (Time.currentElapsedTime() - start));
 

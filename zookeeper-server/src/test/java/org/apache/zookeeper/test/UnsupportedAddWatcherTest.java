@@ -17,22 +17,18 @@
 
 package org.apache.zookeeper.test;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collections;
 import org.apache.zookeeper.AddWatchMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.server.watch.IWatchManager;
-import org.apache.zookeeper.server.watch.WatchManagerFactory;
-import org.apache.zookeeper.server.watch.WatcherOrBitSet;
-import org.apache.zookeeper.server.watch.WatchesPathReport;
-import org.apache.zookeeper.server.watch.WatchesReport;
-import org.apache.zookeeper.server.watch.WatchesSummary;
+import org.apache.zookeeper.server.watch.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collections;
 
 public class UnsupportedAddWatcherTest extends ClientBase {
 
@@ -118,7 +114,8 @@ public class UnsupportedAddWatcherTest extends ClientBase {
         try (ZooKeeper zk = createClient(hostPort)) {
             // the server will generate an exception as our custom watch manager doesn't implement
             // the new version of addWatch()
-            zk.addWatch("/foo", event -> {}, AddWatchMode.PERSISTENT_RECURSIVE);
+            zk.addWatch("/foo", event -> {
+            }, AddWatchMode.PERSISTENT_RECURSIVE);
         }
     }
 }

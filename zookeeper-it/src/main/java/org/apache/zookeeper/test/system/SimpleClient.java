@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,11 +18,7 @@
 
 package org.apache.zookeeper.test.system;
 
-import org.apache.zookeeper.AsyncCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.AsyncCallback.StatCallback;
 import org.apache.zookeeper.AsyncCallback.StringCallback;
 import org.apache.zookeeper.ZooDefs.Ids;
@@ -40,6 +36,7 @@ public class SimpleClient implements Instance, Watcher, AsyncCallback.DataCallba
     transient String myPath;
     byte[] data;
     boolean createdEphemeral;
+
     public void configure(String params) {
         String parts[] = params.split(" ");
         hostPort = parts[1];
@@ -68,6 +65,7 @@ public class SimpleClient implements Instance, Watcher, AsyncCallback.DataCallba
             e.printStackTrace();
         }
     }
+
     public void process(WatchedEvent event) {
         if (event.getPath() != null && event.getPath().equals("/simpleCase")) {
             zk.getData("/simpleCase", true, this, null);
@@ -75,7 +73,7 @@ public class SimpleClient implements Instance, Watcher, AsyncCallback.DataCallba
     }
 
     public void processResult(int rc, String path, Object ctx, byte[] data,
-            Stat stat) {
+                              Stat stat) {
         if (rc != 0) {
             zk.getData("/simpleCase", true, this, null);
         } else {
@@ -99,17 +97,20 @@ public class SimpleClient implements Instance, Watcher, AsyncCallback.DataCallba
             zk.create(myPath, data, Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL, this, null);
         }
     }
+
     public void processResult(int rc, String path, Object ctx, Stat stat) {
         if (rc != 0) {
             zk.setData(myPath, data, -1, this, null);
         }
     }
+
     @Override
     public String toString() {
         return SimpleClient.class.getName() + "[" + index + "] using " + hostPort;
     }
 
     Reporter r;
+
     public void setReporter(Reporter r) {
         this.r = r;
     }

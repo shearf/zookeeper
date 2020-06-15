@@ -18,15 +18,6 @@
 
 package org.apache.zookeeper.server.persistence;
 
-import static org.apache.zookeeper.test.ClientBase.createTmpDir;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.CheckedInputStream;
-import java.util.zip.CheckedOutputStream;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.InputArchive;
@@ -34,6 +25,15 @@ import org.apache.jute.OutputArchive;
 import org.apache.zookeeper.server.persistence.SnapStream.StreamMode;
 import org.junit.After;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.zip.CheckedInputStream;
+import java.util.zip.CheckedOutputStream;
+
+import static org.apache.zookeeper.test.ClientBase.createTmpDir;
+import static org.junit.Assert.*;
 
 public class SnapStreamTest {
 

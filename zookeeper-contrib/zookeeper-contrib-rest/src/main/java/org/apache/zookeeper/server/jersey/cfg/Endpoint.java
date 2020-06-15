@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,53 +20,53 @@ package org.apache.zookeeper.server.jersey.cfg;
 
 public class Endpoint {
 
-   private String context;
-   private HostPortSet hostPort;
-   private Credentials credentials;
-   private Credentials zookeeperAuth;
+    private String context;
+    private HostPortSet hostPort;
+    private Credentials credentials;
+    private Credentials zookeeperAuth;
 
-   public Endpoint(String context, String hostPortList) {
-       this.context = context;
-       this.hostPort = new HostPortSet(hostPortList);
-   }
+    public Endpoint(String context, String hostPortList) {
+        this.context = context;
+        this.hostPort = new HostPortSet(hostPortList);
+    }
 
-   public String getContext() {
-       return context;
-   }
+    public String getContext() {
+        return context;
+    }
 
-   public String getHostPort() {
-       return hostPort.toString();
-   }
+    public String getHostPort() {
+        return hostPort.toString();
+    }
 
-   public Credentials getCredentials() {
-       return credentials;
-   }
-   
-   public void setCredentials(String c) {
-       this.credentials = new Credentials(c);
-   }
-   
-   public void setZooKeeperAuthInfo(String digest) {
-       zookeeperAuth = new Credentials(digest);
-   }
-   
-   public final Credentials getZooKeeperAuthInfo() {
-       return zookeeperAuth;
-   }
+    public Credentials getCredentials() {
+        return credentials;
+    }
 
-   @Override
-   public boolean equals(Object o) {
-       Endpoint e = (Endpoint) o;
-       return context.equals(e.context);
-   }
+    public void setCredentials(String c) {
+        this.credentials = new Credentials(c);
+    }
 
-   @Override
-   public int hashCode() {
-       return context.hashCode();
-   }
+    public void setZooKeeperAuthInfo(String digest) {
+        zookeeperAuth = new Credentials(digest);
+    }
 
-   @Override
-   public String toString() {
-       return String.format("<Endpoint %s %s>", context, hostPort.toString());
-   }
+    public final Credentials getZooKeeperAuthInfo() {
+        return zookeeperAuth;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Endpoint e = (Endpoint) o;
+        return context.equals(e.context);
+    }
+
+    @Override
+    public int hashCode() {
+        return context.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("<Endpoint %s %s>", context, hostPort.toString());
+    }
 }

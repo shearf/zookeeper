@@ -18,13 +18,15 @@
 
 package org.apache.zookeeper;
 
+import org.apache.zookeeper.client.ZKClientConfig;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import org.apache.zookeeper.client.ZKClientConfig;
-import org.junit.Test;
 
 public class ClientCanonicalizeTest extends ZKTestCase {
 

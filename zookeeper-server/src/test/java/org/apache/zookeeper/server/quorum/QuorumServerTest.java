@@ -17,14 +17,16 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertEquals;
-import java.net.InetSocketAddress;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 import org.junit.After;
 import org.junit.Test;
+
+import java.net.InetSocketAddress;
+
+import static org.junit.Assert.assertEquals;
 
 public class QuorumServerTest extends ZKTestCase {
 
@@ -113,12 +115,12 @@ public class QuorumServerTest extends ZKTestCase {
         for (int i = 0; i < addrs.length; i++) {
             for (int j = i; j < addrs.length; j++) {
                 QuorumPeer.QuorumServer server1 = new QuorumPeer.QuorumServer(1, new InetSocketAddress(ipv6n1, 1234), // peer
-                                                                              new InetSocketAddress(ipv6n1, 1236), // election
-                                                                              new InetSocketAddress(addrs[i], 1237)  // client
+                        new InetSocketAddress(ipv6n1, 1236), // election
+                        new InetSocketAddress(addrs[i], 1237)  // client
                 );
                 QuorumPeer.QuorumServer server2 = new QuorumPeer.QuorumServer(2, new InetSocketAddress(ipv6n2, 1234), // peer
-                                                                              new InetSocketAddress(ipv6n2, 1236), // election
-                                                                              new InetSocketAddress(addrs[j], 1237)  // client
+                        new InetSocketAddress(ipv6n2, 1236), // election
+                        new InetSocketAddress(addrs[j], 1237)  // client
                 );
                 server1.checkAddressDuplicate(server2);
             }
@@ -128,12 +130,12 @@ public class QuorumServerTest extends ZKTestCase {
     @Test(expected = KeeperException.BadArgumentsException.class)
     public void testDuplicate() throws KeeperException.BadArgumentsException {
         QuorumPeer.QuorumServer server1 = new QuorumPeer.QuorumServer(1, new InetSocketAddress(ipv6n1, 1234), // peer
-                                                                      new InetSocketAddress(ipv6n1, 1236), // election
-                                                                      new InetSocketAddress(ipv6n1, 1237)  // client
+                new InetSocketAddress(ipv6n1, 1236), // election
+                new InetSocketAddress(ipv6n1, 1237)  // client
         );
         QuorumPeer.QuorumServer server2 = new QuorumPeer.QuorumServer(2, new InetSocketAddress(ipv6n2, 1234), // peer
-                                                                      new InetSocketAddress(ipv6n2, 1236), // election
-                                                                      new InetSocketAddress(ipv6n1, 1237)  // client
+                new InetSocketAddress(ipv6n2, 1236), // election
+                new InetSocketAddress(ipv6n1, 1237)  // client
         );
         server1.checkAddressDuplicate(server2);
     }

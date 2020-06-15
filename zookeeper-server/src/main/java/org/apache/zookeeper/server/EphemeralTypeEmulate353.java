@@ -20,7 +20,7 @@ package org.apache.zookeeper.server;
 
 /**
  * See https://issues.apache.org/jira/browse/ZOOKEEPER-2901
- *
+ * <p>
  * version 3.5.3 introduced bugs associated with how TTL nodes were implemented. version 3.5.4
  * fixes the problems but makes TTL nodes created in 3.5.3 invalid. EphemeralTypeEmulate353 is a copy
  * of the old - bad - implementation that is provided as a workaround. {@link EphemeralType#TTL_3_5_3_EMULATION_PROPERTY}

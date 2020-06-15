@@ -18,18 +18,13 @@
 
 package org.apache.zookeeper.server.quorum;
 
+import org.apache.zookeeper.jmx.MBeanRegistry;
+import org.apache.zookeeper.server.*;
+import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+
 import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.apache.zookeeper.jmx.MBeanRegistry;
-import org.apache.zookeeper.server.DataTreeBean;
-import org.apache.zookeeper.server.FinalRequestProcessor;
-import org.apache.zookeeper.server.PrepRequestProcessor;
-import org.apache.zookeeper.server.RequestProcessor;
-import org.apache.zookeeper.server.ZKDatabase;
-import org.apache.zookeeper.server.ZooKeeperServer;
-import org.apache.zookeeper.server.ZooKeeperServerBean;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 
 /**
  * A ZooKeeperServer which comes into play when peer is partitioned from the
@@ -46,14 +41,14 @@ public class ReadOnlyZooKeeperServer extends ZooKeeperServer {
 
     ReadOnlyZooKeeperServer(FileTxnSnapLog logFactory, QuorumPeer self, ZKDatabase zkDb) {
         super(
-            logFactory,
-            self.tickTime,
-            self.minSessionTimeout,
-            self.maxSessionTimeout,
-            self.clientPortListenBacklog,
-            zkDb,
-            self.getInitialConfig(),
-            self.isReconfigEnabled());
+                logFactory,
+                self.tickTime,
+                self.minSessionTimeout,
+                self.maxSessionTimeout,
+                self.clientPortListenBacklog,
+                zkDb,
+                self.getInitialConfig(),
+                self.isReconfigEnabled());
         this.self = self;
     }
 

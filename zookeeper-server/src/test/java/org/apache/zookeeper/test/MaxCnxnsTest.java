@@ -18,16 +18,18 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertSame;
+import org.apache.jute.BinaryOutputArchive;
+import org.apache.zookeeper.proto.ConnectRequest;
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.jute.BinaryOutputArchive;
-import org.apache.zookeeper.proto.ConnectRequest;
-import org.junit.Test;
+
+import static org.junit.Assert.assertSame;
 
 public class MaxCnxnsTest extends ClientBase {
 
@@ -108,6 +110,7 @@ public class MaxCnxnsTest extends ClientBase {
 
     /**
      * Verify the ability to limit the number of concurrent connections.
+     *
      * @throws IOException
      * @throws InterruptedException
      */

@@ -18,12 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.server.quorum.FastLeaderElection.Notification;
 import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
@@ -32,6 +26,14 @@ import org.apache.zookeeper.server.util.ZxidUtils;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test FastLeaderElection with out of election servers.
@@ -115,7 +117,7 @@ public class FLEOutOfElectionTest {
         n.sid = 5L;
 
         // Set the logical clock to 1 on fle instance of server 3.
-        fle.logicalclock.set(0x1);
+        fle.logicalClock.add(0x1 - fle.logicalClock.sum());
 
         assertTrue("Quorum check failed", fle.getVoteTracker(outofelection, new Vote(n.version, n.leader, n.zxid, n.electionEpoch, n.peerEpoch, n.state)).hasAllQuorums());
 

@@ -27,6 +27,7 @@ public interface RemotePeerMXBean {
      * @return name of the peer
      */
     String getName();
+
     /**
      * @return IP address of the quorum peer
      */

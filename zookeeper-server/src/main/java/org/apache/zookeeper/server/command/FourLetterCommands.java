@@ -18,14 +18,11 @@
 
 package org.apache.zookeeper.server.command;
 
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
+import java.util.*;
 
 /**
  * This class contains constants for all the four letter commands
@@ -182,7 +179,7 @@ public class FourLetterCommands {
 
     /**
      * Check if the specified command is enabled.
-     *
+     * <p>
      * In ZOOKEEPER-2693 we introduce a configuration option to only
      * allow a specific set of white listed commands to execute.
      * A command will only be executed if it is also configured

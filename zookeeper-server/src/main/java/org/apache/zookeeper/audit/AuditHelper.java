@@ -17,16 +17,8 @@
  */
 package org.apache.zookeeper.audit;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.jute.Record;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.MultiOperationRecord;
-import org.apache.zookeeper.Op;
-import org.apache.zookeeper.ZKUtil;
-import org.apache.zookeeper.ZooDefs;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.audit.AuditEvent.Result;
 import org.apache.zookeeper.proto.CreateRequest;
 import org.apache.zookeeper.proto.DeleteRequest;
@@ -37,6 +29,10 @@ import org.apache.zookeeper.server.DataTree.ProcessTxnResult;
 import org.apache.zookeeper.server.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Helper class to decouple audit log code.

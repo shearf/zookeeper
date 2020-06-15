@@ -18,12 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.common.X509Exception;
 import org.apache.zookeeper.server.ServerCnxn;
@@ -33,6 +27,13 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.apache.zookeeper.server.quorum.flexible.QuorumMaj;
 import org.apache.zookeeper.test.ClientBase;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ZabUtils {
 
@@ -88,29 +89,39 @@ public class ZabUtils {
 
         public void startup(ZooKeeperServer zkServer, boolean startServer) throws IOException, InterruptedException {
         }
+
         public void start() {
         }
+
         public void shutdown() {
         }
+
         public void setMaxClientCnxnsPerHost(int max) {
         }
+
         public void join() throws InterruptedException {
         }
+
         public int getMaxClientCnxnsPerHost() {
             return 0;
         }
+
         public int getSocketListenBacklog() {
             return -1;
         }
+
         public int getLocalPort() {
             return 0;
         }
+
         public InetSocketAddress getLocalAddress() {
             return null;
         }
+
         public Iterable<ServerCnxn> getConnections() {
             return null;
         }
+
         public void configure(InetSocketAddress addr, int maxcc, int listenBacklog, boolean secure) throws IOException {
         }
 
@@ -118,19 +129,24 @@ public class ZabUtils {
         public boolean closeSession(long sessionId, ServerCnxn.DisconnectReason reason) {
             return false;
         }
+
         @Override
         public void closeAll(ServerCnxn.DisconnectReason reason) {
         }
+
         @Override
         public int getNumAliveConnections() {
             return 0;
         }
+
         @Override
         public void reconfigure(InetSocketAddress addr) {
         }
+
         @Override
         public void resetAllConnectionStats() {
         }
+
         @Override
         public Iterable<Map<String, Object>> getAllConnectionInfo(boolean brief) {
             return null;

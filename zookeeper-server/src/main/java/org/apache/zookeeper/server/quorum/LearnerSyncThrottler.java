@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
  * observers and followers or from a follower to observers.  {@link LearnerHandler}
  * objects should call {@link #beginSync(boolean)} before sending a sync and
  * {@link #endSync()} after finishing, successfully or not.
- *
  */
 public class LearnerSyncThrottler {
 
@@ -47,8 +46,9 @@ public class LearnerSyncThrottler {
     /**
      * Constructs a new instance limiting the concurrent number of syncs to
      * <code>maxConcurrentSyncs</code>.
+     *
      * @param maxConcurrentSyncs maximum concurrent number of syncs
-     * @param syncType either a snapshot sync or a txn-based diff sync
+     * @param syncType           either a snapshot sync or a txn-based diff sync
      * @throws java.lang.IllegalArgumentException when <code>maxConcurrentSyncs</code>
      *                                            is less than 1
      */
@@ -72,12 +72,12 @@ public class LearnerSyncThrottler {
      * @param essential if <code>true</code>, do not throw an exception even
      *                  if throttling limit is reached
      * @throws SyncThrottleException if throttling limit has been exceeded
-     *                                   and <code>essential == false</code>,
-     *                                   even after waiting for the timeout
-     *                                   period, if any
-     * @throws InterruptedException if thread is interrupted while trying
-     *                              to start a sync; cannot happen if
-     *                              timeout is zero
+     *                               and <code>essential == false</code>,
+     *                               even after waiting for the timeout
+     *                               period, if any
+     * @throws InterruptedException  if thread is interrupted while trying
+     *                               to start a sync; cannot happen if
+     *                               timeout is zero
      */
     protected void beginSync(boolean essential) throws SyncThrottleException, InterruptedException {
 

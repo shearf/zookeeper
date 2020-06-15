@@ -18,24 +18,21 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZKTestCase;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.assertTrue;
 
 public class OOMTest extends ZKTestCase {
 
@@ -67,32 +64,32 @@ public class OOMTest extends ZKTestCase {
         System.err.println("OOM Stage 0");
         utestPrep(PORT);
         System.out.println("Free = " + Runtime.getRuntime().freeMemory()
-                               + " total = " + Runtime.getRuntime().totalMemory()
-                               + " max = " + Runtime.getRuntime().maxMemory());
+                + " total = " + Runtime.getRuntime().totalMemory()
+                + " max = " + Runtime.getRuntime().maxMemory());
         System.err.println("OOM Stage 1");
         for (int i = 0; i < 1000; i++) {
             System.out.println(i);
             utestExists(PORT);
         }
         System.out.println("Free = " + Runtime.getRuntime().freeMemory()
-                               + " total = " + Runtime.getRuntime().totalMemory()
-                               + " max = " + Runtime.getRuntime().maxMemory());
+                + " total = " + Runtime.getRuntime().totalMemory()
+                + " max = " + Runtime.getRuntime().maxMemory());
         System.err.println("OOM Stage 2");
         for (int i = 0; i < 1000; i++) {
             System.out.println(i);
             utestGet(PORT);
         }
         System.out.println("Free = " + Runtime.getRuntime().freeMemory()
-                               + " total = " + Runtime.getRuntime().totalMemory()
-                               + " max = " + Runtime.getRuntime().maxMemory());
+                + " total = " + Runtime.getRuntime().totalMemory()
+                + " max = " + Runtime.getRuntime().maxMemory());
         System.err.println("OOM Stage 3");
         for (int i = 0; i < 1000; i++) {
             System.out.println(i);
             utestChildren(PORT);
         }
         System.out.println("Free = " + Runtime.getRuntime().freeMemory()
-                               + " total = " + Runtime.getRuntime().totalMemory()
-                               + " max = " + Runtime.getRuntime().maxMemory());
+                + " total = " + Runtime.getRuntime().totalMemory()
+                + " max = " + Runtime.getRuntime().maxMemory());
         hog.get(0)[0] = (byte) 1;
 
         f.shutdown();

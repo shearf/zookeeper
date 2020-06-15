@@ -18,12 +18,9 @@
 
 package org.apache.zookeeper.common;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import org.slf4j.Logger;
+
+import java.io.*;
 
 /*
  * This code is originally from HDFS, see the similarly named files there
@@ -36,8 +33,7 @@ public class IOUtils {
      * Closes the stream ignoring {@link IOException}. Must only be called in
      * cleaning up from exception handlers.
      *
-     * @param stream
-     *            the Stream to close
+     * @param stream the Stream to close
      */
     public static void closeStream(Closeable stream) {
         cleanup(null, stream);
@@ -47,10 +43,8 @@ public class IOUtils {
      * Close the Closeable objects and <b>ignore</b> any {@link IOException} or
      * null pointers. Must only be used for cleanup in exception handlers.
      *
-     * @param log
-     *            the log to record problems to at debug level. Can be null.
-     * @param closeables
-     *            the objects to close
+     * @param log        the log to record problems to at debug level. Can be null.
+     * @param closeables the objects to close
      */
     public static void cleanup(Logger log, Closeable... closeables) {
         for (Closeable c : closeables) {
@@ -69,15 +63,11 @@ public class IOUtils {
     /**
      * Copies from one stream to another.
      *
-     * @param in
-     *            InputStrem to read from
-     * @param out
-     *            OutputStream to write to
-     * @param buffSize
-     *            the size of the buffer
-     * @param close
-     *            whether or not close the InputStream and OutputStream at the
-     *            end. The streams are closed in the finally clause.
+     * @param in       InputStrem to read from
+     * @param out      OutputStream to write to
+     * @param buffSize the size of the buffer
+     * @param close    whether or not close the InputStream and OutputStream at the
+     *                 end. The streams are closed in the finally clause.
      */
     public static void copyBytes(InputStream in, OutputStream out, int buffSize, boolean close) throws IOException {
         try {
@@ -99,12 +89,9 @@ public class IOUtils {
     /**
      * Copies from one stream to another.
      *
-     * @param in
-     *            InputStrem to read from
-     * @param out
-     *            OutputStream to write to
-     * @param buffSize
-     *            the size of the buffer
+     * @param in       InputStrem to read from
+     * @param out      OutputStream to write to
+     * @param buffSize the size of the buffer
      */
     public static void copyBytes(InputStream in, OutputStream out, int buffSize) throws IOException {
         PrintStream ps = out instanceof PrintStream ? (PrintStream) out : null;

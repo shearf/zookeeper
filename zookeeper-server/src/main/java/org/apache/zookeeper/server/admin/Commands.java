@@ -20,40 +20,21 @@ package org.apache.zookeeper.server.admin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 import org.apache.zookeeper.Environment;
 import org.apache.zookeeper.Environment.Entry;
 import org.apache.zookeeper.Version;
-import org.apache.zookeeper.server.DataTree;
-import org.apache.zookeeper.server.ServerCnxnFactory;
-import org.apache.zookeeper.server.ServerMetrics;
-import org.apache.zookeeper.server.ZooKeeperServer;
-import org.apache.zookeeper.server.ZooTrace;
+import org.apache.zookeeper.server.*;
 import org.apache.zookeeper.server.persistence.SnapshotInfo;
-import org.apache.zookeeper.server.quorum.Follower;
-import org.apache.zookeeper.server.quorum.FollowerZooKeeperServer;
-import org.apache.zookeeper.server.quorum.Leader;
-import org.apache.zookeeper.server.quorum.LeaderZooKeeperServer;
-import org.apache.zookeeper.server.quorum.MultipleAddresses;
-import org.apache.zookeeper.server.quorum.QuorumPeer;
+import org.apache.zookeeper.server.quorum.*;
 import org.apache.zookeeper.server.quorum.QuorumPeer.LearnerType;
-import org.apache.zookeeper.server.quorum.QuorumZooKeeperServer;
-import org.apache.zookeeper.server.quorum.ReadOnlyZooKeeperServer;
 import org.apache.zookeeper.server.quorum.flexible.QuorumVerifier;
 import org.apache.zookeeper.server.util.ZxidUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class containing static methods for registering and running Commands, as well
@@ -66,7 +47,9 @@ public class Commands {
 
     static final Logger LOG = LoggerFactory.getLogger(Commands.class);
 
-    /** Maps command names to Command instances */
+    /**
+     * Maps command names to Command instances
+     */
     private static Map<String, Command> commands = new HashMap<String, Command>();
     private static Set<String> primaryNames = new HashSet<String>();
 
@@ -92,16 +75,16 @@ public class Commands {
      *
      * @param cmdName
      * @param zkServer
-     * @param kwargs String-valued keyword arguments to the command
-     *        (may be null if command requires no additional arguments)
+     * @param kwargs   String-valued keyword arguments to the command
+     *                 (may be null if command requires no additional arguments)
      * @return Map representing response to command containing at minimum:
-     *    - "command" key containing the command's primary name
-     *    - "error" key containing a String error message or null if no error
+     * - "command" key containing the command's primary name
+     * - "error" key containing a String error message or null if no error
      */
     public static CommandResponse runCommand(
-        String cmdName,
-        ZooKeeperServer zkServer,
-        Map<String, String> kwargs) {
+            String cmdName,
+            ZooKeeperServer zkServer,
+            Map<String, String> kwargs) {
         Command command = getCommand(cmdName);
         if (command == null) {
             return new CommandResponse(cmdName, "Unknown command: " + cmdName);
@@ -177,6 +160,7 @@ public class Commands {
 
     /**
      * Server configuration parameters.
+     *
      * @see ZooKeeperServer#getConf()
      */
     public static class ConfCommand extends CommandBase {
@@ -196,7 +180,8 @@ public class Commands {
 
     /**
      * Information on client connections to server. Returned Map contains:
-     *   - "connections": list of connection info objects
+     * - "connections": list of connection info objects
+     *
      * @see org.apache.zookeeper.server.ServerCnxn#getConnectionInfo(boolean)
      */
     public static class ConsCommand extends CommandBase {
@@ -246,10 +231,11 @@ public class Commands {
 
     /**
      * Information on session expirations and ephemerals. Returned map contains:
-     *   - "expiry_time_to_session_ids": Map&lt;Long, Set&lt;Long&gt;&gt;
-     *                                   time -&gt; sessions IDs of sessions that expire at time
-     *   - "session_id_to_ephemeral_paths": Map&lt;Long, Set&lt;String&gt;&gt;
-     *                                       session ID -&gt; ephemeral paths created by that session
+     * - "expiry_time_to_session_ids": Map&lt;Long, Set&lt;Long&gt;&gt;
+     * time -&gt; sessions IDs of sessions that expire at time
+     * - "session_id_to_ephemeral_paths": Map&lt;Long, Set&lt;String&gt;&gt;
+     * session ID -&gt; ephemeral paths created by that session
+     *
      * @see ZooKeeperServer#getSessionExpiryMap()
      * @see ZooKeeperServer#getEphemerals()
      */
@@ -309,7 +295,7 @@ public class Commands {
 
     /**
      * The current trace mask. Returned map contains:
-     *   - "tracemask": Long
+     * - "tracemask": Long
      */
     public static class GetTraceMaskCommand extends CommandBase {
 
@@ -343,7 +329,7 @@ public class Commands {
 
     /**
      * Is this server in read-only mode. Returned map contains:
-     *   - "is_read_only": Boolean
+     * - "is_read_only": Boolean
      */
     public static class IsroCommand extends CommandBase {
 
@@ -366,8 +352,8 @@ public class Commands {
      * and it finishes saving its first snapshot, the command returns the zxid
      * and last modified time of the snapshot file used for restoration at
      * server startup. Returned map contains:
-     *   - "zxid": String
-     *   - "timestamp": Long
+     * - "zxid": String
+     * - "timestamp": Long
      */
     public static class LastSnapshotCommand extends CommandBase {
 
@@ -414,27 +400,27 @@ public class Commands {
 
     /**
      * Some useful info for monitoring. Returned map contains:
-     *   - "version": String
-     *                server version
-     *   - "avg_latency": Long
-     *   - "max_latency": Long
-     *   - "min_latency": Long
-     *   - "packets_received": Long
-     *   - "packets_sents": Long
-     *   - "num_alive_connections": Integer
-     *   - "outstanding_requests": Long
-     *                             number of unprocessed requests
-     *   - "server_state": "leader", "follower", or "standalone"
-     *   - "znode_count": Integer
-     *   - "watch_count": Integer
-     *   - "ephemerals_count": Integer
-     *   - "approximate_data_size": Long
-     *   - "open_file_descriptor_count": Long (unix only)
-     *   - "max_file_descriptor_count": Long (unix only)
-     *   - "fsync_threshold_exceed_count": Long
-     *   - "followers": Integer (leader only)
-     *   - "synced_followers": Integer (leader only)
-     *   - "pending_syncs": Integer (leader only)
+     * - "version": String
+     * server version
+     * - "avg_latency": Long
+     * - "max_latency": Long
+     * - "min_latency": Long
+     * - "packets_received": Long
+     * - "packets_sents": Long
+     * - "num_alive_connections": Integer
+     * - "outstanding_requests": Long
+     * number of unprocessed requests
+     * - "server_state": "leader", "follower", or "standalone"
+     * - "znode_count": Integer
+     * - "watch_count": Integer
+     * - "ephemerals_count": Integer
+     * - "approximate_data_size": Long
+     * - "open_file_descriptor_count": Long (unix only)
+     * - "max_file_descriptor_count": Long (unix only)
+     * - "fsync_threshold_exceed_count": Long
+     * - "followers": Integer (leader only)
+     * - "synced_followers": Integer (leader only)
+     * - "pending_syncs": Integer (leader only)
      */
     public static class MonitorCommand extends CommandBase {
 
@@ -495,9 +481,9 @@ public class Commands {
 
     /**
      * Sets the trace mask. Required arguments:
-     *   - "traceMask": Long
-     *  Returned Map contains:
-     *   - "tracemask": Long
+     * - "traceMask": Long
+     * Returned Map contains:
+     * - "tracemask": Long
      */
     public static class SetTraceMaskCommand extends CommandBase {
 
@@ -529,12 +515,12 @@ public class Commands {
 
     /**
      * Server information. Returned map contains:
-     *   - "version": String
-     *                version of server
-     *   - "read_only": Boolean
-     *                  is server in read-only mode
-     *   - "server_stats": ServerStats object
-     *   - "node_count": Integer
+     * - "version": String
+     * version of server
+     * - "read_only": Boolean
+     * is server in read-only mode
+     * - "server_stats": ServerStats object
+     * - "node_count": Integer
      */
     public static class SrvrCommand extends CommandBase {
 
@@ -618,8 +604,9 @@ public class Commands {
 
     /**
      * Information on observer connections to server. Returned Map contains:
-     *   - "synced_observers": Integer (leader/follower only)
-     *   - "observers": list of observer learner handler info objects (leader/follower only)
+     * - "synced_observers": Integer (leader/follower only)
+     * - "observers": list of observer learner handler info objects (leader/follower only)
+     *
      * @see org.apache.zookeeper.server.quorum.LearnerHandler#getLearnerHandlerInfo()
      */
     public static class SyncedObserverConsCommand extends CommandBase {
@@ -739,13 +726,14 @@ public class Commands {
                 }
                 return String.format("%s:%d", QuorumPeer.QuorumServer.delimitedHostString(address), address.getPort());
             }
-       }
+        }
 
     }
 
     /**
      * Watch information aggregated by session. Returned Map contains:
-     *   - "session_id_to_watched_paths": Map&lt;Long, Set&lt;String&gt;&gt; session ID -&gt; watched paths
+     * - "session_id_to_watched_paths": Map&lt;Long, Set&lt;String&gt;&gt; session ID -&gt; watched paths
+     *
      * @see DataTree#getWatches()
      * @see DataTree#getWatches()
      */
@@ -767,7 +755,8 @@ public class Commands {
 
     /**
      * Watch information aggregated by path. Returned Map contains:
-     *   - "path_to_session_ids": Map&lt;String, Set&lt;Long&gt;&gt; path -&gt; session IDs of sessions watching path
+     * - "path_to_session_ids": Map&lt;String, Set&lt;Long&gt;&gt; path -&gt; session IDs of sessions watching path
+     *
      * @see DataTree#getWatchesByPath()
      */
     public static class WatchesByPathCommand extends CommandBase {
@@ -788,6 +777,7 @@ public class Commands {
 
     /**
      * Summarized watch information.
+     *
      * @see DataTree#getWatchesSummary()
      */
     public static class WatchSummaryCommand extends CommandBase {

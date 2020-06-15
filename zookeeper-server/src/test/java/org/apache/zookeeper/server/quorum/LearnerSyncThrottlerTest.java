@@ -18,18 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import org.apache.zookeeper.ZKTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,12 +25,21 @@ import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.*;
+
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class LearnerSyncThrottlerTest extends ZKTestCase {
 
     private static final Logger LOG = LoggerFactory.getLogger(LearnerSyncThrottlerTest.class);
 
     private LearnerSyncThrottler.SyncType syncType;
+
     public LearnerSyncThrottlerTest(LearnerSyncThrottler.SyncType syncType) {
         this.syncType = syncType;
     }
@@ -51,6 +48,7 @@ public class LearnerSyncThrottlerTest extends ZKTestCase {
     public static Collection syncTypes() {
         return Arrays.asList(new Object[][]{{LearnerSyncThrottler.SyncType.DIFF}, {LearnerSyncThrottler.SyncType.SNAP}});
     }
+
     @Test(expected = SyncThrottleException.class)
     public void testTooManySyncsNonessential() throws Exception {
         LearnerSyncThrottler throttler = new LearnerSyncThrottler(5, syncType);

@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.server.util;
 
-import static org.junit.Assert.assertEquals;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ConfigUtilsTest {
 

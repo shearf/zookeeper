@@ -25,8 +25,11 @@ import java.util.Date;
  */
 interface Stats {
 
-    /** Date/time the connection was established
-     * @since 3.3.0 */
+    /**
+     * Date/time the connection was established
+     *
+     * @since 3.3.0
+     */
     Date getEstablished();
 
     /**
@@ -34,37 +37,78 @@ interface Stats {
      * responded to.
      */
     long getOutstandingRequests();
-    /** Number of packets received */
+
+    /**
+     * Number of packets received
+     */
     long getPacketsReceived();
-    /** Number of packets sent (incl notifications) */
+
+    /**
+     * Number of packets sent (incl notifications)
+     */
     long getPacketsSent();
-    /** Min latency in ms
-     * @since 3.3.0 */
+
+    /**
+     * Min latency in ms
+     *
+     * @since 3.3.0
+     */
     long getMinLatency();
-    /** Average latency in ms
-     * @since 3.3.0 */
+
+    /**
+     * Average latency in ms
+     *
+     * @since 3.3.0
+     */
     long getAvgLatency();
-    /** Max latency in ms
-     * @since 3.3.0 */
+
+    /**
+     * Max latency in ms
+     *
+     * @since 3.3.0
+     */
     long getMaxLatency();
-    /** Last operation performed by this connection
-     * @since 3.3.0 */
+
+    /**
+     * Last operation performed by this connection
+     *
+     * @since 3.3.0
+     */
     String getLastOperation();
-    /** Last cxid of this connection
-     * @since 3.3.0 */
+
+    /**
+     * Last cxid of this connection
+     *
+     * @since 3.3.0
+     */
     long getLastCxid();
-    /** Last zxid of this connection
-     * @since 3.3.0 */
+
+    /**
+     * Last zxid of this connection
+     *
+     * @since 3.3.0
+     */
     long getLastZxid();
-    /** Last time server sent a response to client on this connection
-     * @since 3.3.0 */
+
+    /**
+     * Last time server sent a response to client on this connection
+     *
+     * @since 3.3.0
+     */
     long getLastResponseTime();
-    /** Latency of last response to client on this connection in ms
-     * @since 3.3.0 */
+
+    /**
+     * Latency of last response to client on this connection in ms
+     *
+     * @since 3.3.0
+     */
     long getLastLatency();
 
-    /** Reset counters
-     * @since 3.3.0 */
+    /**
+     * Reset counters
+     *
+     * @since 3.3.0
+     */
     void resetStats();
 
 }

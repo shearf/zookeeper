@@ -18,7 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertTrue;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Quotas;
 import org.apache.zookeeper.StatsTrack;
@@ -27,6 +26,8 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.cli.SetQuotaCommand;
 import org.apache.zookeeper.data.Stat;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class QuorumQuotaTest extends QuorumBase {
 

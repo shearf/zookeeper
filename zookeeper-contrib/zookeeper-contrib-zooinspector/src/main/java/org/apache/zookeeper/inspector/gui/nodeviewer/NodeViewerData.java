@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,23 +17,17 @@
  */
 package org.apache.zookeeper.inspector.gui.nodeviewer;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingWorker;
-
 import org.apache.zookeeper.inspector.ZooInspector;
 import org.apache.zookeeper.inspector.gui.IconResource;
 import org.apache.zookeeper.inspector.logger.LoggerFactory;
 import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A node viewer for displaying the data for the currently selected node
@@ -54,7 +48,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
                 .setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         this.add(scroller, BorderLayout.CENTER);
         this.add(this.toolbar, BorderLayout.NORTH);
-        JButton saveButton = new JButton(ZooInspector.iconResource.get(IconResource.ICON_SAVE,""));
+        JButton saveButton = new JButton(ZooInspector.iconResource.get(IconResource.ICON_SAVE, ""));
         saveButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -76,7 +70,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * getTitle()
@@ -88,7 +82,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * nodeSelectionChanged(java.util.Set)
@@ -128,7 +122,7 @@ public class NodeViewerData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * setZooInspectorManager

@@ -18,18 +18,15 @@
 
 package org.apache.zookeeper.server;
 
-import java.nio.ByteBuffer;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.common.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Manages cleanup of container ZNodes. This class is meant to only
@@ -51,26 +48,26 @@ public class ContainerManager {
     private final AtomicReference<TimerTask> task = new AtomicReference<TimerTask>(null);
 
     /**
-     * @param zkDb the ZK database
+     * @param zkDb             the ZK database
      * @param requestProcessor request processer - used to inject delete
      *                         container requests
-     * @param checkIntervalMs how often to check containers in milliseconds
-     * @param maxPerMinute the max containers to delete per second - avoids
-     *                     herding of container deletions
+     * @param checkIntervalMs  how often to check containers in milliseconds
+     * @param maxPerMinute     the max containers to delete per second - avoids
+     *                         herding of container deletions
      */
     public ContainerManager(ZKDatabase zkDb, RequestProcessor requestProcessor, int checkIntervalMs, int maxPerMinute) {
         this(zkDb, requestProcessor, checkIntervalMs, maxPerMinute, 0);
     }
 
     /**
-     * @param zkDb the ZK database
-     * @param requestProcessor request processer - used to inject delete
-     *                         container requests
-     * @param checkIntervalMs how often to check containers in milliseconds
-     * @param maxPerMinute the max containers to delete per second - avoids
-     *                     herding of container deletions
+     * @param zkDb                   the ZK database
+     * @param requestProcessor       request processer - used to inject delete
+     *                               container requests
+     * @param checkIntervalMs        how often to check containers in milliseconds
+     * @param maxPerMinute           the max containers to delete per second - avoids
+     *                               herding of container deletions
      * @param maxNeverUsedIntervalMs the max time in milliseconds that a container that has never had
-     *                                  any children is retained
+     *                               any children is retained
      */
     public ContainerManager(ZKDatabase zkDb, RequestProcessor requestProcessor, int checkIntervalMs, int maxPerMinute, long maxNeverUsedIntervalMs) {
         this.zkDb = zkDb;

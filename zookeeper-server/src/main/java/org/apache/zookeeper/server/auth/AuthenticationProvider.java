@@ -41,10 +41,8 @@ public interface AuthenticationProvider {
      * implementor may attach new ids to the authInfo field of cnxn or may use
      * cnxn to send packets back to the client.
      *
-     * @param cnxn
-     *                the cnxn that received the authentication information.
-     * @param authData
-     *                the authentication data received.
+     * @param cnxn     the cnxn that received the authentication information.
+     * @param authData the authentication data received.
      * @return TODO
      */
     KeeperException.Code handleAuthentication(ServerCnxn cnxn, byte[] authData);
@@ -54,10 +52,8 @@ public interface AuthenticationProvider {
      * expression in the ACL. This allows schemes to use application specific
      * wild cards.
      *
-     * @param id
-     *                the id to check.
-     * @param aclExpr
-     *                the expression to match ids against.
+     * @param id      the id to check.
+     * @param aclExpr the expression to match ids against.
      * @return true if the id can be matched by the expression.
      */
     boolean matches(String id, String aclExpr);
@@ -75,8 +71,7 @@ public interface AuthenticationProvider {
     /**
      * Validates the syntax of an id.
      *
-     * @param id
-     *                the id to validate.
+     * @param id the id to validate.
      * @return true if id is well formed.
      */
     boolean isValid(String id);

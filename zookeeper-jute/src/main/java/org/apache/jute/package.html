@@ -17,17 +17,17 @@
 -->
 
 <html lang="en">
-  <head>
+<head>
     <title>Hadoop Record I/O</title>
-  </head>
-  <body>
-  Hadoop record I/O contains classes and a record description language
-  translator for simplifying serialization and deserialization of records in a
-  language-neutral manner.
-  
-  <h2>Introduction</h2>
-  
-  Software systems of any significant complexity require mechanisms for data 
+</head>
+<body>
+Hadoop record I/O contains classes and a record description language
+translator for simplifying serialization and deserialization of records in a
+language-neutral manner.
+
+<h2>Introduction</h2>
+
+Software systems of any significant complexity require mechanisms for data
 interchange with the outside world. These interchanges typically involve the
 marshaling and unmarshaling of logical units of data to and from data streams
 (files, network connections, memory buffers etc.). Applications usually have
@@ -39,29 +39,29 @@ of primitives (structs, vectors etc.) is a very mechanical task. Manually
 written serialization code can be susceptible to bugs especially when records
 have a large number of fields or a record definition changes between software
 versions. Lastly, it can be very useful for applications written in different
-programming languages to be able to share and interchange data. This can be 
+programming languages to be able to share and interchange data. This can be
 made a lot easier by describing the data records manipulated by these
 applications in a language agnostic manner and using the descriptions to derive
-implementations of serialization in multiple target languages. 
+implementations of serialization in multiple target languages.
 
-This document describes Hadoop Record I/O, a mechanism that is aimed 
+This document describes Hadoop Record I/O, a mechanism that is aimed
 at
-<ul> 
-<li> enabling the specification of simple serializable data types (records) 
-<li> enabling the generation of code in multiple target languages for
-marshaling and unmarshaling such types
-<li> providing target language specific support that will enable application 
-programmers to incorporate generated code into their applications
+<ul>
+    <li> enabling the specification of simple serializable data types (records)
+    <li> enabling the generation of code in multiple target languages for
+        marshaling and unmarshaling such types
+    <li> providing target language specific support that will enable application
+        programmers to incorporate generated code into their applications
 </ul>
 
 The goals of Hadoop Record I/O are similar to those of mechanisms such as XDR,
 ASN.1, PADS and ICE. While these systems all include a DDL that enables
 the specification of most record types, they differ widely in what else they
 focus on. The focus in Hadoop Record I/O is on data marshaling and
-multi-lingual support.  We take a translator-based approach to serialization.
+multi-lingual support. We take a translator-based approach to serialization.
 Hadoop users have to describe their data in a simple data description
 language. The Hadoop DDL translator rcc generates code that users
-can invoke in order to read/write their data from/to simple stream 
+can invoke in order to read/write their data from/to simple stream
 abstractions. Next we list explicitly some of the goals and non-goals of
 Hadoop Record I/O.
 
@@ -69,45 +69,45 @@ Hadoop Record I/O.
 <h3>Goals</h3>
 
 <ul>
-<li> Support for commonly used primitive types. Hadoop should include as
-primitives commonly used builtin types from programming languages we intend to
-support.
+    <li> Support for commonly used primitive types. Hadoop should include as
+        primitives commonly used builtin types from programming languages we intend to
+        support.
 
-<li> Support for common data compositions (including recursive compositions).
-Hadoop should support widely used composite types such as structs and
-vectors.
+    <li> Support for common data compositions (including recursive compositions).
+        Hadoop should support widely used composite types such as structs and
+        vectors.
 
-<li> Code generation in multiple target languages. Hadoop should be capable of
-generating serialization code in multiple target languages and should be
-easily extensible to new target languages. The initial target languages are
-C++ and Java.
+    <li> Code generation in multiple target languages. Hadoop should be capable of
+        generating serialization code in multiple target languages and should be
+        easily extensible to new target languages. The initial target languages are
+        C++ and Java.
 
-<li> Support for generated target languages. Hadooop should include support
-in the form of headers, libraries, packages for supported target languages 
-that enable easy inclusion and use of generated code in applications.
+    <li> Support for generated target languages. Hadooop should include support
+        in the form of headers, libraries, packages for supported target languages
+        that enable easy inclusion and use of generated code in applications.
 
-<li> Support for multiple output encodings. Candidates include
-packed binary, comma-separated text, XML etc.
+    <li> Support for multiple output encodings. Candidates include
+        packed binary, comma-separated text, XML etc.
 
-<li> Support for specifying record types in a backwards/forwards compatible
-manner. This will probably be in the form of support for optional fields in
-records. This version of the document does not include a description of the
-planned mechanism, we intend to include it in the next iteration.
+    <li> Support for specifying record types in a backwards/forwards compatible
+        manner. This will probably be in the form of support for optional fields in
+        records. This version of the document does not include a description of the
+        planned mechanism, we intend to include it in the next iteration.
 
 </ul>
 
 <h3>Non-Goals</h3>
 
 <ul>
-  <li> Serializing existing arbitrary C++ classes.
-  <li> Serializing complex data structures such as trees, linked lists etc.
-  <li> Built-in indexing schemes, compression, or check-sums.
-  <li> Dynamic construction of objects from an XML schema.
+    <li> Serializing existing arbitrary C++ classes.
+    <li> Serializing complex data structures such as trees, linked lists etc.
+    <li> Built-in indexing schemes, compression, or check-sums.
+    <li> Dynamic construction of objects from an XML schema.
 </ul>
 
 The remainder of this document describes the features of Hadoop record I/O
 in more detail. Section 2 describes the data types supported by the system.
-Section 3 lays out the DDL syntax with some examples of simple records. 
+Section 3 lays out the DDL syntax with some examples of simple records.
 Section 4 describes the process of code generation with rcc. Section 5
 describes target language mappings and support for Hadoop types. We include a
 fairly complete description of C++ mappings with intent to include Java and
@@ -132,16 +132,16 @@ when a target language built-in is not present and there is no widely
 adopted "standard" implementation. The complete list of primitive types is:
 
 <ul>
-  <li> byte: An 8-bit unsigned integer.
-  <li> boolean: A boolean value.
-  <li> int: A 32-bit signed integer.
-  <li> long: A 64-bit signed integer.
-  <li> float: A single precision floating point number as described by
-    IEEE-754.
-  <li> double: A double precision floating point number as described by
-    IEEE-754.
-  <li> ustring: A string consisting of Unicode characters.
-  <li> buffer: An arbitrary sequence of bytes. 
+    <li> byte: An 8-bit unsigned integer.
+    <li> boolean: A boolean value.
+    <li> int: A 32-bit signed integer.
+    <li> long: A 64-bit signed integer.
+    <li> float: A single precision floating point number as described by
+        IEEE-754.
+    <li> double: A double precision floating point number as described by
+        IEEE-754.
+    <li> ustring: A string consisting of Unicode characters.
+    <li> buffer: An arbitrary sequence of bytes.
 </ul>
 
 
@@ -153,18 +153,18 @@ composite types are:
 
 <ul>
 
-  <li> record: An aggregate type like a C-struct. This is a list of
-typed fields that are together considered a single unit of data. A record
-is serialized by sequentially serializing its constituent fields. In addition
-to serialization a record has comparison operations (equality and less-than)
-implemented for it, these are defined as memberwise comparisons.
+    <li> record: An aggregate type like a C-struct. This is a list of
+        typed fields that are together considered a single unit of data. A record
+        is serialized by sequentially serializing its constituent fields. In addition
+        to serialization a record has comparison operations (equality and less-than)
+        implemented for it, these are defined as memberwise comparisons.
 
-  <li>vector: A sequence of entries of the same data type, primitive
-or composite.
+    <li>vector: A sequence of entries of the same data type, primitive
+        or composite.
 
-  <li> map: An associative container mapping instances of a key type to
-instances of a value type. The key and value types may themselves be primitive
-or composite types. 
+    <li> map: An associative container mapping instances of a key type to
+        instances of a value type. The key and value types may themselves be primitive
+        or composite types.
 
 </ul>
 
@@ -181,7 +181,7 @@ an existing stream implementation.
 
 We now describe the syntax of the Hadoop data description language. This is
 followed by a few examples of DDL usage.
- 
+
 <h3>Hadoop DDL Syntax</h3>
 
 <pre><code>
@@ -208,30 +208,30 @@ these declarations are described below:
 
 <ul>
 
-<li>include: An include declaration specifies a DDL file to be
-referenced when generating code for types in the current DDL file. Record types
-in the current compilation unit may refer to types in all included files.
-File inclusion is recursive. An include does not trigger code
-generation for the referenced file.
+    <li>include: An include declaration specifies a DDL file to be
+        referenced when generating code for types in the current DDL file. Record types
+        in the current compilation unit may refer to types in all included files.
+        File inclusion is recursive. An include does not trigger code
+        generation for the referenced file.
 
-<li> module: Every Hadoop DDL file must have a single module
-declaration that follows the list of includes and precedes all record
-declarations. A module declaration identifies a scope within which
-the names of all types in the current file are visible. Module names are
-mapped to C++ namespaces, Java packages etc. in generated code.
+    <li> module: Every Hadoop DDL file must have a single module
+        declaration that follows the list of includes and precedes all record
+        declarations. A module declaration identifies a scope within which
+        the names of all types in the current file are visible. Module names are
+        mapped to C++ namespaces, Java packages etc. in generated code.
 
-<li> class: Records types are specified through class
-declarations. A class declaration is like a Java class declaration.
-It specifies a named record type and a list of fields that constitute records
-of the type. Usage is illustrated in the following examples.
+    <li> class: Records types are specified through class
+        declarations. A class declaration is like a Java class declaration.
+        It specifies a named record type and a list of fields that constitute records
+        of the type. Usage is illustrated in the following examples.
 
 </ul>
 
 <h3>Examples</h3>
 
 <ul>
-<li>A simple DDL file links.jr with just one record declaration. 
-<pre><code>
+    <li>A simple DDL file links.jr with just one record declaration.
+        <pre><code>
 module links {
     class Link {
         ustring URL;
@@ -241,8 +241,8 @@ module links {
 }
 </code></pre>
 
-<li> A DDL file outlinks.jr which includes another
-<pre><code>
+    <li> A DDL file outlinks.jr which includes another
+        <pre><code>
 include "links.jr"
 
 module outlinks {
@@ -256,7 +256,7 @@ module outlinks {
 
 <h2>Code Generation</h2>
 
-The Hadoop translator is written in Java. Invocation is done by executing a 
+The Hadoop translator is written in Java. Invocation is done by executing a
 wrapper shell script named named rcc. It takes a list of
 record description files as a mandatory argument and an
 optional language argument (the default is Java) --language or
@@ -268,7 +268,7 @@ $ rcc -l C++ &lt;filename&gt; ...
 
 <h2>Target Language Mappings and Support</h2>
 
-For all target languages, the unit of code generation is a record type. 
+For all target languages, the unit of code generation is a record type.
 For each record type, Hadoop generates code for serialization and
 deserialization, record comparison and access to record members.
 
@@ -340,49 +340,49 @@ namespace hadoop {
 
 <ul>
 
-<li> RecFormat: An enumeration of the serialization encodings supported
-by this implementation of Hadoop.
+    <li> RecFormat: An enumeration of the serialization encodings supported
+        by this implementation of Hadoop.
 
-<li> InStream: A simple abstraction for an input stream. This has a 
-single public read method that reads n bytes from the stream into
-the buffer buf. Has the same semantics as a blocking read system
-call. Returns the number of bytes read or -1 if an error occurs.
+    <li> InStream: A simple abstraction for an input stream. This has a
+        single public read method that reads n bytes from the stream into
+        the buffer buf. Has the same semantics as a blocking read system
+        call. Returns the number of bytes read or -1 if an error occurs.
 
-<li> OutStream: A simple abstraction for an output stream. This has a 
-single write method that writes n bytes to the stream from the
-buffer buf. Has the same semantics as a blocking write system
-call. Returns the number of bytes written or -1 if an error occurs.
+    <li> OutStream: A simple abstraction for an output stream. This has a
+        single write method that writes n bytes to the stream from the
+        buffer buf. Has the same semantics as a blocking write system
+        call. Returns the number of bytes written or -1 if an error occurs.
 
-<li> RecordReader: A RecordReader reads records one at a time from
-an underlying stream in a specified record format. The reader is instantiated
-with a stream and a serialization format. It has a read method that
-takes an instance of a record and deserializes the record from the stream.
+    <li> RecordReader: A RecordReader reads records one at a time from
+        an underlying stream in a specified record format. The reader is instantiated
+        with a stream and a serialization format. It has a read method that
+        takes an instance of a record and deserializes the record from the stream.
 
-<li> RecordWriter: A RecordWriter writes records one at a
-time to an underlying stream in a specified record format. The writer is
-instantiated with a stream and a serialization format. It has a
-write method that takes an instance of a record and serializes the
-record to the stream.
+    <li> RecordWriter: A RecordWriter writes records one at a
+        time to an underlying stream in a specified record format. The writer is
+        instantiated with a stream and a serialization format. It has a
+        write method that takes an instance of a record and serializes the
+        record to the stream.
 
-<li> Record: The base class for all generated record types. This has two
-public methods type and signature that return the typename and the
-type signature of the record.
+    <li> Record: The base class for all generated record types. This has two
+        public methods type and signature that return the typename and the
+        type signature of the record.
 
 </ul>
 
 Two files are generated for each record file (note: not for each record). If a
-record file is named "name.jr", the generated files are 
-"name.jr.cc" and "name.jr.hh" containing serialization 
+record file is named "name.jr", the generated files are
+"name.jr.cc" and "name.jr.hh" containing serialization
 implementations and record type declarations respectively.
 
 For each record in the DDL file, the generated header file will contain a
 class definition corresponding to the record type, method definitions for the
-generated type will be present in the '.cc' file.  The generated class will
+generated type will be present in the '.cc' file. The generated class will
 inherit from the abstract class hadoop::Record. The DDL files
 module declaration determines the namespace the record belongs to.
 Each '.' delimited token in the module declaration results in the
 creation of a namespace. For instance, the declaration module docs.links
-results in the creation of a docs namespace and a nested 
+results in the creation of a docs namespace and a nested
 docs::links namespace. In the preceding examples, the Link class
 is placed in the links namespace. The header file corresponding to
 the links.jr file will contain:
@@ -398,16 +398,16 @@ namespace links {
 Each field within the record will cause the generation of a private member
 declaration of the appropriate type in the class declaration, and one or more
 acccessor methods. The generated class will implement the serialize and
-deserialize methods defined in hadoop::Record+. It will also 
+deserialize methods defined in hadoop::Record+. It will also
 implement the inspection methods type and signature from
 hadoop::Record. A default constructor and virtual destructor will also
 be generated. Serialization code will read/write records into streams that
 implement the hadoop::InStream and the hadoop::OutStream interfaces.
 
-For each member of a record an accessor method is generated that returns 
-either the member or a reference to the member. For members that are returned 
-by value, a setter method is also generated. This is true for primitive 
-data members of the types byte, int, long, boolean, float and 
+For each member of a record an accessor method is generated that returns
+either the member or a reference to the member. For members that are returned
+by value, a setter method is also generated. This is true for primitive
+data members of the types byte, int, long, boolean, float and
 double. For example, for a int field called MyField the following
 code is generated.
 
@@ -631,35 +631,35 @@ elements (lengths are included in vectors and maps).
 
 Composite types are serialized as follows:
 <ul>
-<li> class: Sequence of serialized members.
-<li> vector: The number of elements serialized as an int. Followed by a
-sequence of serialized elements.
-<li> map: The number of key value pairs serialized as an int. Followed
-by a sequence of serialized (key,value) pairs.
+    <li> class: Sequence of serialized members.
+    <li> vector: The number of elements serialized as an int. Followed by a
+        sequence of serialized elements.
+    <li> map: The number of key value pairs serialized as an int. Followed
+        by a sequence of serialized (key,value) pairs.
 </ul>
 
 Serialization of primitives is more interesting, with a zero compression
-optimization for integral types and normalization to UTF-8 for strings. 
+optimization for integral types and normalization to UTF-8 for strings.
 Primitive types are serialized as follows:
 
 <ul>
-<li> byte: Represented by 1 byte, as is.
-<li> boolean: Represented by 1-byte (0 or 1)
-<li> int/long: Integers and longs are serialized zero compressed.
-Represented as 1-byte if -120 &lt;= value &lt; 128. Otherwise, serialized as a
-sequence of 2-5 bytes for ints, 2-9 bytes for longs. The first byte represents
-the number of trailing bytes, N, as the negative number (-120-N). For example,
-the number 1024 (0x400) is represented by the byte sequence 'x86 x04 x00'.
-This doesn't help much for 4-byte integers but does a reasonably good job with
-longs without bit twiddling.
-<li> float/double: Serialized in IEEE 754 single and double precision
-format in network byte order. This is the format used by Java.
-<li> ustring: Serialized as 4-byte zero compressed length followed by
-data encoded as UTF-8. Strings are normalized to UTF-8 regardless of native
-language representation.
-<li> buffer: Serialized as a 4-byte zero compressed length followed by the
-raw bytes in the buffer.
+    <li> byte: Represented by 1 byte, as is.
+    <li> boolean: Represented by 1-byte (0 or 1)
+    <li> int/long: Integers and longs are serialized zero compressed.
+        Represented as 1-byte if -120 &lt;= value &lt; 128. Otherwise, serialized as a
+        sequence of 2-5 bytes for ints, 2-9 bytes for longs. The first byte represents
+        the number of trailing bytes, N, as the negative number (-120-N). For example,
+        the number 1024 (0x400) is represented by the byte sequence 'x86 x04 x00'.
+        This doesn't help much for 4-byte integers but does a reasonably good job with
+        longs without bit twiddling.
+    <li> float/double: Serialized in IEEE 754 single and double precision
+        format in network byte order. This is the format used by Java.
+    <li> ustring: Serialized as 4-byte zero compressed length followed by
+        data encoded as UTF-8. Strings are normalized to UTF-8 regardless of native
+        language representation.
+    <li> buffer: Serialized as a 4-byte zero compressed length followed by the
+        raw bytes in the buffer.
 </ul>
 
-  </body>
+</body>
 </html>

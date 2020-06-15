@@ -18,14 +18,15 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketAddress;
 import org.apache.zookeeper.server.Request;
 import org.apache.zookeeper.server.ZKDatabase;
 import org.apache.zookeeper.server.quorum.auth.QuorumAuthServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
 
 /**
  * interface for keeping Observers in sync
@@ -79,6 +80,7 @@ public abstract class LearnerMaster {
 
     /**
      * snap sync throttler
+     *
      * @return snapshot throttler
      */
     public LearnerSyncThrottler getLearnerSnapSyncThrottler() {
@@ -87,6 +89,7 @@ public abstract class LearnerMaster {
 
     /**
      * diff sync throttler
+     *
      * @return diff throttler
      */
     public LearnerSyncThrottler getLearnerDiffSyncThrottler() {
@@ -95,18 +98,21 @@ public abstract class LearnerMaster {
 
     /**
      * start tracking a learner handler
+     *
      * @param learnerHandler to track
      */
     abstract void addLearnerHandler(LearnerHandler learnerHandler);
 
     /**
      * stop tracking a learner handler
+     *
      * @param learnerHandler to drop
      */
     abstract void removeLearnerHandler(LearnerHandler learnerHandler);
 
     /**
      * wait for the leader of the new epoch to be confirmed by followers
+     *
      * @param sid learner id
      * @param ss
      * @throws IOException
@@ -116,13 +122,15 @@ public abstract class LearnerMaster {
 
     /**
      * wait for server to start
+     *
      * @throws InterruptedException
      */
     abstract void waitForStartup() throws InterruptedException;
 
     /**
      * get the first zxid of the next epoch
-     * @param sid learner id
+     *
+     * @param sid               learner id
      * @param lastAcceptedEpoch
      * @return
      * @throws InterruptedException
@@ -132,13 +140,15 @@ public abstract class LearnerMaster {
 
     /**
      * ZKDatabase
+     *
      * @return ZKDatabase
      */
     abstract ZKDatabase getZKDatabase();
 
     /**
      * wait for new leader to settle
-     * @param sid id of learner
+     *
+     * @param sid  id of learner
      * @param zxid zxid at learner
      * @throws InterruptedException
      */
@@ -146,58 +156,67 @@ public abstract class LearnerMaster {
 
     /**
      * last proposed zxid
+     *
      * @return last proposed zxid
      */
     abstract long getLastProposed();
 
     /**
      * the current tick
+     *
      * @return the current tick
      */
     abstract int getCurrentTick();
 
     /**
      * time allowed for sync response
+     *
      * @return time allowed for sync response
      */
     abstract int syncTimeout();
 
     /**
      * deadline tick marking observer sync (initial)
+     *
      * @return deadline tick marking observer sync (initial)
      */
     abstract int getTickOfNextAckDeadline();
 
     /**
      * next deadline tick marking observer sync (steady state)
+     *
      * @return next deadline tick marking observer sync (steady state)
      */
     abstract int getTickOfInitialAckDeadline();
 
     /**
      * decrement follower count
+     *
      * @return previous follower count
      */
     abstract long getAndDecrementFollowerCounter();
 
     /**
      * handle ack packet
-     * @param sid leader id
-     * @param zxid packet zxid
+     *
+     * @param sid                leader id
+     * @param zxid               packet zxid
      * @param localSocketAddress forwarder's address
      */
     abstract void processAck(long sid, long zxid, SocketAddress localSocketAddress);
 
     /**
      * mark session as alive
+     *
      * @param sess session id
-     * @param to timeout
+     * @param to   timeout
      */
     abstract void touch(long sess, int to);
 
     /**
      * handle revalidate packet
-     * @param qp session packet
+     *
+     * @param qp             session packet
      * @param learnerHandler learner
      * @throws IOException
      */
@@ -205,26 +224,28 @@ public abstract class LearnerMaster {
 
     /**
      * proxy request from learner to server
+     *
      * @param si request
      */
     abstract void submitLearnerRequest(Request si);
 
     /**
      * begin forwarding packets to learner handler
+     *
      * @param learnerHandler learner
-     * @param lastSeenZxid zxid of learner
+     * @param lastSeenZxid   zxid of learner
      * @return last zxid forwarded
      */
     abstract long startForwarding(LearnerHandler learnerHandler, long lastSeenZxid);
 
     /**
      * version of current quorum verifier
+     *
      * @return version of current quorum verifier
      */
     abstract long getQuorumVerifierVersion();
 
     /**
-     *
      * @param sid server id
      * @return server information in the view
      */
@@ -232,6 +253,7 @@ public abstract class LearnerMaster {
 
     /**
      * identifier of current quorum verifier for new leader
+     *
      * @return identifier of current quorum verifier for new leader
      */
     abstract byte[] getQuorumVerifierBytes();
@@ -240,13 +262,15 @@ public abstract class LearnerMaster {
 
     /**
      * registers the handler's bean
+     *
      * @param learnerHandler handler
-     * @param socket connection to learner
+     * @param socket         connection to learner
      */
     abstract void registerLearnerHandlerBean(LearnerHandler learnerHandler, Socket socket);
 
     /**
      * unregisters the handler's bean
+     *
      * @param learnerHandler handler
      */
     abstract void unregisterLearnerHandlerBean(LearnerHandler learnerHandler);

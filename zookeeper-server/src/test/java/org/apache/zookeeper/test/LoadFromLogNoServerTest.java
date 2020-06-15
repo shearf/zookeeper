@@ -18,14 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.Record;
@@ -38,14 +30,20 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.persistence.FileHeader;
 import org.apache.zookeeper.server.persistence.FileTxnLog;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
-import org.apache.zookeeper.txn.CreateTxn;
-import org.apache.zookeeper.txn.DeleteTxn;
-import org.apache.zookeeper.txn.MultiTxn;
-import org.apache.zookeeper.txn.Txn;
-import org.apache.zookeeper.txn.TxnHeader;
+import org.apache.zookeeper.txn.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class LoadFromLogNoServerTest extends ZKTestCase {
 
@@ -152,16 +150,16 @@ public class LoadFromLogNoServerTest extends ZKTestCase {
         LOG.info("Children: {} for {}", childStr, parentName);
         LOG.info("(cverions, pzxid): {}, {}", newCversion, newPzxid);
         assertTrue(type
-                                  + " <cversion, pzxid> verification failed. Expected: <"
-                                  + (prevCversion + 1)
-                                  + ", "
-                                  + (prevPzxid
-                                             + 1)
-                                  + ">, found: <"
-                                  + newCversion
-                                  + ", "
-                                  + newPzxid
-                                  + ">", (newCversion == prevCversion + 1 && newPzxid == prevPzxid + 1));
+                + " <cversion, pzxid> verification failed. Expected: <"
+                + (prevCversion + 1)
+                + ", "
+                + (prevPzxid
+                + 1)
+                + ">, found: <"
+                + newCversion
+                + ", "
+                + newPzxid
+                + ">", (newCversion == prevCversion + 1 && newPzxid == prevPzxid + 1));
     }
 
     /**

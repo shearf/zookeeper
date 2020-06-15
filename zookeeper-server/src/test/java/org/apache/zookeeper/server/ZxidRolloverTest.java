@@ -18,10 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.ConnectionLossException;
@@ -38,6 +34,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
 
 /**
  * Verify ZOOKEEPER-1277 - ensure that we handle epoch rollover correctly.
@@ -158,6 +156,7 @@ public class ZxidRolloverTest extends ZKTestCase {
         // all clients should be connected
         checkClientsConnected();
     }
+
     private void start(int idx) throws Exception {
         qu.start(idx);
         for (String hp : qu.getConnString().split(",")) {
@@ -210,7 +209,9 @@ public class ZxidRolloverTest extends ZKTestCase {
         }
     }
 
-    /** Reset the next zxid to be near epoch end */
+    /**
+     * Reset the next zxid to be near epoch end
+     */
     private void adjustEpochNearEnd() {
         zksLeader.setZxid((zksLeader.getZxid() & 0xffffffff00000000L) | 0xfffffffcL);
     }
@@ -242,6 +243,7 @@ public class ZxidRolloverTest extends ZKTestCase {
         }
         return j;
     }
+
     /**
      * Verify the expected znodes were created and that the last znode, which
      * caused the roll-over, did not.

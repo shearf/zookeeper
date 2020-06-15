@@ -18,18 +18,13 @@
 
 package org.apache.zookeeper.common;
 
-import java.io.IOException;
-import java.nio.file.ClosedWatchServiceException;
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.util.function.Consumer;
 import org.apache.zookeeper.server.ZooKeeperThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.function.Consumer;
 
 /**
  * Instances of this class can be used to watch a directory for file changes. When a file is added to, deleted from,
@@ -60,7 +55,7 @@ public final class FileChangeWatcher {
     /**
      * Creates a watcher that watches <code>dirPath</code> and invokes <code>callback</code> on changes.
      *
-     * @param dirPath the directory to watch.
+     * @param dirPath  the directory to watch.
      * @param callback the callback to invoke with events. <code>event.kind()</code> will return the type of event,
      *                 and <code>event.context()</code> will return the filename relative to <code>dirPath</code>.
      * @throws IOException if there is an error creating the WatchService.
@@ -79,6 +74,7 @@ public final class FileChangeWatcher {
 
     /**
      * Returns the current {@link FileChangeWatcher.State}.
+     *
      * @return the current state.
      */
     public synchronized State getState() {
@@ -88,6 +84,7 @@ public final class FileChangeWatcher {
     /**
      * Blocks until the current state becomes <code>desiredState</code>.
      * Currently only used by tests, thus package-private.
+     *
      * @param desiredState the desired state.
      * @throws InterruptedException if the current thread gets interrupted.
      */
@@ -99,6 +96,7 @@ public final class FileChangeWatcher {
 
     /**
      * Sets the state to <code>newState</code>.
+     *
      * @param newState the new state.
      */
     private synchronized void setState(State newState) {
@@ -109,10 +107,11 @@ public final class FileChangeWatcher {
     /**
      * Atomically sets the state to <code>update</code> if and only if the
      * state is currently <code>expected</code>.
+     *
      * @param expected the expected state.
-     * @param update the new state.
+     * @param update   the new state.
      * @return true if the update succeeds, or false if the current state
-     *         does not equal <code>expected</code>.
+     * does not equal <code>expected</code>.
      */
     private synchronized boolean compareAndSetState(State expected, State update) {
         if (state == expected) {
@@ -126,10 +125,11 @@ public final class FileChangeWatcher {
     /**
      * Atomically sets the state to <code>update</code> if and only if the
      * state is currently one of <code>expectedStates</code>.
+     *
      * @param expectedStates the expected states.
-     * @param update the new state.
+     * @param update         the new state.
      * @return true if the update succeeds, or false if the current state
-     *         does not equal any of the <code>expectedStates</code>.
+     * does not equal any of the <code>expectedStates</code>.
      */
     private synchronized boolean compareAndSetState(State[] expectedStates, State update) {
         for (State expected : expectedStates) {

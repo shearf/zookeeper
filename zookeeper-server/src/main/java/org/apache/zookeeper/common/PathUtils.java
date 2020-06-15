@@ -23,10 +23,12 @@
   */
  public class PathUtils {
 
-     /** validate the provided znode path string
-      * @param path znode path string
+     /**
+      * validate the provided znode path string
+      *
+      * @param path         znode path string
       * @param isSequential if the path is being created
-      * with a sequential flag
+      *                     with a sequential flag
       * @throws IllegalArgumentException if the path is invalid
       */
      public static void validatePath(String path, boolean isSequential) throws IllegalArgumentException {
@@ -35,6 +37,7 @@
 
      /**
       * Validate the provided znode path string
+      *
       * @param path znode path string
       * @throws IllegalArgumentException if the path is invalid
       */
@@ -79,9 +82,9 @@
                      break;
                  }
              } else if (c > '\u0000' && c <= '\u001f'
-                        || c >= '\u007f' && c <= '\u009F'
-                        || c >= '\ud800' && c <= '\uf8ff'
-                        || c >= '\ufff0' && c <= '\uffff') {
+                     || c >= '\u007f' && c <= '\u009F'
+                     || c >= '\ud800' && c <= '\uf8ff'
+                     || c >= '\ufff0' && c <= '\uffff') {
                  reason = "invalid character @" + i;
                  break;
              }
@@ -95,8 +98,7 @@
      /**
       * Convert Windows path to Unix
       *
-      * @param path
-      *            file path
+      * @param path file path
       * @return converted file path
       */
      public static String normalizeFileSystemPath(String path) {

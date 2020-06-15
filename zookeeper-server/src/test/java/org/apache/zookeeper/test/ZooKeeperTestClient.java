@@ -18,24 +18,19 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.KeeperException.Code;
+import org.apache.zookeeper.Watcher.Event.EventType;
+import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.common.Time;
+import org.apache.zookeeper.data.Stat;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.KeeperException.Code;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.Watcher.Event.EventType;
-import org.apache.zookeeper.ZKTestCase;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.common.Time;
-import org.apache.zookeeper.data.Stat;
+
+import static org.junit.Assert.*;
 
 public class ZooKeeperTestClient extends ZKTestCase implements Watcher {
 
@@ -290,12 +285,12 @@ public class ZooKeeperTestClient extends ZKTestCase implements Watcher {
                 event.getType() == EventType.NodeDeleted
                         && event.getPath().equalsIgnoreCase(nodeName)))) {
             System.out.print(parentName
-                                     + " "
-                                     + EventType.NodeChildrenChanged
-                                     + " "
-                                     + nodeName
-                                     + " "
-                                     + EventType.NodeDeleted);
+                    + " "
+                    + EventType.NodeChildrenChanged
+                    + " "
+                    + nodeName
+                    + " "
+                    + EventType.NodeDeleted);
             fail("Unexpected first event was delivered: " + event.toString());
         }
 
@@ -308,12 +303,12 @@ public class ZooKeeperTestClient extends ZKTestCase implements Watcher {
                 event.getType() == EventType.NodeDeleted
                         && event.getPath().equalsIgnoreCase(nodeName)))) {
             System.out.print(parentName
-                                     + " "
-                                     + EventType.NodeChildrenChanged
-                                     + " "
-                                     + nodeName
-                                     + " "
-                                     + EventType.NodeDeleted);
+                    + " "
+                    + EventType.NodeChildrenChanged
+                    + " "
+                    + nodeName
+                    + " "
+                    + EventType.NodeDeleted);
             fail("Unexpected second event was delivered: " + event.toString());
         }
 

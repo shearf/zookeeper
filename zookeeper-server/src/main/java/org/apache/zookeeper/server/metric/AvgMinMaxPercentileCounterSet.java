@@ -18,10 +18,11 @@
 
 package org.apache.zookeeper.server.metric;
 
+import org.apache.zookeeper.metrics.SummarySet;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.zookeeper.metrics.SummarySet;
 
 /**
  * Generic set of long counters that keep track of min/max/avg

@@ -17,9 +17,10 @@
  */
 package org.apache.zookeeper.audit;
 
-import static org.junit.Assert.assertEquals;
 import org.apache.zookeeper.audit.AuditEvent.Result;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class AuditEventTest {
 

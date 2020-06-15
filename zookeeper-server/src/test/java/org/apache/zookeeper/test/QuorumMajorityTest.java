@@ -18,9 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
 import org.apache.zookeeper.jmx.MBeanRegistry;
 import org.apache.zookeeper.server.quorum.Leader.Proposal;
 import org.apache.zookeeper.server.quorum.QuorumPeer;
@@ -28,6 +25,11 @@ import org.apache.zookeeper.server.quorum.QuorumPeer.ServerState;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class QuorumMajorityTest extends QuorumBase {
 
@@ -37,6 +39,7 @@ public class QuorumMajorityTest extends QuorumBase {
     /***************************************************************/
     /* Test that the majority quorum verifier only counts votes from */
     /* followers in its view                                    */
+
     /***************************************************************/
     @Test
     public void testMajQuorums() throws Throwable {

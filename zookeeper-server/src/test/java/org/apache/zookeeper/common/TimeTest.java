@@ -18,16 +18,18 @@
 
 package org.apache.zookeeper.common;
 
-import static org.junit.Assert.assertEquals;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.Test;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Command line program for demonstrating robustness to clock
@@ -60,8 +62,8 @@ public class TimeTest extends ClientBase {
         zk.create("/ephemeral", new byte[]{1, 2, 3}, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
         while (Time.currentElapsedTime() - nt0 < 100000) {
             System.out.printf("%d\t%s\n",
-                              discrepancy(),
-                              zk.exists("/ephemeral", watchCount.get() == 0 ? createWatcher() : null) != null);
+                    discrepancy(),
+                    zk.exists("/ephemeral", watchCount.get() == 0 ? createWatcher() : null) != null);
             waitByYielding(500);
         }
     }

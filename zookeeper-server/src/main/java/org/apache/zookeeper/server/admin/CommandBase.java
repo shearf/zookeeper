@@ -35,6 +35,7 @@ public abstract class CommandBase implements Command {
     protected CommandBase(List<String> names) {
         this(names, true, null);
     }
+
     protected CommandBase(List<String> names, boolean serverRequired) {
         this(names, serverRequired, null);
     }
@@ -68,8 +69,8 @@ public abstract class CommandBase implements Command {
 
     /**
      * @return A response with the command set to the primary name and the
-     *         error set to null (these are the two entries that all command
-     *         responses are required to include).
+     * error set to null (these are the two entries that all command
+     * responses are required to include).
      */
     protected CommandResponse initializeResponse() {
         return new CommandResponse(primaryName);

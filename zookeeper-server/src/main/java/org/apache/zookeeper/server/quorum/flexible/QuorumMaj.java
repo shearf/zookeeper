@@ -18,19 +18,19 @@
 
 package org.apache.zookeeper.server.quorum.flexible;
 
+import org.apache.zookeeper.server.quorum.QuorumPeer.LearnerType;
+import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import org.apache.zookeeper.server.quorum.QuorumPeer.LearnerType;
-import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 
 /**
  * This class implements a validator for majority quorums. The implementation is
  * straightforward.
- *
  */
 public class QuorumMaj implements QuorumVerifier {
 
@@ -45,6 +45,7 @@ public class QuorumMaj implements QuorumVerifier {
         return 42; // any arbitrary constant will do
     }
 
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof QuorumMaj)) {
             return false;
@@ -67,7 +68,6 @@ public class QuorumMaj implements QuorumVerifier {
 
     /**
      * Defines a majority to avoid computing it every time.
-     *
      */
     public QuorumMaj(Map<Long, QuorumServer> allMembers) {
         this.allMembers = allMembers;
@@ -108,10 +108,12 @@ public class QuorumMaj implements QuorumVerifier {
      *
      * @param id
      */
+    @Override
     public long getWeight(long id) {
         return 1;
     }
 
+    @Override
     public String toString() {
         StringBuilder sw = new StringBuilder();
 
@@ -133,26 +135,32 @@ public class QuorumMaj implements QuorumVerifier {
      * Verifies if a set is a majority. Assumes that ackSet contains acks only
      * from votingMembers
      */
+    @Override
     public boolean containsQuorum(Set<Long> ackSet) {
         return (ackSet.size() > half);
     }
 
+    @Override
     public Map<Long, QuorumServer> getAllMembers() {
         return allMembers;
     }
 
+    @Override
     public Map<Long, QuorumServer> getVotingMembers() {
         return votingMembers;
     }
 
+    @Override
     public Map<Long, QuorumServer> getObservingMembers() {
         return observingMembers;
     }
 
+    @Override
     public long getVersion() {
         return version;
     }
 
+    @Override
     public void setVersion(long ver) {
         version = ver;
     }

@@ -18,27 +18,21 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
+import org.apache.zookeeper.jmx.MBeanRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.management.MBeanServer;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.remote.JMXConnector;
-import javax.management.remote.JMXConnectorFactory;
-import javax.management.remote.JMXConnectorServer;
-import javax.management.remote.JMXConnectorServerFactory;
-import javax.management.remote.JMXServiceURL;
-import org.apache.zookeeper.jmx.MBeanRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.management.remote.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class JMXEnv {
 
@@ -92,6 +86,7 @@ public class JMXEnv {
      * before their parent(s) (since names are hierarchical)
      * It waits in a loop up to 60 seconds before failing if there is a
      * mismatch.
+     *
      * @param expectedNames
      * @return
      * @throws IOException
@@ -133,6 +128,7 @@ public class JMXEnv {
      * Note that these are components of the name, and in particular
      * order matters - you want the more specific name (leafs) specified
      * before their parent(s) (since names are hierarchical)
+     *
      * @param expectedNames
      * @return
      * @throws IOException
@@ -205,13 +201,11 @@ public class JMXEnv {
      * are components of the name. It waits in a loop up to 60 seconds before
      * failing if there is a mismatch. This will return the beans which are not
      * matched.
-     *
+     * <p>
      * https://issues.apache.org/jira/browse/ZOOKEEPER-1858
      *
-     * @param expectedNames
-     *            - expected beans
+     * @param expectedNames - expected beans
      * @return the beans which are not matched with the given expected names
-     *
      * @throws IOException
      * @throws InterruptedException
      */
@@ -254,12 +248,9 @@ public class JMXEnv {
      * seconds before failing if there is a mismatch. This will return the beans
      * which are not matched.
      *
-     * @param expectedName
-     *            - expected bean
-     * @param expectedAttribute
-     *            - expected attribute
+     * @param expectedName      - expected bean
+     * @param expectedAttribute - expected attribute
      * @return the value of the attribute
-     *
      * @throws Exception
      */
     public static Object ensureBeanAttribute(String expectedName, String expectedAttribute) throws Exception {
@@ -293,7 +284,7 @@ public class JMXEnv {
     /**
      * Comparing that the given name exists in the bean. For component beans,
      * the component name will be present at the end of the bean name
-     *
+     * <p>
      * For example 'StandaloneServer' will present in the bean name like
      * 'org.apache.ZooKeeperService:name0=StandaloneServer_port-1'
      */
@@ -304,9 +295,9 @@ public class JMXEnv {
 
     static Pattern standaloneRegEx = Pattern.compile("^org.apache.ZooKeeperService:name0=StandaloneServer_port-?\\d+$");
     static Pattern instanceRegEx = Pattern.compile("^org.apache.ZooKeeperService:name0=ReplicatedServer_id(\\d+)"
-                                                           + ",name1=replica.(\\d+),name2=(Follower|Leader)$");
+            + ",name1=replica.(\\d+),name2=(Follower|Leader)$");
     static Pattern observerRegEx = Pattern.compile("^org.apache.ZooKeeperService:name0=ReplicatedServer_id(-?\\d+)"
-                                                           + ",name1=replica.(-?\\d+),name2=(StandaloneServer_port-?\\d+)$");
+            + ",name1=replica.(-?\\d+),name2=(StandaloneServer_port-?\\d+)$");
     static List<Pattern> beanPatterns = Arrays.asList(standaloneRegEx, instanceRegEx, observerRegEx);
 
     public static List<ObjectName> getServerBeans() throws IOException {

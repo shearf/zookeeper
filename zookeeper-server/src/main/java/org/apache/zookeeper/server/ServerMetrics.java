@@ -18,12 +18,8 @@
 
 package org.apache.zookeeper.server;
 
-import org.apache.zookeeper.metrics.Counter;
-import org.apache.zookeeper.metrics.MetricsContext;
+import org.apache.zookeeper.metrics.*;
 import org.apache.zookeeper.metrics.MetricsContext.DetailLevel;
-import org.apache.zookeeper.metrics.MetricsProvider;
-import org.apache.zookeeper.metrics.Summary;
-import org.apache.zookeeper.metrics.SummarySet;
 import org.apache.zookeeper.metrics.impl.DefaultMetricsProvider;
 import org.apache.zookeeper.metrics.impl.NullMetricsProvider;
 import org.slf4j.Logger;
@@ -482,7 +478,7 @@ public final class ServerMetrics {
     public final Counter REQUESTS_NOT_FORWARDED_TO_COMMIT_PROCESSOR;
 
     /**
-     *  Number of response/watch bytes written to clients.
+     * Number of response/watch bytes written to clients.
      */
     public final Counter RESPONSE_BYTES;
     public final Counter WATCH_BYTES;

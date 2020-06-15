@@ -18,6 +18,12 @@
 
 package org.apache.zookeeper.server.quorum.flexible;
 
+import org.apache.zookeeper.server.quorum.QuorumPeer.LearnerType;
+import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,38 +33,33 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import org.apache.zookeeper.server.quorum.QuorumPeer.LearnerType;
-import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class implements a validator for hierarchical quorums. With this
  * construction, zookeeper servers are split into disjoint groups, and
  * each server has a weight. We obtain a quorum if we get more than half
  * of the total weight of a group for a majority of groups.
- *
+ * <p>
  * The configuration of quorums uses two parameters: group and weight.
  * Groups are sets of ZooKeeper servers, and we set a group by passing
  * a colon-separated list of server ids. It is also necessary to assign
  * weights to server. Here is an example of a configuration that creates
  * three groups and assigns a weight of 1 to each server:
- *
- *  group.1=1:2:3
- *  group.2=4:5:6
- *  group.3=7:8:9
- *
- *  weight.1=1
- *  weight.2=1
- *  weight.3=1
- *  weight.4=1
- *  weight.5=1
- *  weight.6=1
- *  weight.7=1
- *  weight.8=1
- *  weight.9=1
- *
+ * <p>
+ * group.1=1:2:3
+ * group.2=4:5:6
+ * group.3=7:8:9
+ * <p>
+ * weight.1=1
+ * weight.2=1
+ * weight.3=1
+ * weight.4=1
+ * weight.5=1
+ * weight.6=1
+ * weight.7=1
+ * weight.8=1
+ * weight.9=1
+ * <p>
  * Note that it is still necessary to define peers using the server keyword.
  */
 
@@ -83,6 +84,7 @@ public class QuorumHierarchical implements QuorumVerifier {
         return 42; // any arbitrary constant will do
     }
 
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof QuorumHierarchical)) {
             return false;
@@ -92,9 +94,9 @@ public class QuorumHierarchical implements QuorumVerifier {
             return true;
         }
         if ((allMembers.size() != qm.getAllMembers().size())
-            || (serverWeight.size() != qm.serverWeight.size())
-            || (groupWeight.size() != qm.groupWeight.size())
-            || (serverGroup.size() != qm.serverGroup.size())) {
+                || (serverWeight.size() != qm.serverWeight.size())
+                || (groupWeight.size() != qm.groupWeight.size())
+                || (serverGroup.size() != qm.serverGroup.size())) {
             return false;
         }
         for (QuorumServer qs : allMembers.values()) {
@@ -120,6 +122,7 @@ public class QuorumHierarchical implements QuorumVerifier {
         }
         return true;
     }
+
     /**
      * This constructor requires the quorum configuration
      * to be declared in a separate file, and it takes the
@@ -144,6 +147,7 @@ public class QuorumHierarchical implements QuorumVerifier {
      *
      * @param id
      */
+    @Override
     public long getWeight(long id) {
         return serverWeight.get(id);
     }
@@ -182,6 +186,7 @@ public class QuorumHierarchical implements QuorumVerifier {
     /**
      * Parse properties if configuration given in a separate file.
      * Assumes that allMembers has been already assigned
+     *
      * @throws ConfigException
      */
     private void parse(Properties quorumProp) throws ConfigException {
@@ -239,9 +244,12 @@ public class QuorumHierarchical implements QuorumVerifier {
         computeGroupWeight();
     }
 
+    @Override
     public Map<Long, QuorumServer> getAllMembers() {
         return allMembers;
     }
+
+    @Override
     public String toString() {
         StringWriter sw = new StringWriter();
 
@@ -324,6 +332,7 @@ public class QuorumHierarchical implements QuorumVerifier {
     /**
      * Verifies if a given set is a quorum.
      */
+    @Override
     public boolean containsQuorum(Set<Long> set) {
         HashMap<Long, Long> expansion = new HashMap<Long, Long>();
 
@@ -369,18 +378,23 @@ public class QuorumHierarchical implements QuorumVerifier {
             return false;
         }
     }
+
+    @Override
     public Map<Long, QuorumServer> getVotingMembers() {
         return participatingMembers;
     }
 
+    @Override
     public Map<Long, QuorumServer> getObservingMembers() {
         return observingMembers;
     }
 
+    @Override
     public long getVersion() {
         return version;
     }
 
+    @Override
     public void setVersion(long ver) {
         version = ver;
     }

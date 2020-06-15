@@ -18,22 +18,16 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.ZooDefs.Ids;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
-import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ChrootTest extends ClientBase {
 
@@ -46,11 +40,13 @@ public class ChrootTest extends ClientBase {
         public MyWatcher(String path) {
             this.path = path;
         }
+
         public void process(WatchedEvent event) {
             System.out.println("latch:" + path + " " + event.getPath());
             this.eventPath = event.getPath();
             latch.countDown();
         }
+
         public boolean matches() throws InterruptedException {
             if (!latch.await(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS)) {
                 fail("No watch received within timeout period " + path);

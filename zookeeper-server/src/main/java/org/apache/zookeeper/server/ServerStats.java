@@ -18,12 +18,13 @@
 
 package org.apache.zookeeper.server;
 
-import java.util.concurrent.atomic.AtomicLong;
 import org.apache.zookeeper.common.Time;
 import org.apache.zookeeper.server.metric.AvgMinMaxCounter;
 import org.apache.zookeeper.server.quorum.BufferStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Basic Server Statistics
@@ -47,10 +48,15 @@ public class ServerStats {
     public interface Provider {
 
         long getOutstandingRequests();
+
         long getLastProcessedZxid();
+
         String getState();
+
         int getNumAliveConnections();
+
         long getDataDirSize();
+
         long getLogDirSize();
 
     }
@@ -100,7 +106,9 @@ public class ServerStats {
         return provider.getState();
     }
 
-    /** The number of client connections alive to this server */
+    /**
+     * The number of client connections alive to this server
+     */
     public int getNumAliveClientConnections() {
         return provider.getNumAliveConnections();
     }

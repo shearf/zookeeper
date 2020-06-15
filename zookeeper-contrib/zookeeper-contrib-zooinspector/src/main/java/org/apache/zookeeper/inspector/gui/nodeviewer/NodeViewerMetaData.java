@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,25 +17,16 @@
  */
 package org.apache.zookeeper.inspector.gui.nodeviewer;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.inspector.logger.LoggerFactory;
+import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingWorker;
-
-import org.apache.zookeeper.data.Stat;
-import org.apache.zookeeper.inspector.logger.LoggerFactory;
-import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
 
 /**
  * A node viewer for displaying the meta data for the currently selected node.
@@ -48,8 +39,8 @@ public class NodeViewerMetaData extends ZooInspectorNodeViewer {
     private String selectedNode;
 
     /**
-	 * 
-	 */
+     *
+     */
     public NodeViewerMetaData() {
         this.setLayout(new BorderLayout());
         this.metaDataPanel = new JPanel();
@@ -60,7 +51,7 @@ public class NodeViewerMetaData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * getTitle()
@@ -72,7 +63,7 @@ public class NodeViewerMetaData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * nodeSelectionChanged(java.util.Set)
@@ -171,7 +162,7 @@ public class NodeViewerMetaData extends ZooInspectorNodeViewer {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer#
      * setZooInspectorManager

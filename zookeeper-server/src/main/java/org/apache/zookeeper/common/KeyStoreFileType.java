@@ -51,11 +51,12 @@ public enum KeyStoreFileType {
     /**
      * Converts a property value to a StoreFileType enum. If the property value
      * is <code>null</code> or an empty string, returns <code>null</code>.
+     *
      * @param propertyValue the property value.
      * @return the KeyStoreFileType, or <code>null</code> if
-     *         <code>propertyValue</code> is <code>null</code> or empty.
+     * <code>propertyValue</code> is <code>null</code> or empty.
      * @throws IllegalArgumentException if <code>propertyValue</code> is not
-     *         one of "JKS", "PEM", "PKCS12", or empty/null.
+     *                                  one of "JKS", "PEM", "PKCS12", or empty/null.
      */
     public static KeyStoreFileType fromPropertyValue(String propertyValue) {
         if (propertyValue == null || propertyValue.length() == 0) {
@@ -70,10 +71,11 @@ public enum KeyStoreFileType {
      * If the file name ends with ".pem", returns <code>StoreFileType.PEM</code>.
      * If the file name ends with ".p12", returns <code>StoreFileType.PKCS12</code>.
      * Otherwise, throws an IllegalArgumentException.
+     *
      * @param filename the filename of the key store or trust store file.
      * @return a KeyStoreFileType.
      * @throws IllegalArgumentException if the filename does not end with
-     *         ".jks", ".pem", or "p12".
+     *                                  ".jks", ".pem", or "p12".
      */
     public static KeyStoreFileType fromFilename(String filename) {
         int i = filename.lastIndexOf('.');
@@ -92,17 +94,18 @@ public enum KeyStoreFileType {
      * If <code>propertyValue</code> is not null or empty, returns the result
      * of <code>KeyStoreFileType.fromPropertyValue(propertyValue)</code>. Else,
      * returns the result of <code>KeyStoreFileType.fromFileName(filename)</code>.
+     *
      * @param propertyValue property value describing the KeyStoreFileType, or
      *                      null/empty to auto-detect the type from the file
      *                      name.
-     * @param filename file name of the key store file. The file extension is
-     *                 used to auto-detect the KeyStoreFileType when
-     *                 <code>propertyValue</code> is null or empty.
+     * @param filename      file name of the key store file. The file extension is
+     *                      used to auto-detect the KeyStoreFileType when
+     *                      <code>propertyValue</code> is null or empty.
      * @return a KeyStoreFileType.
      * @throws IllegalArgumentException if <code>propertyValue</code> is not
-     *         one of "JKS", "PEM", "PKCS12", or empty/null.
+     *                                  one of "JKS", "PEM", "PKCS12", or empty/null.
      * @throws IllegalArgumentException if <code>propertyValue</code>is empty
-     *         or null and the type could not be determined from the file name.
+     *                                  or null and the type could not be determined from the file name.
      */
     public static KeyStoreFileType fromPropertyValueOrFileName(String propertyValue, String filename) {
         KeyStoreFileType result = KeyStoreFileType.fromPropertyValue(propertyValue);

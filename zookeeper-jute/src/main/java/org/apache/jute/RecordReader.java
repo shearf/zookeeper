@@ -30,7 +30,7 @@ import java.util.HashMap;
  */
 public class RecordReader {
 
-    private static  HashMap<String, Method> archiveFactory;
+    private static HashMap<String, Method> archiveFactory;
 
     private InputArchive archive;
 

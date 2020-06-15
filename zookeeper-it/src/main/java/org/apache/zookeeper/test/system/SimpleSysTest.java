@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,21 +18,21 @@
 
 package org.apache.zookeeper.test.system;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.KeeperException.ConnectionLossException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.ZooKeeper.States;
+import org.apache.zookeeper.common.Time;
 import org.apache.zookeeper.data.Stat;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.zookeeper.common.Time;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This does a basic system test. It starts up an ensemble of servers and a set of clients.
@@ -49,7 +49,7 @@ public class SimpleSysTest extends BaseSysTest implements Watcher {
     synchronized private boolean waitForConnect(ZooKeeper zk, long timeout) throws InterruptedException {
         connected = (zk.getState() == States.CONNECTED);
         long end = Time.currentElapsedTime() + timeout;
-        while(!connected && end > Time.currentElapsedTime()) {
+        while (!connected && end > Time.currentElapsedTime()) {
             wait(timeout);
             connected = (zk.getState() == States.CONNECTED);
         }
@@ -79,13 +79,13 @@ public class SimpleSysTest extends BaseSysTest implements Watcher {
         startClients();
 
         // Check that all clients connect properly
-        for(int i = 0; i < getClientCount(); i++) {
-            for(int j = 0; j < maxTries; j++) {
+        for (int i = 0; i < getClientCount(); i++) {
+            for (int j = 0; j < maxTries; j++) {
                 try {
                     byte b[] = zk.getData("/simpleCase/" + i, false, stat);
                     Assert.assertEquals("orig", new String(b));
-                } catch(NoNodeException e) {
-                    if (j+1 == maxTries) {
+                } catch (NoNodeException e) {
+                    if (j + 1 == maxTries) {
                         Assert.fail("Max tries exceeded on client " + i);
                     }
                     Thread.sleep(1000);
@@ -95,19 +95,19 @@ public class SimpleSysTest extends BaseSysTest implements Watcher {
 
         // Kill half the servers, make a change, restart the dead
         // servers, and then bounce the other servers one by one
-        for(int i = 0; i < getServerCount(); i++) {
+        for (int i = 0; i < getServerCount(); i++) {
             stopServer(i);
-            if (i+1 > getServerCount()/2) {
+            if (i + 1 > getServerCount() / 2) {
                 startServer(i);
-            } else if (i+1 == getServerCount()/2) {
+            } else if (i + 1 == getServerCount() / 2) {
                 Assert.assertTrue("Connection didn't recover", waitForConnect(zk, 10000));
                 try {
                     zk.setData("/simpleCase", "new".getBytes(), -1);
-                } catch(ConnectionLossException e) {
+                } catch (ConnectionLossException e) {
                     Assert.assertTrue("Connection didn't recover", waitForConnect(zk, 10000));
                     zk.setData("/simpleCase", "new".getBytes(), -1);
                 }
-                for(int j = 0; j < i; j++) {
+                for (int j = 0; j < i; j++) {
                     LOG.info("Starting server " + j);
                     startServer(i);
                 }
@@ -117,18 +117,18 @@ public class SimpleSysTest extends BaseSysTest implements Watcher {
         Assert.assertTrue("Servers didn't bounce", waitForConnect(zk, 15000));
         try {
             zk.getData("/simpleCase", false, stat);
-        } catch(ConnectionLossException e) {
+        } catch (ConnectionLossException e) {
             Assert.assertTrue("Servers didn't bounce", waitForConnect(zk, 15000));
         }
 
         // check that the change has propagated to everyone
-        for(int i = 0; i < getClientCount(); i++) {
-            for(int j = 0; j < maxTries; j++) {
+        for (int i = 0; i < getClientCount(); i++) {
+            for (int j = 0; j < maxTries; j++) {
                 byte[] data = zk.getData("/simpleCase/" + i, false, stat);
                 if (new String(data).equals("new")) {
                     break;
                 }
-                if (j+1 == maxTries) {
+                if (j + 1 == maxTries) {
                     Assert.fail("max tries exceeded for " + i);
                 }
                 Thread.sleep(1000);
@@ -139,16 +139,16 @@ public class SimpleSysTest extends BaseSysTest implements Watcher {
         zk.setData("/simpleCase", "die".getBytes(), -1);
 
         // watch for everyone to die
-        for(int i = 0; i < getClientCount(); i++) {
+        for (int i = 0; i < getClientCount(); i++) {
             try {
-                for(int j = 0; j < maxTries; j++) {
+                for (int j = 0; j < maxTries; j++) {
                     zk.getData("/simpleCase/" + i, false, stat);
-                    if (j+1 == maxTries) {
+                    if (j + 1 == maxTries) {
                         Assert.fail("max tries exceeded waiting for child " + i + " to die");
                     }
                     Thread.sleep(200);
                 }
-            } catch(NoNodeException e) {
+            } catch (NoNodeException e) {
                 // Great this is what we were hoping for!
             }
         }
@@ -159,12 +159,12 @@ public class SimpleSysTest extends BaseSysTest implements Watcher {
 
     public void process(WatchedEvent event) {
         if (event.getState() == KeeperState.SyncConnected) {
-            synchronized(this) {
+            synchronized (this) {
                 connected = true;
                 notifyAll();
             }
         } else if (event.getState() == KeeperState.Disconnected) {
-            synchronized(this) {
+            synchronized (this) {
                 connected = false;
                 notifyAll();
             }

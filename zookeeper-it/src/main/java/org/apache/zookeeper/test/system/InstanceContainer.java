@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,29 +18,24 @@
 
 package org.apache.zookeeper.test.system;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.zookeeper.server.ExitCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.zookeeper.AsyncCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.KeeperException.ConnectionLossException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.server.ExitCode;
 import org.apache.zookeeper.test.system.Instance.Reporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class starts up,
@@ -49,16 +44,19 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
     private final class MyWatcher implements Watcher {
         String myNode;
         DataCallback dc;
+
         MyWatcher(String myNode, DataCallback dc) {
             this.myNode = myNode;
             this.dc = dc;
         }
+
         public void process(WatchedEvent event) {
             if (event.getPath() != null && event.getPath().equals(myNode)) {
                 zk.getData(myNode, this, dc, this);
             }
         }
     }
+
     private final class MyDataCallback implements DataCallback {
         int lastVer;
         String myNode;
@@ -69,14 +67,15 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
             this.myInstance = myInstance;
             lastVer = ver;
         }
+
         public void processResult(int rc, String path,
-                Object ctx, byte[] data, Stat stat) {
+                                  Object ctx, byte[] data, Stat stat) {
             if (rc == KeeperException.Code.NONODE.intValue()) {
                 // we can just ignore because the child watcher takes care of this
                 return;
             }
             if (rc != KeeperException.Code.OK.intValue()) {
-                zk.getData(myNode, (Watcher)ctx, this, ctx);
+                zk.getData(myNode, (Watcher) ctx, this, ctx);
             }
             int currVer = stat.getVersion();
             if (currVer != lastVer) {
@@ -86,6 +85,7 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
             }
         }
     }
+
     private final class MyReporter implements Reporter {
         String myReportNode;
 
@@ -94,18 +94,20 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
         }
 
         public void report(String report) throws KeeperException, InterruptedException {
-            for(int j = 0; j < maxTries; j++) {
+            for (int j = 0; j < maxTries; j++) {
                 try {
                     try {
                         zk.setData(myReportNode, report.getBytes(), -1);
-                    } catch(NoNodeException e) {
+                    } catch (NoNodeException e) {
                         zk.create(myReportNode, report.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
                     }
                     break;
-                } catch(ConnectionLossException e) {}
+                } catch (ConnectionLossException e) {
+                }
             }
         }
     }
+
     private static final Logger LOG = LoggerFactory.getLogger(InstanceContainer.class);
     String name;
     String zkHostPort;
@@ -117,6 +119,7 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
     ZooKeeper zk;
     static final int sessTimeout = 5000;
     static final int maxTries = 3;
+
     public InstanceContainer(String name, String zkHostPort, String prefix) throws UnknownHostException {
         if (name.length() == 0 || name.equals("hostname")) {
             name = InetAddress.getLocalHost().getCanonicalHostName();
@@ -131,7 +134,7 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
 
     private void rmnod(String path) throws InterruptedException, KeeperException {
         KeeperException lastException = null;
-        for(int i = 0; i < maxTries; i++) {
+        for (int i = 0; i < maxTries; i++) {
             try {
                 zk.delete(path, -1);
                 lastException = null;
@@ -147,8 +150,9 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
             throw lastException;
         }
     }
+
     private void mknod_inner(String path, CreateMode mode) throws KeeperException, InterruptedException {
-        for(int i = 0; i < maxTries; i++) {
+        for (int i = 0; i < maxTries; i++) {
             try {
                 zk.create(path, null, Ids.OPEN_ACL_UNSAFE, mode);
                 break;
@@ -174,11 +178,11 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
         String subpath[] = path.split("/");
         StringBuilder sb = new StringBuilder();
         // We start at 1 because / will create an empty part first
-        for(int i = 1; i < subpath.length; i++) {
+        for (int i = 1; i < subpath.length; i++) {
             sb.append("/");
             sb.append(subpath[i]);
             CreateMode m = CreateMode.PERSISTENT;
-            if (i == subpath.length-1) {
+            if (i == subpath.length - 1) {
                 m = mode;
             }
             mknod_inner(sb.toString(), m);
@@ -209,7 +213,7 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
             System.exit(ExitCode.INVALID_INVOCATION.getValue());
         }
         new InstanceContainer(args[0], args[1], args[2]).run();
-        while(true) {
+        while (true) {
             Thread.sleep(1000);
         }
     }
@@ -238,13 +242,13 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
         Map<String, Instance> newList = new HashMap<String, Instance>();
         // check for differences
         Stat stat = new Stat();
-        for(String child: children) {
+        for (String child : children) {
             Instance i = instances.remove(child);
             if (i == null) {
                 // Start up a new instance
                 byte[] data = null;
                 String myNode = assignmentsNode + '/' + child;
-                while(true) {
+                while (true) {
                     try {
                         data = zk.getData(myNode, true, stat);
                         break;
@@ -267,7 +271,7 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
                         conf = null;
                     } else {
                         clazz = instanceSpec.substring(0, spaceIndex);
-                        conf = instanceSpec.substring(spaceIndex+1);
+                        conf = instanceSpec.substring(spaceIndex + 1);
                     }
                     try {
                         Class<?> c = Class.forName(clazz);
@@ -296,7 +300,7 @@ public class InstanceContainer implements Watcher, AsyncCallback.ChildrenCallbac
             }
         }
         // kill anything that was removed for the children
-        for(Map.Entry<String,Instance> i: instances.entrySet()) {
+        for (Map.Entry<String, Instance> i : instances.entrySet()) {
             i.getValue().stop();
             try {
                 rmnod(reportsNode + '/' + i.getKey());

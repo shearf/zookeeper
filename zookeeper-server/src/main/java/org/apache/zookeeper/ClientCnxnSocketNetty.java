@@ -18,24 +18,26 @@
 
 package org.apache.zookeeper;
 
-import static org.apache.zookeeper.common.X509Exception.SSLContextException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.apache.zookeeper.ClientCnxn.EndOfStreamException;
+import org.apache.zookeeper.ClientCnxn.Packet;
+import org.apache.zookeeper.client.ZKClientConfig;
+import org.apache.zookeeper.common.ClientX509Util;
+import org.apache.zookeeper.common.NettyUtils;
+import org.apache.zookeeper.common.X509Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -48,16 +50,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import org.apache.zookeeper.ClientCnxn.EndOfStreamException;
-import org.apache.zookeeper.ClientCnxn.Packet;
-import org.apache.zookeeper.client.ZKClientConfig;
-import org.apache.zookeeper.common.ClientX509Util;
-import org.apache.zookeeper.common.NettyUtils;
-import org.apache.zookeeper.common.X509Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.apache.zookeeper.common.X509Exception.SSLContextException;
 
 /**
  * ClientCnxnSocketNetty implements ClientCnxnSocket abstract methods.
@@ -129,10 +123,10 @@ public class ClientCnxnSocketNetty extends ClientCnxnSocket {
         firstConnect = new CountDownLatch(1);
 
         Bootstrap bootstrap = new Bootstrap().group(eventLoopGroup)
-                                             .channel(NettyUtils.nioOrEpollSocketChannel())
-                                             .option(ChannelOption.SO_LINGER, -1)
-                                             .option(ChannelOption.TCP_NODELAY, true)
-                                             .handler(new ZKClientPipelineFactory(addr.getHostString(), addr.getPort()));
+                .channel(NettyUtils.nioOrEpollSocketChannel())
+                .option(ChannelOption.SO_LINGER, -1)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .handler(new ZKClientPipelineFactory(addr.getHostString(), addr.getPort()));
         bootstrap = configureBootstrapAllocator(bootstrap);
         bootstrap.validate();
 
@@ -258,9 +252,9 @@ public class ClientCnxnSocketNetty extends ClientCnxnSocket {
 
     @Override
     void doTransport(
-        int waitTimeOut,
-        Queue<Packet> pendingQueue,
-        ClientCnxn cnxn) throws IOException, InterruptedException {
+            int waitTimeOut,
+            Queue<Packet> pendingQueue,
+            ClientCnxn cnxn) throws IOException, InterruptedException {
         try {
             if (!firstConnect.await(waitTimeOut, TimeUnit.MILLISECONDS)) {
                 return;
@@ -300,9 +294,10 @@ public class ClientCnxnSocketNetty extends ClientCnxnSocket {
 
     /**
      * Sends a packet to the remote peer and flushes the channel.
+     *
      * @param p packet to send.
      * @return a ChannelFuture that will complete when the write operation
-     *         succeeds or fails.
+     * succeeds or fails.
      */
     private ChannelFuture sendPktAndFlush(Packet p) {
         return sendPkt(p, true);
@@ -310,9 +305,10 @@ public class ClientCnxnSocketNetty extends ClientCnxnSocket {
 
     /**
      * Sends a packet to the remote peer but does not flush() the channel.
+     *
      * @param p packet to send.
      * @return a ChannelFuture that will complete when the write operation
-     *         succeeds or fails.
+     * succeeds or fails.
      */
     private ChannelFuture sendPktOnly(Packet p) {
         return sendPkt(p, false);
@@ -350,8 +346,8 @@ public class ClientCnxnSocketNetty extends ClientCnxnSocket {
         while (true) {
             if (p != WakeupPacket.getInstance()) {
                 if ((p.requestHeader != null)
-                    && (p.requestHeader.getType() != ZooDefs.OpCode.ping)
-                    && (p.requestHeader.getType() != ZooDefs.OpCode.auth)) {
+                        && (p.requestHeader.getType() != ZooDefs.OpCode.ping)
+                        && (p.requestHeader.getType() != ZooDefs.OpCode.auth)) {
                     p.requestHeader.setXid(cnxn.getXid());
                     synchronized (pendingQueue) {
                         pendingQueue.add(p);
@@ -529,6 +525,7 @@ public class ClientCnxnSocketNetty extends ClientCnxnSocket {
      * Sets the test ByteBufAllocator. This allocator will be used by all
      * future instances of this class.
      * It is not recommended to use this method outside of testing.
+     *
      * @param allocator the ByteBufAllocator to use for all netty buffer
      *                  allocations.
      */

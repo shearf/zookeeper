@@ -18,10 +18,11 @@
 
 package org.apache.zookeeper.server.command;
 
-import java.io.PrintWriter;
-import java.util.List;
 import org.apache.zookeeper.server.DataTree.ZxidDigest;
 import org.apache.zookeeper.server.ServerCnxn;
+
+import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * Command used to dump the latest digest histories.

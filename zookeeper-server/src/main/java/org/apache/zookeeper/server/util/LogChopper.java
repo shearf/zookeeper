@@ -18,16 +18,6 @@
 
 package org.apache.zookeeper.server.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.zip.Adler32;
-import java.util.zip.Checksum;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.Record;
@@ -38,6 +28,10 @@ import org.apache.zookeeper.server.persistence.FileHeader;
 import org.apache.zookeeper.server.persistence.FileTxnLog;
 import org.apache.zookeeper.txn.TxnHeader;
 import org.apache.zookeeper.util.ServiceUtils;
+
+import java.io.*;
+import java.util.zip.Adler32;
+import java.util.zip.Checksum;
 
 /**
  * this class will chop the log at the specified zxid
@@ -79,9 +73,9 @@ public class LogChopper {
             return false;
         }
         System.out.println("ZooKeeper Transactional Log File with dbid "
-                           + fhdr.getDbid()
-                           + " txnlog format version "
-                           + fhdr.getVersion());
+                + fhdr.getDbid()
+                + " txnlog format version "
+                + fhdr.getVersion());
 
         fhdr.serialize(choppedStream, "fileheader");
         int count = 0;

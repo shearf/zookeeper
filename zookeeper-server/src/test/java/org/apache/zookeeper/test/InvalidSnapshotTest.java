@@ -18,9 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.ZooKeeper;
@@ -31,6 +28,11 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.assertTrue;
 
 public class InvalidSnapshotTest extends ZKTestCase {
 
@@ -63,6 +65,7 @@ public class InvalidSnapshotTest extends ZKTestCase {
 
     /**
      * test the snapshot
+     *
      * @throws Exception an exception could be expected
      */
     @Test

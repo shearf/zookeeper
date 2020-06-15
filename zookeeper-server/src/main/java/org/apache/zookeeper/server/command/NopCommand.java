@@ -18,8 +18,9 @@
 
 package org.apache.zookeeper.server.command;
 
-import java.io.PrintWriter;
 import org.apache.zookeeper.server.ServerCnxn;
+
+import java.io.PrintWriter;
 
 /**
  * A command that does not do anything except reply to client with predefined message.

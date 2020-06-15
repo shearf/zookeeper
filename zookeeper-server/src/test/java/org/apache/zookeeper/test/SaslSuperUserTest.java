@@ -18,12 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.TestableZooKeeper;
 import org.apache.zookeeper.WatchedEvent;
@@ -36,6 +30,14 @@ import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.assertEquals;
 
 public class SaslSuperUserTest extends ClientBase {
 
@@ -54,16 +56,16 @@ public class SaslSuperUserTest extends ClientBase {
         FileWriter fwriter = new FileWriter(saslConfFile);
 
         fwriter.write(""
-                              + "Server {\n"
-                              + "          org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                              + "          user_super_duper=\"test\";\n"
-                              + "};\n"
-                              + "Client {\n"
-                              + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                              + "       username=\"super_duper\"\n"
-                              + "       password=\"test\";\n"
-                              + "};"
-                              + "\n");
+                + "Server {\n"
+                + "          org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                + "          user_super_duper=\"test\";\n"
+                + "};\n"
+                + "Client {\n"
+                + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                + "       username=\"super_duper\"\n"
+                + "       password=\"test\";\n"
+                + "};"
+                + "\n");
         fwriter.close();
         oldLoginConfig = System.setProperty("java.security.auth.login.config", saslConfFile.getAbsolutePath());
         oldSuperUser = System.setProperty("zookeeper.superUser", "super_duper");

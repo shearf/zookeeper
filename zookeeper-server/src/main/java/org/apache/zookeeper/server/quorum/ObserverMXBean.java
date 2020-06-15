@@ -22,7 +22,6 @@ import org.apache.zookeeper.server.ZooKeeperServerMXBean;
 
 /**
  * Observer MX Bean interface, implemented by ObserverBean
- *
  */
 public interface ObserverMXBean extends ZooKeeperServerMXBean {
 

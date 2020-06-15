@@ -18,7 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertFalse;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.server.Request;
@@ -31,6 +30,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertFalse;
 
 /**
  * Validate that open/close session request of a local session to not propagate
@@ -72,6 +73,7 @@ public class LocalSessionRequestTest extends ZKTestCase {
 
     /**
      * Walk through the target peer commmittedLog.
+     *
      * @param sessionId
      * @param peerId
      */
@@ -83,11 +85,11 @@ public class LocalSessionRequestTest extends ZKTestCase {
         ZKDatabase db = peer.getActiveServer().getZKDatabase();
         for (Proposal p : db.getCommittedLog()) {
             assertFalse("Should not see "
-                                       + Request.op2String(p.request.type)
-                                       + " request from local session 0x"
-                                       + session
-                                       + " on the "
-                                       + peerType, p.request.sessionId == sessionId);
+                    + Request.op2String(p.request.type)
+                    + " request from local session 0x"
+                    + session
+                    + " on the "
+                    + peerType, p.request.sessionId == sessionId);
         }
     }
 

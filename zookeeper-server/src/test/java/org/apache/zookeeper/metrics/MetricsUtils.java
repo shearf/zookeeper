@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.metrics;
 
+import org.apache.zookeeper.server.ServerMetrics;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.zookeeper.server.ServerMetrics;
 
 /**
  * Utility for Metrics in tests.

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,47 +17,20 @@
  */
 package org.apache.zookeeper.inspector.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer;
+import org.apache.zookeeper.inspector.logger.LoggerFactory;
+import org.apache.zookeeper.inspector.manager.ZooInspectorManager;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.DropMode;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.TransferHandler;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import org.apache.zookeeper.inspector.gui.Toolbar.Button;
-import org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer;
-import org.apache.zookeeper.inspector.logger.LoggerFactory;
-import org.apache.zookeeper.inspector.manager.ZooInspectorManager;
+import java.util.*;
 
 /**
  * A {@link JDialog} for configuring which {@link ZooInspectorNodeViewer}s to
@@ -69,6 +42,7 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
     private final JList viewersList;
     private final JFileChooser fileChooser = new JFileChooser(new File("."));
     private final Map<Button, JButton> buttons = new HashMap<Button, JButton>();
+
     /**
      * @param frame
      *            - the Frame from which the dialog is displayed
@@ -79,18 +53,18 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
      *            notified of changes to the node viewers configuration
      * @param manager
      *            - the {@link ZooInspectorManager} for the application
-     * 
+     *
      */
     public ZooInspectorNodeViewersDialog(Frame frame,
-            final List<ZooInspectorNodeViewer> currentViewers,
-            final Collection<NodeViewersChangeListener> listeners,
-            final ZooInspectorManager manager,
-            final IconResource iconResource) {
+                                         final List<ZooInspectorNodeViewer> currentViewers,
+                                         final Collection<NodeViewersChangeListener> listeners,
+                                         final ZooInspectorManager manager,
+                                         final IconResource iconResource) {
         super(frame);
         final List<ZooInspectorNodeViewer> newViewers = new ArrayList<ZooInspectorNodeViewer>(
                 currentViewers);
         this.setLayout(new BorderLayout());
-        this.setIconImage(iconResource.get(IconResource.ICON_ChangeNodeViewers,"")
+        this.setIconImage(iconResource.get(IconResource.ICON_ChangeNodeViewers, "")
                 .getImage());
         this.setTitle("About ZooInspector");
         this.setModal(true);
@@ -107,8 +81,8 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
         viewersList.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList list,
-                    Object value, int index, boolean isSelected,
-                    boolean cellHasFocus) {
+                                                          Object value, int index, boolean isSelected,
+                                                          boolean cellHasFocus) {
                 ZooInspectorNodeViewer viewer = (ZooInspectorNodeViewer) value;
                 JLabel label = (JLabel) super.getListCellRendererComponent(
                         list, value, index, isSelected, cellHasFocus);
@@ -206,7 +180,7 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
 
         final JTextField newViewerTextField = new JTextField();
 
-        for(Button button : Button.values()) {
+        for (Button button : Button.values()) {
             JButton jbutton = button.createJButton(iconResource);
             buttons.put(button, jbutton);
         }
@@ -560,7 +534,7 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event
      * .ListSelectionEvent)
@@ -591,13 +565,13 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
     }
 
     public static enum Button {
-        up("Move currently selected node viewer up",IconResource.ICON_UP,false),
-        down("Move currently selected node viewer down",IconResource.ICON_DOWN,false),
-        add("Add node viewer",IconResource.ICON_ADD,true),
-        remove("Remove currently selected node viewer",IconResource.ICON_REMOVE,false),
-        save("Save current node viewer configuration to file","Save"),
-        load("Load node viewer configuration from file","Load"),
-        setDefaults("Set current configuration asd defaults","Set as defaults");
+        up("Move currently selected node viewer up", IconResource.ICON_UP, false),
+        down("Move currently selected node viewer down", IconResource.ICON_DOWN, false),
+        add("Add node viewer", IconResource.ICON_ADD, true),
+        remove("Remove currently selected node viewer", IconResource.ICON_REMOVE, false),
+        save("Save current node viewer configuration to file", "Save"),
+        load("Load node viewer configuration from file", "Load"),
+        setDefaults("Set current configuration asd defaults", "Set as defaults");
 
         private String toolTip;
         private String icon;
@@ -617,7 +591,7 @@ public class ZooInspectorNodeViewersDialog extends JDialog implements
             ImageIcon imageIcon = iconResource.get(icon, toolTip);
             JButton jbutton;
 
-            if(imageIcon == null) {
+            if (imageIcon == null) {
                 jbutton = new JButton(icon);
             } else {
                 jbutton = new JButton(imageIcon);

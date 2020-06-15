@@ -18,20 +18,16 @@
 
 package org.apache.zookeeper.recipes.queue;
 
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.ACL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.ACL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A <a href="package.html">protocol to implement a distributed queue</a>.
@@ -59,6 +55,7 @@ public class DistributedQueue {
 
     /**
      * Returns a Map of the children, ordered by id.
+     *
      * @param watcher optional watcher on getChildren() operation.
      * @return map from id to child name for all children
      */
@@ -88,6 +85,7 @@ public class DistributedQueue {
 
     /**
      * Find the smallest child node.
+     *
      * @return The name of the smallest child node.
      */
     private String smallestChildName() throws KeeperException, InterruptedException {
@@ -130,6 +128,7 @@ public class DistributedQueue {
 
     /**
      * Return the head of the queue without modifying the queue.
+     *
      * @return the data at the head of the queue.
      * @throws NoSuchElementException
      * @throws KeeperException
@@ -168,6 +167,7 @@ public class DistributedQueue {
 
     /**
      * Attempts to remove the head of the queue and return it.
+     *
      * @return The former head of the queue
      * @throws NoSuchElementException
      * @throws KeeperException
@@ -212,6 +212,7 @@ public class DistributedQueue {
             LOG.debug("Watcher fired: {}", event);
             latch.countDown();
         }
+
         public void await() throws InterruptedException {
             latch.await();
         }
@@ -220,6 +221,7 @@ public class DistributedQueue {
 
     /**
      * Removes the head of the queue and returns it, blocks until it succeeds.
+     *
      * @return The former head of the queue
      * @throws NoSuchElementException
      * @throws KeeperException
@@ -256,6 +258,7 @@ public class DistributedQueue {
 
     /**
      * Inserts data into queue.
+     *
      * @param data
      * @return true if data was successfully added
      */
@@ -273,6 +276,7 @@ public class DistributedQueue {
 
     /**
      * Returns the data at the first element of the queue, or null if the queue is empty.
+     *
      * @return data at the first element of the queue, or null.
      * @throws KeeperException
      * @throws InterruptedException
@@ -287,6 +291,7 @@ public class DistributedQueue {
 
     /**
      * Attempts to remove the head of the queue and return it. Returns null if the queue is empty.
+     *
      * @return Head of the queue or null.
      * @throws KeeperException
      * @throws InterruptedException

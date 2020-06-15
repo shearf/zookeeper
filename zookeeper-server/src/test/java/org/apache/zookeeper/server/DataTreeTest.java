@@ -18,25 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.InputArchive;
@@ -54,6 +35,16 @@ import org.apache.zookeeper.txn.TxnHeader;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.Assert.*;
 
 public class DataTreeTest extends ZKTestCase {
 
@@ -103,7 +94,7 @@ public class DataTreeTest extends ZKTestCase {
     private void createEphemeralNode(long session, final DataTree dataTree, int count) throws NoNodeException, NodeExistsException {
         for (int i = 0; i < count; i++) {
             dataTree.createNode("/test" + i, new byte[0], null, session + i, dataTree.getNode("/").stat.getCversion()
-                                                                                     + 1, 1, 1);
+                    + 1, 1, 1);
         }
     }
 
@@ -143,14 +134,14 @@ public class DataTreeTest extends ZKTestCase {
             int newCversion = zk.stat.getCversion();
             long newPzxid = zk.stat.getPzxid();
             assertTrue("<cversion, pzxid> verification failed. Expected: <"
-                                      + (prevCversion + 1)
-                                      + ", "
-                                      + (prevPzxid + 1)
-                                      + ">, found: <"
-                                      + newCversion
-                                      + ", "
-                                      + newPzxid
-                                      + ">", (newCversion == prevCversion + 1 && newPzxid == prevPzxid + 1));
+                    + (prevCversion + 1)
+                    + ", "
+                    + (prevPzxid + 1)
+                    + ">, found: <"
+                    + newCversion
+                    + ", "
+                    + newPzxid
+                    + ">", (newCversion == prevCversion + 1 && newPzxid == prevPzxid + 1));
             assertNotEquals(digestBefore, dt.getTreeDigest());
         } finally {
             ZooKeeperServer.setDigestEnabled(false);
@@ -169,14 +160,14 @@ public class DataTreeTest extends ZKTestCase {
         int newCversion = parent.stat.getCversion();
         long newPzxid = parent.stat.getPzxid();
         assertTrue("<cversion, pzxid> verification failed. Expected: <"
-                                  + currentCversion
-                                  + ", "
-                                  + currentPzxid
-                                  + ">, found: <"
-                                  + newCversion
-                                  + ", "
-                                  + newPzxid
-                                  + ">", (newCversion >= currentCversion && newPzxid >= currentPzxid));
+                + currentCversion
+                + ", "
+                + currentPzxid
+                + ">, found: <"
+                + newCversion
+                + ", "
+                + newPzxid
+                + ">", (newCversion >= currentCversion && newPzxid >= currentPzxid));
     }
 
     @Test
@@ -263,7 +254,7 @@ public class DataTreeTest extends ZKTestCase {
      * could get stuck at OutputArchieve.writeInt due to potential network/disk issues.
      * This can cause the system experiences hanging issues similar to ZooKeeper-2201.
      * This test verifies the fix that we should not hold ACL cache during dumping aclcache to snapshots
-    */
+     */
     @Test(timeout = 60000)
     public void testSerializeDoesntLockACLCacheWhileWriting() throws Exception {
         DataTree tree = new DataTree();
@@ -307,7 +298,7 @@ public class DataTreeTest extends ZKTestCase {
     }
 
     /* ZOOKEEPER-3531 - similarly for aclCache.deserialize, we should not hold lock either
-    */
+     */
     @Test(timeout = 60000)
     public void testDeserializeDoesntLockACLCacheWhileReading() throws Exception {
         DataTree tree = new DataTree();

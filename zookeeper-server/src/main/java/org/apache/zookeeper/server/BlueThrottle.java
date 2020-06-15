@@ -18,39 +18,40 @@
 
 package org.apache.zookeeper.server;
 
-import java.util.Random;
 import org.apache.zookeeper.common.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Random;
+
 /**
  * Implements a token-bucket based rate limiting mechanism with optional
  * probabilistic dropping inspired by the BLUE queue management algorithm [1].
- *
+ * <p>
  * The throttle provides the {@link #checkLimit(int)} method which provides
  * a binary yes/no decision.
- *
+ * <p>
  * The core token bucket algorithm starts with an initial set of tokens based
  * on the <code>maxTokens</code> setting. Tokens are dispensed each
  * {@link #checkLimit(int)} call, which fails if there are not enough tokens to
  * satisfy a given request.
- *
+ * <p>
  * The token bucket refills over time, providing <code>fillCount</code> tokens
  * every <code>fillTime</code> milliseconds, capping at <code>maxTokens</code>.
- *
+ * <p>
  * This design allows the throttle to allow short bursts to pass, while still
  * capping the total number of requests per time interval.
- *
+ * <p>
  * One issue with a pure token bucket approach for something like request or
  * connection throttling is that the wall clock arrival time of requests affects
  * the probability of a request being allowed to pass or not. Under constant
  * load this can lead to request starvation for requests that constantly arrive
  * later than the majority.
- *
+ * <p>
  * In an attempt to combat this, this throttle can also provide probabilistic
  * dropping. This is enabled anytime <code>freezeTime</code> is set to a value
  * other than <code>-1</code>.
- *
+ * <p>
  * The probabilistic algorithm starts with an initial drop probability of 0, and
  * adjusts this probability roughly every <code>freezeTime</code> milliseconds.
  * The first request after <code>freezeTime</code>, the algorithm checks the
@@ -58,15 +59,15 @@ import org.slf4j.LoggerFactory;
  * by <code>dropIncrease</code> up to a maximum of <code>1</code>. Otherwise, if
  * the bucket has a token deficit less than <code>decreasePoint * maxTokens</code>,
  * the probability is decreased by <code>dropDecrease</code>.
- *
+ * <p>
  * Given a call to {@link #checkLimit(int)}, requests are first dropped randomly
  * based on the current drop probability, and only surviving requests are then
  * checked against the token bucket.
- *
+ * <p>
  * When under constant load, the probabilistic algorithm will adapt to a drop
  * frequency that should keep requests within the token limit. When load drops,
  * the drop probability will decrease, eventually returning to zero if possible.
- *
+ * <p>
  * [1] "BLUE: A New Class of Active Queue Management Algorithms"
  **/
 
@@ -122,7 +123,7 @@ public class BlueThrottle {
     private static final int DEFAULT_RENEW_SESSION_WEIGHT;
 
     // for unit tests only
-    protected  static void setConnectionWeightEnabled(boolean enabled) {
+    protected static void setConnectionWeightEnabled(boolean enabled) {
         connectionWeightEnabled = enabled;
         logWeighedThrottlingSetting();
     }
@@ -162,9 +163,9 @@ public class BlueThrottle {
             DEFAULT_GLOBAL_SESSION_WEIGHT = 3;
         } else if (globalWeight < localWeight) {
             LOG.warn(
-                "The global session weight {} is less than the local session weight {}. Use the local session weight.",
-                globalWeight,
-                localWeight);
+                    "The global session weight {} is less than the local session weight {}. Use the local session weight.",
+                    globalWeight,
+                    localWeight);
             DEFAULT_GLOBAL_SESSION_WEIGHT = localWeight;
         } else {
             DEFAULT_GLOBAL_SESSION_WEIGHT = globalWeight;
@@ -182,9 +183,9 @@ public class BlueThrottle {
             DEFAULT_RENEW_SESSION_WEIGHT = 2;
         } else if (renewWeight < localWeight) {
             LOG.warn(
-                "The renew session weight {} is less than the local session weight {}. Use the local session weight.",
-                renewWeight,
-                localWeight);
+                    "The renew session weight {} is less than the local session weight {}. Use the local session weight.",
+                    renewWeight,
+                    localWeight);
             DEFAULT_RENEW_SESSION_WEIGHT = localWeight;
         } else {
             DEFAULT_RENEW_SESSION_WEIGHT = renewWeight;

@@ -18,7 +18,6 @@
 
 package org.apache.zookeeper.server.auth;
 
-import java.nio.charset.StandardCharsets;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.data.Id;
@@ -27,6 +26,8 @@ import org.apache.zookeeper.server.ZKDatabase;
 import org.apache.zookeeper.server.ZooKeeperServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.charset.StandardCharsets;
 
 /*
  * This class is a sample implementation of being passed the ZooKeeperServer

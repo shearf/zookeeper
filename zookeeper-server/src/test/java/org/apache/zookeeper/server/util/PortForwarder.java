@@ -18,70 +18,65 @@
 
 package org.apache.zookeeper.server.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A utility that does bi-directional forwarding between two ports.
  * Useful, for example, to simulate network failures.
  * Example:
- *
- *   Server 1 config file:
- *
- *      server.1=127.0.0.1:7301:7401;8201
- *      server.2=127.0.0.1:7302:7402;8202
- *      server.3=127.0.0.1:7303:7403;8203
- *
- *   Server 2 and 3 config files:
- *
- *      server.1=127.0.0.1:8301:8401;8201
- *      server.2=127.0.0.1:8302:8402;8202
- *      server.3=127.0.0.1:8303:8403;8203
- *
- *   Initially forward traffic between 730x and 830x and between 740x and 830x
- *   This way server 1 can communicate with servers 2 and 3
- *  ....
- *
- *   List&lt;PortForwarder&gt; pfs = startForwarding();
- *  ....
- *   // simulate a network interruption for server 1
- *   stopForwarding(pfs);
- *  ....
- *   // restore connection
- *   pfs = startForwarding();
- *
- *
- *  private List&lt;PortForwarder&gt; startForwarding() throws IOException {
- *      List&lt;PortForwarder&gt; res = new ArrayList&lt;PortForwarder&gt;();
- *      res.add(new PortForwarder(8301, 7301));
- *      res.add(new PortForwarder(8401, 7401));
- *      res.add(new PortForwarder(7302, 8302));
- *      res.add(new PortForwarder(7402, 8402));
- *      res.add(new PortForwarder(7303, 8303));
- *      res.add(new PortForwarder(7403, 8403));
- *      return res;
- *  }
- *
- *  private void stopForwarding(List&lt;PortForwarder&gt; pfs) throws Exception {
- *       for (PortForwarder pf : pfs) {
- *           pf.shutdown();
- *       }
- *  }
- *
- *
+ * <p>
+ * Server 1 config file:
+ * <p>
+ * server.1=127.0.0.1:7301:7401;8201
+ * server.2=127.0.0.1:7302:7402;8202
+ * server.3=127.0.0.1:7303:7403;8203
+ * <p>
+ * Server 2 and 3 config files:
+ * <p>
+ * server.1=127.0.0.1:8301:8401;8201
+ * server.2=127.0.0.1:8302:8402;8202
+ * server.3=127.0.0.1:8303:8403;8203
+ * <p>
+ * Initially forward traffic between 730x and 830x and between 740x and 830x
+ * This way server 1 can communicate with servers 2 and 3
+ * ....
+ * <p>
+ * List&lt;PortForwarder&gt; pfs = startForwarding();
+ * ....
+ * // simulate a network interruption for server 1
+ * stopForwarding(pfs);
+ * ....
+ * // restore connection
+ * pfs = startForwarding();
+ * <p>
+ * <p>
+ * private List&lt;PortForwarder&gt; startForwarding() throws IOException {
+ * List&lt;PortForwarder&gt; res = new ArrayList&lt;PortForwarder&gt;();
+ * res.add(new PortForwarder(8301, 7301));
+ * res.add(new PortForwarder(8401, 7401));
+ * res.add(new PortForwarder(7302, 8302));
+ * res.add(new PortForwarder(7402, 8402));
+ * res.add(new PortForwarder(7303, 8303));
+ * res.add(new PortForwarder(7403, 8403));
+ * return res;
+ * }
+ * <p>
+ * private void stopForwarding(List&lt;PortForwarder&gt; pfs) throws Exception {
+ * for (PortForwarder pf : pfs) {
+ * pf.shutdown();
+ * }
+ * }
  */
 public class PortForwarder extends Thread {
 
@@ -197,12 +192,12 @@ public class PortForwarder extends Thread {
                                 throw e;
                             }
                             LOG.warn(
-                                "connection failed, retrying({}): local:{} from:{} to:{}",
-                                retry,
-                                sock.getLocalPort(),
-                                sock.getPort(),
-                                to,
-                                e);
+                                    "connection failed, retrying({}): local:{} from:{} to:{}",
+                                    retry,
+                                    sock.getLocalPort(),
+                                    sock.getPort(),
+                                    to,
+                                    e);
                         }
                         Thread.sleep(TimeUnit.SECONDS.toMillis(1));
                         retry--;
@@ -220,20 +215,20 @@ public class PortForwarder extends Thread {
                     LOG.warn("socket timed out", e);
                 } catch (ConnectException e) {
                     LOG.warn(
-                        "connection exception local:{} from:{} to:{}",
-                        sock.getLocalPort(),
-                        sock.getPort(),
-                        to,
-                        e);
-                    sock.close();
-                } catch (IOException e) {
-                    if (!"Socket closed".equals(e.getMessage())) {
-                        LOG.warn(
-                            "unexpected exception local:{} from:{} to:{}",
+                            "connection exception local:{} from:{} to:{}",
                             sock.getLocalPort(),
                             sock.getPort(),
                             to,
                             e);
+                    sock.close();
+                } catch (IOException e) {
+                    if (!"Socket closed".equals(e.getMessage())) {
+                        LOG.warn(
+                                "unexpected exception local:{} from:{} to:{}",
+                                sock.getLocalPort(),
+                                sock.getPort(),
+                                to,
+                                e);
                         throw e;
                     }
                 }

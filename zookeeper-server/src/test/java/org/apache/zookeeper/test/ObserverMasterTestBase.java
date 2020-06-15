@@ -18,16 +18,18 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertTrue;
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.server.quorum.QuorumPeerTestBase;
 import org.apache.zookeeper.server.util.PortForwarder;
+
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.assertTrue;
 
 public class ObserverMasterTestBase extends QuorumPeerTestBase implements Watcher {
 
@@ -59,7 +61,7 @@ public class ObserverMasterTestBase extends QuorumPeerTestBase implements Watche
 
         String quorumCfgSection =
                 "server.1=127.0.0.1:" + (PORT_QP1)
-                        + ":" + (PORT_QP_LE1) + ";" +  CLIENT_PORT_QP1
+                        + ":" + (PORT_QP_LE1) + ";" + CLIENT_PORT_QP1
                         + "\nserver.2=127.0.0.1:" + (PORT_QP2)
                         + ":" + (PORT_QP_LE2) + ";" + CLIENT_PORT_QP2
                         + "\nserver.3=127.0.0.1:" + (PORT_OBS)
@@ -79,11 +81,11 @@ public class ObserverMasterTestBase extends QuorumPeerTestBase implements Watche
         q1.start();
         q2.start();
         assertTrue(
-            "waiting for server 1 being up",
-            ClientBase.waitForServerUp("127.0.0.1:" + CLIENT_PORT_QP1, CONNECTION_TIMEOUT));
+                "waiting for server 1 being up",
+                ClientBase.waitForServerUp("127.0.0.1:" + CLIENT_PORT_QP1, CONNECTION_TIMEOUT));
         assertTrue(
-            "waiting for server 2 being up",
-            ClientBase.waitForServerUp("127.0.0.1:" + CLIENT_PORT_QP2, CONNECTION_TIMEOUT));
+                "waiting for server 2 being up",
+                ClientBase.waitForServerUp("127.0.0.1:" + CLIENT_PORT_QP2, CONNECTION_TIMEOUT));
         return forwarder;
     }
 
@@ -97,14 +99,14 @@ public class ObserverMasterTestBase extends QuorumPeerTestBase implements Watche
         q3.shutdown();
 
         assertTrue(
-            "Waiting for server 1 to shut down",
-            ClientBase.waitForServerDown("127.0.0.1:" + CLIENT_PORT_QP1, ClientBase.CONNECTION_TIMEOUT));
+                "Waiting for server 1 to shut down",
+                ClientBase.waitForServerDown("127.0.0.1:" + CLIENT_PORT_QP1, ClientBase.CONNECTION_TIMEOUT));
         assertTrue(
-            "Waiting for server 2 to shut down",
-            ClientBase.waitForServerDown("127.0.0.1:" + CLIENT_PORT_QP2, ClientBase.CONNECTION_TIMEOUT));
+                "Waiting for server 2 to shut down",
+                ClientBase.waitForServerDown("127.0.0.1:" + CLIENT_PORT_QP2, ClientBase.CONNECTION_TIMEOUT));
         assertTrue(
-            "Waiting for server 3 to shut down",
-            ClientBase.waitForServerDown("127.0.0.1:" + CLIENT_PORT_OBS, ClientBase.CONNECTION_TIMEOUT));
+                "Waiting for server 3 to shut down",
+                ClientBase.waitForServerDown("127.0.0.1:" + CLIENT_PORT_OBS, ClientBase.CONNECTION_TIMEOUT));
     }
 
     /**

@@ -27,61 +27,77 @@ public interface ZooKeeperServerMXBean {
      * @return the server socket port number
      */
     String getClientPort();
+
     /**
      * @return the zookeeper server version
      */
     String getVersion();
+
     /**
      * @return time the server was started
      */
     String getStartTime();
+
     /**
      * @return min request latency in ms
      */
     long getMinRequestLatency();
+
     /**
      * @return average request latency in ms
      */
     double getAvgRequestLatency();
+
     /**
      * @return max request latency in ms
      */
     long getMaxRequestLatency();
+
     /**
      * @return number of packets received so far
      */
     long getPacketsReceived();
+
     /**
      * @return number of packets sent so far
      */
     long getPacketsSent();
+
     /**
      * @return number of fsync threshold exceeds so far
      */
     long getFsyncThresholdExceedCount();
+
     /**
      * @return number of outstanding requests.
      */
     long getOutstandingRequests();
+
     /**
      * Current TickTime of server in milliseconds
      */
     int getTickTime();
+
     /**
      * Set TickTime of server in milliseconds
      */
     void setTickTime(int tickTime);
 
-    /** Current maxClientCnxns allowed from a particular host */
+    /**
+     * Current maxClientCnxns allowed from a particular host
+     */
     int getMaxClientCnxnsPerHost();
 
-    /** Set maxClientCnxns allowed from a particular host */
+    /**
+     * Set maxClientCnxns allowed from a particular host
+     */
     void setMaxClientCnxnsPerHost(int max);
 
     /**
      * Current minSessionTimeout of the server in milliseconds
      */
     int getMinSessionTimeout();
+
     /**
      * Set minSessionTimeout of server in milliseconds
      */
@@ -91,82 +107,105 @@ public interface ZooKeeperServerMXBean {
      * Current maxSessionTimeout of the server in milliseconds
      */
     int getMaxSessionTimeout();
+
     /**
      * Set maxSessionTimeout of server in milliseconds
      */
     void setMaxSessionTimeout(int max);
 
     boolean getResponseCachingEnabled();
+
     void setResponseCachingEnabled(boolean isEnabled);
 
     /* Connection throttling settings */
     int getConnectionMaxTokens();
+
     void setConnectionMaxTokens(int val);
 
     int getConnectionTokenFillTime();
+
     void setConnectionTokenFillTime(int val);
 
     int getConnectionTokenFillCount();
+
     void setConnectionTokenFillCount(int val);
 
     int getConnectionFreezeTime();
+
     void setConnectionFreezeTime(int val);
 
     double getConnectionDropIncrease();
+
     void setConnectionDropIncrease(double val);
 
     double getConnectionDropDecrease();
+
     void setConnectionDropDecrease(double val);
 
     double getConnectionDecreaseRatio();
+
     void setConnectionDecreaseRatio(double val);
 
     int getCommitProcMaxReadBatchSize();
+
     void setCommitProcMaxReadBatchSize(int size);
 
     int getCommitProcMaxCommitBatchSize();
+
     void setCommitProcMaxCommitBatchSize(int size);
 
     int getRequestThrottleLimit();
+
     void setRequestThrottleLimit(int requests);
 
     int getRequestThrottleStallTime();
+
     void setRequestThrottleStallTime(int time);
 
     boolean getRequestThrottleDropStale();
+
     void setRequestThrottleDropStale(boolean drop);
 
     int getThrottledOpWaitTime();
+
     void setThrottledOpWaitTime(int val);
 
     boolean getRequestStaleLatencyCheck();
+
     void setRequestStaleLatencyCheck(boolean check);
 
     boolean getRequestStaleConnectionCheck();
+
     void setRequestStaleConnectionCheck(boolean check);
 
     int getLargeRequestMaxBytes();
+
     void setLargeRequestMaxBytes(int bytes);
 
     int getLargeRequestThreshold();
+
     void setLargeRequestThreshold(int threshold);
 
     /**
      * Reset packet and latency statistics
      */
     void resetStatistics();
+
     /**
      * Reset min/avg/max latency statistics
      */
     void resetLatency();
+
     /**
      * Reset max latency statistics only.
      */
     void resetMaxLatency();
+
     /**
      * Reset Fsync Threshold Exceed Count statistics only.
      */
     void resetFsyncThresholdExceedCount();
+
     /**
      * @return number of alive client connections
      */
@@ -176,6 +215,7 @@ public interface ZooKeeperServerMXBean {
      * @return estimated size of data directory in bytes
      */
     long getDataDirSize();
+
     /**
      * @return estimated size of log directory in bytes
      */
@@ -185,6 +225,7 @@ public interface ZooKeeperServerMXBean {
      * @return secure client port
      */
     String getSecureClientPort();
+
     /**
      * @return secure client address
      */
@@ -216,17 +257,20 @@ public interface ZooKeeperServerMXBean {
     int getMaxClientResponseSize();
 
     long getFlushDelay();
+
     void setFlushDelay(long delay);
 
     long getMaxWriteQueuePollTime();
+
     void setMaxWriteQueuePollTime(long delay);
 
     int getMaxBatchSize();
+
     void setMaxBatchSize(int size);
 
     /**
      * @return Current maxCnxns allowed to a single ZooKeeper server
      */
-   int getMaxCnxns();
+    int getMaxCnxns();
 
 }

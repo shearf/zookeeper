@@ -61,10 +61,12 @@ public class BinaryOutputArchive implements OutputArchive {
         out.writeLong(l);
     }
 
+    @Override
     public void writeFloat(float f, String tag) throws IOException {
         out.writeFloat(f);
     }
 
+    @Override
     public void writeDouble(double d, String tag) throws IOException {
         out.writeDouble(d);
     }
@@ -102,6 +104,7 @@ public class BinaryOutputArchive implements OutputArchive {
         return bb;
     }
 
+    @Override
     public void writeString(String s, String tag) throws IOException {
         if (s == null) {
             writeInt(-1, "len");
@@ -112,6 +115,7 @@ public class BinaryOutputArchive implements OutputArchive {
         out.write(bb.array(), bb.position(), bb.limit());
     }
 
+    @Override
     public void writeBuffer(byte[] barr, String tag)
             throws IOException {
         if (barr == null) {

@@ -24,12 +24,16 @@ public abstract class Metric {
 
     public void add(long value) {
     }
+
     public void add(int key, long value) {
     }
+
     public void add(String key, long value) {
     }
+
     public void reset() {
     }
+
     public abstract Map<String, Object> values();
 
 }

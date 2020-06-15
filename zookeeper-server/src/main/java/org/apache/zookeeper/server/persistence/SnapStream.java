@@ -18,23 +18,6 @@
 
 package org.apache.zookeeper.server.persistence;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedInputStream;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 import org.apache.jute.InputArchive;
 import org.apache.jute.OutputArchive;
 import org.apache.zookeeper.common.AtomicFileOutputStream;
@@ -43,6 +26,11 @@ import org.slf4j.LoggerFactory;
 import org.xerial.snappy.SnappyCodec;
 import org.xerial.snappy.SnappyInputStream;
 import org.xerial.snappy.SnappyOutputStream;
+
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.zip.*;
 
 /**
  * Represent the Stream used in serialize and deserialize the Snapshot.
@@ -54,8 +42,8 @@ public class SnapStream {
     public static final String ZOOKEEPER_SHAPSHOT_STREAM_MODE = "zookeeper.snapshot.compression.method";
 
     private static StreamMode streamMode = StreamMode.fromString(
-        System.getProperty(ZOOKEEPER_SHAPSHOT_STREAM_MODE,
-                           StreamMode.DEFAULT_MODE.getName()));
+            System.getProperty(ZOOKEEPER_SHAPSHOT_STREAM_MODE,
+                    StreamMode.DEFAULT_MODE.getName()));
 
     static {
         LOG.info("{} = {}", ZOOKEEPER_SHAPSHOT_STREAM_MODE, streamMode);
@@ -103,15 +91,15 @@ public class SnapStream {
         FileInputStream fis = new FileInputStream(file);
         InputStream is;
         switch (getStreamMode(file.getName())) {
-        case GZIP:
-            is = new GZIPInputStream(fis);
-            break;
-        case SNAPPY:
-            is = new SnappyInputStream(fis);
-            break;
-        case CHECKED:
-        default:
-            is = new BufferedInputStream(fis);
+            case GZIP:
+                is = new GZIPInputStream(fis);
+                break;
+            case SNAPPY:
+                is = new SnappyInputStream(fis);
+                break;
+            case CHECKED:
+            default:
+                is = new BufferedInputStream(fis);
         }
         return new CheckedInputStream(is, new Adler32());
     }
@@ -119,7 +107,7 @@ public class SnapStream {
     /**
      * Return the OutputStream based on predefined stream mode.
      *
-     * @param file the file the OutputStream writes to
+     * @param file  the file the OutputStream writes to
      * @param fsync sync the file immediately after write
      * @return the specific OutputStream
      * @throws IOException
@@ -128,15 +116,15 @@ public class SnapStream {
         OutputStream fos = fsync ? new AtomicFileOutputStream(file) : new FileOutputStream(file);
         OutputStream os;
         switch (streamMode) {
-        case GZIP:
-            os = new GZIPOutputStream(fos);
-            break;
-        case SNAPPY:
-            os = new SnappyOutputStream(fos);
-            break;
-        case CHECKED:
-        default:
-            os = new BufferedOutputStream(fos);
+            case GZIP:
+                os = new GZIPOutputStream(fos);
+                break;
+            case SNAPPY:
+                os = new SnappyOutputStream(fos);
+                break;
+            case CHECKED:
+            default:
+                os = new BufferedOutputStream(fos);
         }
         return new CheckedOutputStream(os, new Adler32());
     }
@@ -145,7 +133,6 @@ public class SnapStream {
      * Write specific seal to the OutputArchive and close the OutputStream.
      * Currently, only CheckedOutputStream will write it's checkSum to the
      * end of the stream.
-     *
      */
     public static void sealStream(CheckedOutputStream os, OutputArchive oa) throws IOException {
         long val = os.getChecksum().getValue();
@@ -156,7 +143,6 @@ public class SnapStream {
     /**
      * Verify the integrity of the seal, only CheckedInputStream will verify
      * the checkSum of the content.
-     *
      */
     static void checkSealIntegrity(CheckedInputStream is, InputArchive ia) throws IOException {
         long checkSum = is.getChecksum().getValue();
@@ -185,15 +171,15 @@ public class SnapStream {
 
         boolean isValid = false;
         switch (getStreamMode(file.getName())) {
-        case GZIP:
-            isValid = isValidGZipStream(file);
-            break;
-        case SNAPPY:
-            isValid = isValidSnappyStream(file);
-            break;
-        case CHECKED:
-        default:
-            isValid = isValidCheckedStream(file);
+            case GZIP:
+                isValid = isValidGZipStream(file);
+                break;
+            case SNAPPY:
+                isValid = isValidSnappyStream(file);
+                break;
+            case CHECKED:
+            default:
+                isValid = isValidCheckedStream(file);
         }
         return isValid;
     }

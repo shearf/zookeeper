@@ -18,11 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.Op;
 import org.apache.zookeeper.ZooDefs;
@@ -38,6 +33,13 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class SnapshotDigestTest extends ClientBase {
 
@@ -119,7 +121,7 @@ public class SnapshotDigestTest extends ClientBase {
     /**
      * Make sure the code will skip digest check when it's comparing
      * digest with different version.
-     *
+     * <p>
      * This enables us to smoonthly add new fields into digest or using
      * new digest calculation.
      */

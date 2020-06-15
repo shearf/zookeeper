@@ -24,10 +24,10 @@ import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.proto.WatcherEvent;
 
 /**
- *  A WatchedEvent represents a change on the ZooKeeper that a Watcher
- *  is able to respond to.  The WatchedEvent includes exactly what happened,
- *  the current state of the ZooKeeper, and the path of the znode that
- *  was involved in the event.
+ * A WatchedEvent represents a change on the ZooKeeper that a Watcher
+ * is able to respond to.  The WatchedEvent includes exactly what happened,
+ * the current state of the ZooKeeper, and the path of the znode that
+ * was involved in the event.
  */
 @InterfaceAudience.Public
 public class WatchedEvent {
@@ -72,7 +72,7 @@ public class WatchedEvent {
     }
 
     /**
-     *  Convert WatchedEvent to type that can be sent over network
+     * Convert WatchedEvent to type that can be sent over network
      */
     public WatcherEvent getWrapper() {
         return new WatcherEvent(eventType.getIntValue(), keeperState.getIntValue(), path);

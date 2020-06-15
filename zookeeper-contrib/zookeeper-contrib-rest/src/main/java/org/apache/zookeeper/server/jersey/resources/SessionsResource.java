@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,33 +18,22 @@
 
 package org.apache.zookeeper.server.jersey.resources;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.UUID;
+import com.sun.jersey.api.json.JSONWithPadding;
+import org.apache.zookeeper.server.jersey.ZooKeeperService;
+import org.apache.zookeeper.server.jersey.jaxb.ZError;
+import org.apache.zookeeper.server.jersey.jaxb.ZSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.zookeeper.server.jersey.ZooKeeperService;
-import org.apache.zookeeper.server.jersey.jaxb.ZError;
-import org.apache.zookeeper.server.jersey.jaxb.ZSession;
-
-import com.sun.jersey.api.json.JSONWithPadding;
+import java.io.IOException;
+import java.net.URI;
+import java.util.UUID;
 
 @Path("sessions/v1/{session: .*}")
 public class SessionsResource {
@@ -61,11 +50,11 @@ public class SessionsResource {
     }
 
     @PUT
-    @Produces( { MediaType.APPLICATION_JSON, "application/javascript",
-            MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, "application/javascript",
+            MediaType.APPLICATION_XML})
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public Response keepAliveSession(@PathParam("session") String session,
-            @Context UriInfo ui, byte[] data) {
+                                     @Context UriInfo ui, byte[] data) {
 
         if (!ZooKeeperService.isConnected(contextPath, session)) {
             throwNotFound(session, ui);
@@ -76,11 +65,11 @@ public class SessionsResource {
     }
 
     @POST
-    @Produces( { MediaType.APPLICATION_JSON, "application/javascript",
-            MediaType.APPLICATION_XML })
+    @Produces({MediaType.APPLICATION_JSON, "application/javascript",
+            MediaType.APPLICATION_XML})
     public Response createSession(@QueryParam("op") String op,
-            @DefaultValue("5") @QueryParam("expire") String expire,
-            @Context UriInfo ui) {
+                                  @DefaultValue("5") @QueryParam("expire") String expire,
+                                  @Context UriInfo ui) {
         if (!op.equals("create")) {
             throw new WebApplicationException(Response.status(
                     Response.Status.BAD_REQUEST).entity(
@@ -117,10 +106,10 @@ public class SessionsResource {
     }
 
     @DELETE
-    @Produces( { MediaType.APPLICATION_JSON, "application/javascript",
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_OCTET_STREAM })
+    @Produces({MediaType.APPLICATION_JSON, "application/javascript",
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_OCTET_STREAM})
     public void deleteSession(@PathParam("session") String session,
-            @Context UriInfo ui) {
+                              @Context UriInfo ui) {
         ZooKeeperService.close(contextPath, session);
     }
 

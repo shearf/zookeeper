@@ -18,19 +18,21 @@
 
 package org.apache.zookeeper.server.auth;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.server.ServerCnxn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class DigestAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(DigestAuthenticationProvider.class);
 
-    /** specify a command line property with key of
+    /**
+     * specify a command line property with key of
      * "zookeeper.DigestAuthenticationProvider.superDigest"
      * and value of "super:&lt;base64encoded(SHA1(password))&gt;" to enable
      * super user access (i.e. acls disabled)
@@ -129,8 +131,10 @@ public class DigestAuthenticationProvider implements AuthenticationProvider {
         return id.split(":")[0];
     }
 
-    /** Call with a single argument of user:pass to generate authdata.
+    /**
+     * Call with a single argument of user:pass to generate authdata.
      * Authdata output can be used when setting superDigest for example.
+     *
      * @param args single argument of user:pass
      * @throws NoSuchAlgorithmException
      */

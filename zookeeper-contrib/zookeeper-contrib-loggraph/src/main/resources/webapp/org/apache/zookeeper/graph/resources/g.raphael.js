@@ -4,8 +4,8 @@
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
- 
- 
+
+
 (function () {
     Raphael.fn.g = Raphael.fn.g || {};
     Raphael.fn.g.markers = {
@@ -70,49 +70,49 @@
         y = Math.round(y);
         switch (ending) {
             case "round":
-            if (!dir) {
-                var r = Math.floor(height / 2);
-                if (width < r) {
-                    r = width;
-                    path = ["M", x + .5, y + .5 - Math.floor(height / 2), "l", 0, 0, "a", r, Math.floor(height / 2), 0, 0, 1, 0, height, "l", 0, 0, "z"];
+                if (!dir) {
+                    var r = Math.floor(height / 2);
+                    if (width < r) {
+                        r = width;
+                        path = ["M", x + .5, y + .5 - Math.floor(height / 2), "l", 0, 0, "a", r, Math.floor(height / 2), 0, 0, 1, 0, height, "l", 0, 0, "z"];
+                    } else {
+                        path = ["M", x + .5, y + .5 - r, "l", width - r, 0, "a", r, r, 0, 1, 1, 0, height, "l", r - width, 0, "z"];
+                    }
                 } else {
-                    path = ["M", x + .5, y + .5 - r, "l", width - r, 0, "a", r, r, 0, 1, 1, 0, height, "l", r - width, 0, "z"];
+                    var r = Math.floor(width / 2);
+                    if (height < r) {
+                        r = height;
+                        path = ["M", x - Math.floor(width / 2), y, "l", 0, 0, "a", Math.floor(width / 2), r, 0, 0, 1, width, 0, "l", 0, 0, "z"];
+                    } else {
+                        path = ["M", x - r, y, "l", 0, r - height, "a", r, r, 0, 1, 1, width, 0, "l", 0, height - r, "z"];
+                    }
                 }
-            } else {
-                var r = Math.floor(width / 2);
-                if (height < r) {
-                    r = height;
-                    path = ["M", x - Math.floor(width / 2), y, "l", 0, 0, "a", Math.floor(width / 2), r, 0, 0, 1, width, 0, "l", 0, 0, "z"];
-                } else {
-                    path = ["M", x - r, y, "l", 0, r - height, "a", r, r, 0, 1, 1, width, 0, "l", 0, height - r, "z"];
-                }
-            }
-            break;
+                break;
             case "sharp":
-            if (!dir) {
-                var half = Math.floor(height / 2);
-                path = ["M", x, y + half, "l", 0, -height, Math.max(width - half, 0), 0, Math.min(half, width), half, -Math.min(half, width), half + (half * 2 < height), "z"];
-            } else {
-                var half = Math.floor(width / 2);
-                path = ["M", x + half, y, "l", -width, 0, 0, -Math.max(height - half, 0), half, -Math.min(half, height), half, Math.min(half, height), half, "z"];
-            }
-            break;
+                if (!dir) {
+                    var half = Math.floor(height / 2);
+                    path = ["M", x, y + half, "l", 0, -height, Math.max(width - half, 0), 0, Math.min(half, width), half, -Math.min(half, width), half + (half * 2 < height), "z"];
+                } else {
+                    var half = Math.floor(width / 2);
+                    path = ["M", x + half, y, "l", -width, 0, 0, -Math.max(height - half, 0), half, -Math.min(half, height), half, Math.min(half, height), half, "z"];
+                }
+                break;
             case "square":
-            if (!dir) {
-                path = ["M", x, y + Math.floor(height / 2), "l", 0, -height, width, 0, 0, height, "z"];
-            } else {
-                path = ["M", x + Math.floor(width / 2), y, "l", 1 - width, 0, 0, -height, width - 1, 0, "z"];
-            }
-            break;
+                if (!dir) {
+                    path = ["M", x, y + Math.floor(height / 2), "l", 0, -height, width, 0, 0, height, "z"];
+                } else {
+                    path = ["M", x + Math.floor(width / 2), y, "l", 1 - width, 0, 0, -height, width - 1, 0, "z"];
+                }
+                break;
             case "soft":
-            var r;
-            if (!dir) {
-                r = Math.min(width, Math.round(height / 5));
-                path = ["M", x + .5, y + .5 - Math.floor(height / 2), "l", width - r, 0, "a", r, r, 0, 0, 1, r, r, "l", 0, height - r * 2, "a", r, r, 0, 0, 1, -r, r, "l", r - width, 0, "z"];
-            } else {
-                r = Math.min(Math.round(width / 5), height);
-                path = ["M", x - Math.floor(width / 2), y, "l", 0, r - height, "a", r, r, 0, 0, 1, r, -r, "l", width - 2 * r, 0, "a", r, r, 0, 0, 1, r, r, "l", 0, height - r, "z"];
-            }
+                var r;
+                if (!dir) {
+                    r = Math.min(width, Math.round(height / 5));
+                    path = ["M", x + .5, y + .5 - Math.floor(height / 2), "l", width - r, 0, "a", r, r, 0, 0, 1, r, r, "l", 0, height - r * 2, "a", r, r, 0, 0, 1, -r, r, "l", r - width, 0, "z"];
+                } else {
+                    r = Math.min(Math.round(width / 5), height);
+                    path = ["M", x - Math.floor(width / 2), y, "l", 0, r - height, "a", r, r, 0, 0, 1, r, -r, "l", width - 2 * r, 0, "a", r, r, 0, 0, 1, r, r, "l", 0, height - r, "z"];
+                }
         }
         if (isPath) {
             return path.join(",");
@@ -190,7 +190,7 @@
             this.rotate(0, x, y);
             var bb = this[1].getBBox();
             if (bb.height >= r * 2) {
-                this[0].attr({path: ["M", x, y + r, "a", r, r, 0, 1, 1, 0, -r * 2, r, r, 0, 1, 1, 0, r * 2, "m", 0, -r * 2 -d, "a", r + d, r + d, 0, 1, 0, 0, (r + d) * 2, "L", x + r + d, y + bb.height / 2 + d, "l", bb.width + 2 * d, 0, 0, -bb.height - 2 * d, -bb.width - 2 * d, 0, "L", x, y - r - d].join(",")});
+                this[0].attr({path: ["M", x, y + r, "a", r, r, 0, 1, 1, 0, -r * 2, r, r, 0, 1, 1, 0, r * 2, "m", 0, -r * 2 - d, "a", r + d, r + d, 0, 1, 0, 0, (r + d) * 2, "L", x + r + d, y + bb.height / 2 + d, "l", bb.width + 2 * d, 0, 0, -bb.height - 2 * d, -bb.width - 2 * d, 0, "L", x, y - r - d].join(",")});
             } else {
                 var dx = Math.sqrt(Math.pow(r + d, 2) - Math.pow(bb.height / 2 + d, 2));
                 // ["c", -R, 0, -r, R - r, -r, -r, 0, -R, r - R, -r, r, -r, R, 0, r, r - R, r, r, 0, R, R - r, r, -r, r]
@@ -200,7 +200,11 @@
             this[1].attr({x: x + r + d + bb.width / 2, y: y});
             angle = (360 - angle) % 360;
             this.rotate(angle, x, y);
-            angle > 90 && angle < 270 && this[1].attr({x: x - r - d - bb.width / 2, y: y, rotation: [180 + angle, x, y]});
+            angle > 90 && angle < 270 && this[1].attr({
+                x: x - r - d - bb.width / 2,
+                y: y,
+                rotation: [180 + angle, x, y]
+            });
             return this;
         };
         res.update();
@@ -221,7 +225,10 @@
                 "l", Math.max(w - size, 0), 0, size, !dir * -size, size, !dir * size, Math.max(w - size, 0), 0, "a", size, size, 0, 0, 1, size, size,
                 "l", 0, Math.max(h - size, 0), (dir == 1) * size, size, (dir == 1) * -size, size, 0, Math.max(h - size, 0), "a", size, size, 0, 0, 1, -size, size,
                 "l", -Math.max(w - size, 0), 0, "z"].join(","),
-            xy = [{x: x, y: y + size * 2 + h}, {x: x - size * 2 - w, y: y}, {x: x, y: y - size * 2 - h}, {x: x + size * 2 + w, y: y}][dir];
+            xy = [{x: x, y: y + size * 2 + h}, {x: x - size * 2 - w, y: y}, {
+                x: x,
+                y: y - size * 2 - h
+            }, {x: x + size * 2 + w, y: y}][dir];
         set.translate(xy.x - w - bb.x, xy.y - h - bb.y);
         return this.path(p).attr({fill: "#000", stroke: "none"}).insertBefore(set.node ? set : set[0]);
     };
@@ -246,7 +253,10 @@
                     "l", Math.max(w - size, 0), 0, size, !dir * -size, size, !dir * size, Math.max(w - size, 0), 0, "a", size, size, 0, 0, 1, size, size,
                     "l", 0, Math.max(h - size, 0), (dir == 1) * size, size, (dir == 1) * -size, size, 0, Math.max(h - size, 0), "a", size, size, 0, 0, 1, -size, size,
                     "l", -Math.max(w - size, 0), 0, "z"].join(","),
-                xy = [{x: X, y: Y + size * 2 + h}, {x: X - size * 2 - w, y: Y}, {x: X, y: Y - size * 2 - h}, {x: X + size * 2 + w, y: Y}][dir];
+                xy = [{x: X, y: Y + size * 2 + h}, {x: X - size * 2 - w, y: Y}, {
+                    x: X,
+                    y: Y - size * 2 - h
+                }, {x: X + size * 2 + w, y: Y}][dir];
             if (withAnimation) {
                 this[0].animate({path: p}, 500, ">");
                 this[1].animate(xy, 500, ">");
@@ -273,7 +283,11 @@
             this[1].attr({x: x + h + d + bb.width / 2, y: y});
             angle = 360 - angle;
             this.rotate(angle, x, y);
-            angle > 90 && angle < 270 && this[1].attr({x: x - r - d - bb.width / 2, y: y, rotation: [180 + angle, x, y]});
+            angle > 90 && angle < 270 && this[1].attr({
+                x: x - r - d - bb.width / 2,
+                y: y,
+                rotation: [180 + angle, x, y]
+            });
             return this;
         };
         return res.update(x, y);
@@ -293,15 +307,25 @@
     Raphael.fn.g.labelit = function (set) {
         var bb = set.getBBox(),
             r = Math.min(20, bb.width + 10, bb.height + 10) / 2;
-        return this.rect(bb.x - r / 2, bb.y - r / 2, bb.width + r, bb.height + r, r).attr({stroke: "none", fill: "#000"}).insertBefore(set[0]);
+        return this.rect(bb.x - r / 2, bb.y - r / 2, bb.width + r, bb.height + r, r).attr({
+            stroke: "none",
+            fill: "#000"
+        }).insertBefore(set[0]);
     };
     Raphael.fn.g.drop = function (x, y, text, size, angle) {
         size = size || 30;
         angle = angle || 0;
         var res = this.set();
-        res.push(this.path(["M", x, y, "l", size, 0, "A", size * .4, size * .4, 0, 1, 0, x + size * .7, y - size * .7, "z"]).attr({fill: "#000", stroke: "none", rotation: [22.5 - angle, x, y]}));
+        res.push(this.path(["M", x, y, "l", size, 0, "A", size * .4, size * .4, 0, 1, 0, x + size * .7, y - size * .7, "z"]).attr({
+            fill: "#000",
+            stroke: "none",
+            rotation: [22.5 - angle, x, y]
+        }));
         angle = (angle + 90) * Math.PI / 180;
-        res.push(this.text(x + size * Math.sin(angle), y + size * Math.cos(angle), text).attr(this.g.txtattr).attr({"font-size": size * 12 / 30, fill: "#fff"}));
+        res.push(this.text(x + size * Math.sin(angle), y + size * Math.cos(angle), text).attr(this.g.txtattr).attr({
+            "font-size": size * 12 / 30,
+            fill: "#fff"
+        }));
         res.drop = res[0];
         res.text = res[1];
         return res;
@@ -313,7 +337,10 @@
             fontSize = size * 12 / 12;
         var res = this.set();
         res.push(this.path().attr({fill: "#000", stroke: "none"}));
-        res.push(this.text(x + size * Math.sin((angle) * rad), y + size * Math.cos((angle) * rad) - fontSize / 2, text).attr(this.g.txtattr).attr({"font-size": fontSize, fill: "#fff"}));
+        res.push(this.text(x + size * Math.sin((angle) * rad), y + size * Math.cos((angle) * rad) - fontSize / 2, text).attr(this.g.txtattr).attr({
+            "font-size": fontSize,
+            fill: "#fff"
+        }));
         res.update = function (X, Y, withAnimation) {
             X = X || x;
             Y = Y || y;
@@ -332,7 +359,11 @@
                 cx = k * rx * dy / ry + (x1 + x2) / 2,
                 cy = k * -ry * dx / rx + (y1 + y2) / 2;
             if (withAnimation) {
-                this.animate({x: cx, y: cy, path: ["M", x, y, "L", x1, y1, "A", rx, ry, 0, 1, 1, x2, y2, "z"].join(",")}, 500, ">");
+                this.animate({
+                    x: cx,
+                    y: cy,
+                    path: ["M", x, y, "L", x1, y1, "A", rx, ry, 0, 1, 1, x2, y2, "z"].join(",")
+                }, 500, ">");
             } else {
                 this.attr({x: cx, y: cy, path: ["M", x, y, "L", x1, y1, "A", rx, ry, 0, 1, 1, x2, y2, "z"].join(",")});
             }
@@ -352,9 +383,11 @@
         if (f == t) {
             return {from: f, to: t, power: 0};
         }
+
         function round(a) {
             return Math.abs(a - .5) < .25 ? Math.floor(a) + .5 : Math.round(a);
         }
+
         var d = (t - f) / steps,
             r = Math.floor(d),
             R = r,
@@ -364,7 +397,7 @@
                 i--;
                 R = Math.floor(d * Math.pow(10, i)) / Math.pow(10, i);
             }
-            i ++;
+            i++;
         } else {
             while (!r) {
                 i = i || 1;
@@ -394,7 +427,7 @@
         d = (t - f) / steps;
         var label = f,
             rnd = i > 0 ? i : 0;
-            dx = length / steps;
+        dx = length / steps;
         if (+orientation == 1 || +orientation == 3) {
             var Y = y,
                 addon = (orientation - 1 ? 1 : -1) * (dashsize + 3 + !!(orientation - 1));
@@ -419,17 +452,17 @@
             while (X <= x + length) {
 
                 text.push(txt = this.text(X, y + addon, (labels && labels[j++]) || (Math.round(label) == label ? label : +label.toFixed(rnd))).attr(this.g.txtattr));
-		var bb = txt.getBBox();
-		var ds = dashsize;
+                var bb = txt.getBBox();
+                var ds = dashsize;
                 if (prev >= bb.x - 5) {
-		    text.pop(text.length - 1).remove();
-		    ds = 1;
+                    text.pop(text.length - 1).remove();
+                    ds = 1;
                 } else {
                     prev = bb.x + bb.width;
                 }
 
-		type != "-" && type != " " && (path = path.concat(["M", X + .5, y - (type == "+" ? ds : !!orientation * ds * 2), "l", 0, ds * 2 + 1]));
-                
+                type != "-" && type != " " && (path = path.concat(["M", X + .5, y - (type == "+" ? ds : !!orientation * ds * 2), "l", 0, ds * 2 + 1]));
+
                 label += d;
                 X += dx;
             }
@@ -458,7 +491,10 @@
         fs[0].s = fs[0].s / times;
         fs[1].b = Math.min(fs[1].b * times, 1);
         fs[1].s = fs[1].s / times;
-        this.attr({fill: "hsb(" + [fs[0].h, fs[0].s, fs[0].b] + ")", stroke: "hsb(" + [fs[1].h, fs[1].s, fs[1].b] + ")"});
+        this.attr({
+            fill: "hsb(" + [fs[0].h, fs[0].s, fs[0].b] + ")",
+            stroke: "hsb(" + [fs[1].h, fs[1].s, fs[1].b] + ")"
+        });
     };
     Raphael.el.darker = function (times) {
         times = times || 2;
@@ -470,7 +506,10 @@
         fs[0].b = fs[0].b / times;
         fs[1].s = Math.min(fs[1].s * times, 1);
         fs[1].b = fs[1].b / times;
-        this.attr({fill: "hsb(" + [fs[0].h, fs[0].s, fs[0].b] + ")", stroke: "hsb(" + [fs[1].h, fs[1].s, fs[1].b] + ")"});
+        this.attr({
+            fill: "hsb(" + [fs[0].h, fs[0].s, fs[0].b] + ")",
+            stroke: "hsb(" + [fs[1].h, fs[1].s, fs[1].b] + ")"
+        });
     };
     Raphael.el.original = function () {
         if (this.fs) {

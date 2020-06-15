@@ -18,23 +18,8 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import org.apache.zookeeper.AsyncCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.KeeperException.Code;
-import org.apache.zookeeper.Op;
-import org.apache.zookeeper.OpResult;
-import org.apache.zookeeper.TestableZooKeeper;
-import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.proto.CreateResponse;
 import org.apache.zookeeper.proto.CreateTTLRequest;
@@ -42,6 +27,14 @@ import org.apache.zookeeper.proto.ReplyHeader;
 import org.apache.zookeeper.proto.RequestHeader;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.junit.Assert.*;
 
 public class CreateTTLTest extends ClientBase {
 
@@ -52,8 +45,8 @@ public class CreateTTLTest extends ClientBase {
     @Override
     public void setUp() throws Exception {
         System.setProperty(
-            EphemeralType.EXTENDED_TYPES_ENABLED_PROPERTY,
-            disabledTests.contains(getTestName()) ? "false" : "true");
+                EphemeralType.EXTENDED_TYPES_ENABLED_PROPERTY,
+                disabledTests.contains(getTestName()) ? "false" : "true");
         super.setUpWithServerId(254);
         zk = createClient();
     }
@@ -93,8 +86,8 @@ public class CreateTTLTest extends ClientBase {
         assertNull("An invalid CreateTTLRequest should not result in znode creation", zk.exists(path, false));
 
         request = new CreateTTLRequest(path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_WITH_TTL.toFlag(),
-                                       EphemeralType.TTL.maxValue()
-                                               + 1);
+                EphemeralType.TTL.maxValue()
+                        + 1);
         response = new CreateResponse();
         r = zk.submitRequest(h, request, response, null);
         assertEquals("An invalid CreateTTLRequest should throw BadArguments", r.getErr(), Code.BADARGUMENTS.intValue());

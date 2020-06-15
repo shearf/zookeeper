@@ -18,13 +18,14 @@
 
 package org.apache.zookeeper.recipes.queue;
 
-import java.util.NoSuchElementException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.NoSuchElementException;
 
 /**
  * Tests for {@link DistributedQueue}.
@@ -138,6 +139,7 @@ public class DistributedQueueTest extends ClientBase {
     public void testRemove2() throws Exception {
         createNremoveMtest("/testRemove2", 10, 2);
     }
+
     @Test
     public void testRemove3() throws Exception {
         createNremoveMtest("/testRemove3", 1000, 1000);

@@ -18,14 +18,14 @@
 
 package org.apache.zookeeper.server;
 
-import java.net.InetSocketAddress;
 import org.apache.zookeeper.server.quorum.Observer;
 import org.apache.zookeeper.server.quorum.ObserverMXBean;
 import org.apache.zookeeper.server.quorum.QuorumPeer;
 
+import java.net.InetSocketAddress;
+
 /**
  * ObserverBean
- *
  */
 public class ObserverBean extends ZooKeeperServerBean implements ObserverMXBean {
 
@@ -36,18 +36,22 @@ public class ObserverBean extends ZooKeeperServerBean implements ObserverMXBean 
         this.observer = observer;
     }
 
+    @Override
     public String getName() {
         return "Observer";
     }
 
+    @Override
     public int getPendingRevalidationCount() {
         return this.observer.getPendingRevalidationsCount();
     }
 
+    @Override
     public String getQuorumAddress() {
         return observer.getSocket().toString();
     }
 
+    @Override
     public String getLearnerMaster() {
         QuorumPeer.QuorumServer learnerMaster = observer.getCurrentLearnerMaster();
         if (learnerMaster == null || learnerMaster.addr.isEmpty()) {
@@ -57,6 +61,7 @@ public class ObserverBean extends ZooKeeperServerBean implements ObserverMXBean 
         return address.getAddress().getHostAddress() + ":" + address.getPort();
     }
 
+    @Override
     public void setLearnerMaster(String learnerMaster) {
         if (!observer.setLearnerMaster(learnerMaster)) {
             throw new IllegalArgumentException("Not a valid learner master");

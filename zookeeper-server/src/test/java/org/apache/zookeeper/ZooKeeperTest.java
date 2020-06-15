@@ -18,27 +18,9 @@
 
 package org.apache.zookeeper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.zookeeper.AsyncCallback.VoidCallback;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.cli.CliCommand;
-import org.apache.zookeeper.cli.CliException;
-import org.apache.zookeeper.cli.CliWrapperException;
-import org.apache.zookeeper.cli.LsCommand;
-import org.apache.zookeeper.cli.MalformedCommandException;
-import org.apache.zookeeper.cli.MalformedPathException;
-import org.apache.zookeeper.cli.SyncCommand;
+import org.apache.zookeeper.cli.*;
 import org.apache.zookeeper.client.ConnectStringParser;
 import org.apache.zookeeper.client.HostProvider;
 import org.apache.zookeeper.client.StaticHostProvider;
@@ -50,10 +32,18 @@ import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.*;
+
 /**
- *
  * Testing ZooKeeper public methods
- *
  */
 public class ZooKeeperTest extends ClientBase {
 
@@ -257,9 +247,9 @@ public class ZooKeeperTest extends ClientBase {
             assertEquals("create is not taken as first argument", zkMain.cl.getCmdArgument(0), "create");
             assertEquals("/node is not taken as second argument", zkMain.cl.getCmdArgument(1), "/node");
             assertEquals(
-                "quoted data is not taken as third argument",
-                zkMain.cl.getCmdArgument(2),
-                innerQuotes + "quoted data" + innerQuotes);
+                    "quoted data is not taken as third argument",
+                    zkMain.cl.getCmdArgument(2),
+                    innerQuotes + "quoted data" + innerQuotes);
         }
     }
 
@@ -657,14 +647,14 @@ public class ZooKeeperTest extends ClientBase {
             CountdownWatcher watcher = new CountdownWatcher();
             HostProvider aHostProvider = new StaticHostProvider(new ConnectStringParser(hostPort).getServerAddresses());
             newZKClient = new ZooKeeper(
-                hostPort,
-                zk.getSessionTimeout(),
-                watcher,
-                zk.getSessionId(),
-                zk.getSessionPasswd(),
-                false,
-                aHostProvider,
-                clientConfig);
+                    hostPort,
+                    zk.getSessionTimeout(),
+                    watcher,
+                    zk.getSessionId(),
+                    zk.getSessionPasswd(),
+                    false,
+                    aHostProvider,
+                    clientConfig);
             watcher.waitForConnected(CONNECTION_TIMEOUT);
             assertEquals("Old client session id and new clinet session id must be same", zk.getSessionId(), newZKClient.getSessionId());
         } finally {

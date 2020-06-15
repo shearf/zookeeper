@@ -17,12 +17,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
@@ -33,6 +27,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.fail;
 
 public class FLEBackwardElectionRoundTest extends ZKTestCase {
 
@@ -76,9 +78,8 @@ public class FLEBackwardElectionRoundTest extends ZKTestCase {
      * might prevent other servers from electing a leader because
      * they can't get a consistent set of notifications from a
      * quorum.
-     *
+     * <p>
      * https://issues.apache.org/jira/browse/ZOOKEEPER-1514
-     *
      *
      * @throws Exception
      */

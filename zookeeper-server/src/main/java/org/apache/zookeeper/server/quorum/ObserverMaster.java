@@ -18,6 +18,13 @@
 
 package org.apache.zookeeper.server.quorum;
 
+import org.apache.zookeeper.jmx.MBeanRegistry;
+import org.apache.zookeeper.server.Request;
+import org.apache.zookeeper.server.ZKDatabase;
+import org.apache.zookeeper.server.quorum.auth.QuorumAuthServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -26,40 +33,24 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
-import org.apache.zookeeper.jmx.MBeanRegistry;
-import org.apache.zookeeper.server.Request;
-import org.apache.zookeeper.server.ZKDatabase;
-import org.apache.zookeeper.server.quorum.auth.QuorumAuthServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Used by Followers to host Observers. This reduces the network load on the Leader process by pushing
  * the responsibility for keeping Observers in sync off the leading peer.
- *
+ * <p>
  * It is expected that Observers will continue to perform the initial vetting of clients and requests.
  * Observers send the request to the follower where it is received by an ObserverMaster.
- *
+ * <p>
  * The ObserverMaster forwards a copy of the request to the ensemble Leader and inserts it into its own
  * request processor pipeline where it can be matched with the response comes back. All commits received
  * from the Leader will be forwarded along to every Learner connected to the ObserverMaster.
- *
+ * <p>
  * New Learners connecting to a Follower will receive a LearnerHandler object and be party to its syncing logic
  * to be brought up to date.
- *
+ * <p>
  * The logic is quite a bit simpler than the corresponding logic in Leader because it only hosts observers.
  */
 public class ObserverMaster extends LearnerMaster implements Runnable {
@@ -255,10 +246,10 @@ public class ObserverMaster extends LearnerMaster implements Runnable {
         LearnerHandler learnerHandler = revalidation.handler;
         // create a copy here as the qp object is reused by the Follower and may be mutated
         QuorumPacket deepCopy = new QuorumPacket(
-            qp.getType(),
-            qp.getZxid(),
-            Arrays.copyOf(qp.getData(), qp.getData().length),
-            qp.getAuthinfo() == null ? null : new ArrayList<>(qp.getAuthinfo()));
+                qp.getType(),
+                qp.getZxid(),
+                Arrays.copyOf(qp.getData(), qp.getData().length),
+                qp.getAuthinfo() == null ? null : new ArrayList<>(qp.getAuthinfo()));
         learnerHandler.queuePacket(deepCopy);
         // To keep consistent as leader, touch the session when it's
         // revalidating the session, only update if it's a valid session.
@@ -295,11 +286,11 @@ public class ObserverMaster extends LearnerMaster implements Runnable {
             QuorumPacket packet = itr.next();
             if (packet.getZxid() > lastSeenZxid + 1) {
                 LOG.error(
-                    "LearnerHandler is too far behind (0x{} < 0x{}), disconnecting {} at {}",
-                    Long.toHexString(lastSeenZxid + 1),
-                    Long.toHexString(packet.getZxid()),
-                    learnerHandler.getSid(),
-                    learnerHandler.getRemoteAddress());
+                        "LearnerHandler is too far behind (0x{} < 0x{}), disconnecting {} at {}",
+                        Long.toHexString(lastSeenZxid + 1),
+                        Long.toHexString(packet.getZxid()),
+                        learnerHandler.getSid(),
+                        learnerHandler.getRemoteAddress());
                 learnerHandler.shutdown();
                 return -1;
             } else if (packet.getZxid() == lastSeenZxid + 1) {
@@ -316,15 +307,15 @@ public class ObserverMaster extends LearnerMaster implements Runnable {
                 queueBytesUsed += LearnerHandler.packetSize(packet);
             }
             LOG.info(
-                "finished syncing observer from retained commit queue: sid {}, "
-                    + "queue head 0x{}, queue tail 0x{}, sync position 0x{}, num packets used {}, "
-                    + "num bytes used {}",
-                learnerHandler.getSid(),
-                Long.toHexString(queueHeadZxid),
-                Long.toHexString(packet.getZxid()),
-                Long.toHexString(lastSeenZxid),
-                packet.getZxid() - lastSeenZxid,
-                queueBytesUsed);
+                    "finished syncing observer from retained commit queue: sid {}, "
+                            + "queue head 0x{}, queue tail 0x{}, sync position 0x{}, num packets used {}, "
+                            + "num bytes used {}",
+                    learnerHandler.getSid(),
+                    Long.toHexString(queueHeadZxid),
+                    Long.toHexString(packet.getZxid()),
+                    Long.toHexString(lastSeenZxid),
+                    packet.getZxid() - lastSeenZxid,
+                    queueBytesUsed);
         }
         activeObservers.add(learnerHandler);
         return lastProposedZxid;
@@ -363,9 +354,9 @@ public class ObserverMaster extends LearnerMaster implements Runnable {
         }
         if (pkt.getZxid() != zxid) {
             final String m = String.format(
-                "Unexpected proposal packet on commit ack, expected zxid 0x%d got zxid 0x%d",
-                zxid,
-                pkt.getZxid());
+                    "Unexpected proposal packet on commit ack, expected zxid 0x%d got zxid 0x%d",
+                    zxid,
+                    pkt.getZxid());
             LOG.error(m);
             throw new RuntimeException(m);
         }

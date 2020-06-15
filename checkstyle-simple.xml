@@ -27,11 +27,11 @@ page at http://checkstyle.sourceforge.net/config.html -->
 
     <!-- Prevent *Tests.java as tools may not pick them up -->
     <module name="RegexpOnFilename">
-        <property name="fileNamePattern" value=".*Tests\.java$" />
+        <property name="fileNamePattern" value=".*Tests\.java$"/>
     </module>
 
     <module name="SuppressionFilter">
-        <property name="file" value="${checkstyle.suppressions.file}" default="suppressions.xml" />
+        <property name="file" value="${checkstyle.suppressions.file}" default="suppressions.xml"/>
     </module>
 
     <!-- All Java AST specific tests live under TreeWalker module. -->
@@ -45,7 +45,7 @@ page at http://checkstyle.sourceforge.net/config.html -->
         </module>
         <module name="TodoComment">
             <!-- Checks that disallowed strings are not used in comments.  -->
-            <property name="format" value="(@author)" />
+            <property name="format" value="(@author)"/>
         </module>
 
 

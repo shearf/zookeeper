@@ -18,13 +18,15 @@
 
 package org.apache.zookeeper.common;
 
+import org.apache.zookeeper.ZKTestCase;
+import org.junit.Test;
+
+import java.net.InetSocketAddress;
+
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import java.net.InetSocketAddress;
-import org.apache.zookeeper.ZKTestCase;
-import org.junit.Test;
 
 public class NetUtilsTest extends ZKTestCase {
 

@@ -18,22 +18,15 @@
 
 package org.apache.zookeeper.test;
 
-import java.util.concurrent.CountDownLatch;
 import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.test.AsyncOps.ACLCB;
-import org.apache.zookeeper.test.AsyncOps.Children2CB;
-import org.apache.zookeeper.test.AsyncOps.ChildrenCB;
-import org.apache.zookeeper.test.AsyncOps.Create2CB;
-import org.apache.zookeeper.test.AsyncOps.DataCB;
-import org.apache.zookeeper.test.AsyncOps.MultiCB;
-import org.apache.zookeeper.test.AsyncOps.StatCB;
-import org.apache.zookeeper.test.AsyncOps.StringCB;
-import org.apache.zookeeper.test.AsyncOps.VoidCB;
+import org.apache.zookeeper.test.AsyncOps.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.CountDownLatch;
 
 public class AsyncOpsTest extends ClientBase {
 

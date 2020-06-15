@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,21 +17,19 @@
  */
 package org.apache.zookeeper.inspector.gui;
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer;
+import org.apache.zookeeper.inspector.manager.ZooInspectorManager;
+import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
 
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
-
-import org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer;
-import org.apache.zookeeper.inspector.manager.ZooInspectorManager;
-import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the {@link JPanel} which contains the {@link ZooInspectorNodeViewer}s
@@ -93,7 +91,7 @@ public class ZooInspectorNodeViewersPanel extends JPanel implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event
      * .TreeSelectionEvent)
@@ -129,7 +127,7 @@ public class ZooInspectorNodeViewersPanel extends JPanel implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent
      * )

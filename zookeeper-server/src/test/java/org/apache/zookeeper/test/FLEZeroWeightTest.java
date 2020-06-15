@@ -18,14 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.fail;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.quorum.QuorumPeer;
@@ -38,6 +30,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.junit.Assert.fail;
 
 public class FLEZeroWeightTest extends ZKTestCase {
 
@@ -64,17 +66,17 @@ public class FLEZeroWeightTest extends ZKTestCase {
         port = new int[count];
 
         String config = "group.1=0:1:2\n"
-                                + "group.2=3:4:5\n"
-                                + "group.3=6:7:8\n"
-                                + "weight.0=1\n"
-                                + "weight.1=1\n"
-                                + "weight.2=1\n"
-                                + "weight.3=0\n"
-                                + "weight.4=0\n"
-                                + "weight.5=0\n"
-                                + "weight.6=0\n"
-                                + "weight.7=0\n"
-                                + "weight.8=0";
+                + "group.2=3:4:5\n"
+                + "group.3=6:7:8\n"
+                + "weight.0=1\n"
+                + "weight.1=1\n"
+                + "weight.2=1\n"
+                + "weight.3=0\n"
+                + "weight.4=0\n"
+                + "weight.5=0\n"
+                + "weight.6=0\n"
+                + "weight.7=0\n"
+                + "weight.8=0";
 
         ByteArrayInputStream is = new ByteArrayInputStream(config.getBytes());
         this.qp = new Properties();
@@ -133,7 +135,7 @@ public class FLEZeroWeightTest extends ZKTestCase {
                     }
 
                     if ((peer.getPeerState() == ServerState.FOLLOWING) || (peer.getPeerState()
-                                                                                   == ServerState.LEADING)) {
+                            == ServerState.LEADING)) {
                         break;
                     }
                 }

@@ -18,16 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import javax.security.sasl.SaslException;
 import org.apache.zookeeper.AsyncCallback;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.PortAssignment;
@@ -40,6 +30,15 @@ import org.apache.zookeeper.test.ClientBase;
 import org.apache.zookeeper.test.ClientBase.CountdownWatcher;
 import org.junit.After;
 import org.junit.Test;
+
+import javax.security.sasl.SaslException;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.*;
 
 public class EphemeralNodeDeletionTest extends QuorumPeerTestBase {
 
@@ -61,7 +60,7 @@ public class EphemeralNodeDeletionTest extends QuorumPeerTestBase {
         for (int i = 0; i < SERVER_COUNT; i++) {
             clientPorts[i] = PortAssignment.unique();
             server = "server." + i + "=127.0.0.1:" + PortAssignment.unique() + ":" + PortAssignment.unique()
-                     + ":participant;127.0.0.1:" + clientPorts[i];
+                    + ":participant;127.0.0.1:" + clientPorts[i];
             sb.append(server + "\n");
         }
         String currentQuorumCfgSection = sb.toString();
@@ -79,8 +78,8 @@ public class EphemeralNodeDeletionTest extends QuorumPeerTestBase {
         // ensure all servers started
         for (int i = 0; i < SERVER_COUNT; i++) {
             assertTrue(
-                "waiting for server " + i + " being up",
-                ClientBase.waitForServerUp("127.0.0.1:" + clientPorts[i], CONNECTION_TIMEOUT));
+                    "waiting for server " + i + " being up",
+                    ClientBase.waitForServerUp("127.0.0.1:" + clientPorts[i], CONNECTION_TIMEOUT));
         }
 
         CountdownWatcher watch = new CountdownWatcher();
@@ -97,9 +96,9 @@ public class EphemeralNodeDeletionTest extends QuorumPeerTestBase {
         String nodePath = "/e1";
         zk.create(nodePath, "1".getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL, firstEphemeralNode);
         assertEquals(
-            "Current session and ephemeral owner should be same",
-            zk.getSessionId(),
-            firstEphemeralNode.getEphemeralOwner());
+                "Current session and ephemeral owner should be same",
+                zk.getSessionId(),
+                firstEphemeralNode.getEphemeralOwner());
 
         // 2: inject network problem in one of the follower
         CustomQuorumPeer follower = (CustomQuorumPeer) getByServerState(mt, ServerState.FOLLOWING);
@@ -118,8 +117,8 @@ public class EphemeralNodeDeletionTest extends QuorumPeerTestBase {
         QuorumPeer leader = getByServerState(mt, ServerState.LEADING);
         assertNotNull("Leader should not be null", leader);
         assertTrue(
-            "Leader must be running",
-            ClientBase.waitForServerUp("127.0.0.1:" + leader.getClientPort(), CONNECTION_TIMEOUT));
+                "Leader must be running",
+                ClientBase.waitForServerUp("127.0.0.1:" + leader.getClientPort(), CONNECTION_TIMEOUT));
 
         watch = new CountdownWatcher();
         zk = new ZooKeeper("127.0.0.1:" + leader.getClientPort(), ClientBase.CONNECTION_TIMEOUT, watch);
@@ -130,9 +129,9 @@ public class EphemeralNodeDeletionTest extends QuorumPeerTestBase {
 
         CountdownWatcher followerWatch = new CountdownWatcher();
         ZooKeeper followerZK = new ZooKeeper(
-            "127.0.0.1:" + follower.getClientPort(),
-            ClientBase.CONNECTION_TIMEOUT,
-            followerWatch);
+                "127.0.0.1:" + follower.getClientPort(),
+                ClientBase.CONNECTION_TIMEOUT,
+                followerWatch);
         followerWatch.waitForConnected(ClientBase.CONNECTION_TIMEOUT);
         Stat nodeAtFollower = followerZK.exists(nodePath, false);
 
@@ -205,7 +204,7 @@ public class EphemeralNodeDeletionTest extends QuorumPeerTestBase {
                     if (injectError && pp.getType() == Leader.PROPOSAL) {
                         String type = LearnerHandler.packetToString(pp);
                         throw new SocketTimeoutException("Socket timeout while reading the packet for operation "
-                                                                 + type);
+                                + type);
                     }
                 }
 

@@ -18,13 +18,6 @@
 
 package org.apache.zookeeper.common;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.Security;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.test.ClientBase;
@@ -32,11 +25,19 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.Security;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Base class for parameterized unit tests that use X509TestContext for testing
  * different X509 parameter combinations (CA key type, cert key type, with/without
  * a password, with/without hostname verification, etc).
- *
+ * <p>
  * This base class takes care of setting up / cleaning up the test environment,
  * and caching the X509TestContext objects used by the tests.
  */
@@ -45,6 +46,7 @@ public abstract class BaseX509ParameterizedTestCase extends ZKTestCase {
     /**
      * Default parameters suitable for most subclasses. See example usage
      * in {@link X509UtilTest}.
+     *
      * @return an array of parameter combinations to test with.
      */
     public static Collection<Object[]> defaultParams() {
@@ -92,7 +94,7 @@ public abstract class BaseX509ParameterizedTestCase extends ZKTestCase {
     /**
      * Constructor. See example usage in {@link X509UtilTest}.
      *
-     * @param paramIndex the index under which the X509TestContext should be cached.
+     * @param paramIndex      the index under which the X509TestContext should be cached.
      * @param contextSupplier a function that creates and returns the X509TestContext
      *                        for the current index if one is not already cached.
      */

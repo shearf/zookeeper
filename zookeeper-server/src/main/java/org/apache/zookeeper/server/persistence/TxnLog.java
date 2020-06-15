@@ -18,21 +18,22 @@
 
 package org.apache.zookeeper.server.persistence;
 
-import java.io.Closeable;
-import java.io.IOException;
 import org.apache.jute.Record;
 import org.apache.zookeeper.server.ServerStats;
 import org.apache.zookeeper.txn.TxnDigest;
 import org.apache.zookeeper.txn.TxnHeader;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 /**
  * Interface for reading transaction logs.
- *
  */
 public interface TxnLog extends Closeable {
 
     /**
      * Setter for ServerStats to monitor fsync threshold exceed
+     *
      * @param serverStats used to update fsyncThresholdExceedCount
      */
     void setServerStats(ServerStats serverStats);
@@ -40,13 +41,16 @@ public interface TxnLog extends Closeable {
     /**
      * roll the current
      * log being appended to
+     *
      * @throws IOException
      */
     void rollLog() throws IOException;
+
     /**
      * Append a request to the transaction log
+     *
      * @param hdr the transaction header
-     * @param r the transaction itself
+     * @param r   the transaction itself
      * @return true iff something appended, otw false
      * @throws IOException
      */
@@ -54,10 +58,11 @@ public interface TxnLog extends Closeable {
 
     /**
      * Append a request to the transaction log with a digset
-     * @param hdr the transaction header
-     * @param r the transaction itself
+     *
+     * @param hdr    the transaction header
+     * @param r      the transaction itself
      * @param digest transaction digest
-     * returns true iff something appended, otw false
+     *               returns true iff something appended, otw false
      * @throws IOException
      */
     boolean append(TxnHeader hdr, Record r, TxnDigest digest) throws IOException;
@@ -65,6 +70,7 @@ public interface TxnLog extends Closeable {
     /**
      * Start reading the transaction logs
      * from a given zxid
+     *
      * @param zxid
      * @return returns an iterator to read the
      * next transaction in the logs.
@@ -74,6 +80,7 @@ public interface TxnLog extends Closeable {
 
     /**
      * the last zxid of the logged transactions.
+     *
      * @return the last zxid of the logged transactions.
      * @throws IOException
      */
@@ -82,6 +89,7 @@ public interface TxnLog extends Closeable {
     /**
      * truncate the log to get in sync with the
      * leader.
+     *
      * @param zxid the zxid to truncate at.
      * @throws IOException
      */
@@ -89,6 +97,7 @@ public interface TxnLog extends Closeable {
 
     /**
      * the dbid for this transaction log.
+     *
      * @return the dbid for this transaction log.
      * @throws IOException
      */
@@ -97,12 +106,12 @@ public interface TxnLog extends Closeable {
     /**
      * commit the transaction and make sure
      * they are persisted
+     *
      * @throws IOException
      */
     void commit() throws IOException;
 
     /**
-     *
      * @return transaction log's elapsed sync time in milliseconds
      */
     long getTxnLogSyncElapsedTime();
@@ -130,12 +139,14 @@ public interface TxnLog extends Closeable {
 
         /**
          * return the transaction header.
+         *
          * @return return the transaction header.
          */
         TxnHeader getHeader();
 
         /**
          * return the transaction record.
+         *
          * @return return the transaction record.
          */
         Record getTxn();
@@ -147,6 +158,7 @@ public interface TxnLog extends Closeable {
 
         /**
          * go to the next transaction record.
+         *
          * @throws IOException
          */
         boolean next() throws IOException;
@@ -154,6 +166,7 @@ public interface TxnLog extends Closeable {
         /**
          * close files and release the
          * resources
+         *
          * @throws IOException
          */
         void close() throws IOException;
@@ -161,6 +174,7 @@ public interface TxnLog extends Closeable {
         /**
          * Get an estimated storage space used to store transaction records
          * that will return by this iterator
+         *
          * @throws IOException
          */
         long getStorageSize() throws IOException;

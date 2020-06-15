@@ -18,20 +18,20 @@
 
 package org.apache.zookeeper;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.AppConfigurationEntry.LoginModuleControlFlag;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This helper class allows to programmatically create a JAAS configuration.
  * Each section must have a name and a login module, and a set of key/values
  * to describe login options.
- *
+ * <p>
  * Example:
- *   jaas = new JaasConfiguration();
- *   jaas.addSection("Server", "org.apache.zookeeper.server.auth.DigestLoginModule",
- *                   "username", "passowrd");
+ * jaas = new JaasConfiguration();
+ * jaas.addSection("Server", "org.apache.zookeeper.server.auth.DigestLoginModule",
+ * "username", "passowrd");
  */
 public class JaasConfiguration extends javax.security.auth.login.Configuration {
 
@@ -42,9 +42,10 @@ public class JaasConfiguration extends javax.security.auth.login.Configuration {
 
     /**
      * Add a section to the jaas.conf
-     * @param name Section name
+     *
+     * @param name            Section name
      * @param loginModuleName Login module name
-     * @param args login key/value args
+     * @param args            login key/value args
      */
     public void addSection(String name, String loginModuleName, String... args) {
         Map<String, String> conf = new HashMap<String, String>();
@@ -57,9 +58,10 @@ public class JaasConfiguration extends javax.security.auth.login.Configuration {
 
     /**
      * Add a section to the jaas.conf
-     * @param name Section name
+     *
+     * @param name            Section name
      * @param loginModuleName Login module name
-     * @param conf login key/value args
+     * @param conf            login key/value args
      */
     public void addSection(String name, String loginModuleName, final Map<String, String> conf) {
         AppConfigurationEntry[] entries = new AppConfigurationEntry[1];

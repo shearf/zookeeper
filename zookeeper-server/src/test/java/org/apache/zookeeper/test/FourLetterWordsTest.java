@@ -18,16 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.client.FourLetterWordMain.send4LetterWord;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.regex.Pattern;
 import org.apache.zookeeper.TestableZooKeeper;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.common.IOUtils;
@@ -38,6 +28,12 @@ import org.junit.rules.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.util.regex.Pattern;
+
+import static org.apache.zookeeper.client.FourLetterWordMain.send4LetterWord;
+import static org.junit.Assert.*;
+
 public class FourLetterWordsTest extends ClientBase {
 
     protected static final Logger LOG = LoggerFactory.getLogger(FourLetterWordsTest.class);
@@ -45,7 +41,9 @@ public class FourLetterWordsTest extends ClientBase {
     @Rule
     public Timeout timeout = Timeout.millis(30000);
 
-    /** Test the various four letter words */
+    /**
+     * Test the various four letter words
+     */
     @Test
     public void testFourLetterWords() throws Exception {
         verify("ruok", "imok");
@@ -118,6 +116,7 @@ public class FourLetterWordsTest extends ClientBase {
         HostPort hpobj = ClientBase.parseHostPortList(hostPort).get(0);
         return send4LetterWord(hpobj.host, hpobj.port, cmd);
     }
+
     private String sendRequest(String cmd, int timeout) throws IOException, SSLContextException {
         HostPort hpobj = ClientBase.parseHostPortList(hostPort).get(0);
         return send4LetterWord(hpobj.host, hpobj.port, cmd, false, timeout);

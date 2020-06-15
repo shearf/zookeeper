@@ -18,14 +18,15 @@
 
 package org.apache.zookeeper.server;
 
+import org.apache.zookeeper.ZooDefs.OpCode;
+import org.apache.zookeeper.util.ServiceUtils;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.util.Date;
-import org.apache.zookeeper.ZooDefs.OpCode;
-import org.apache.zookeeper.util.ServiceUtils;
 
 public class TraceFormatter {
 

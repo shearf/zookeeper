@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.server.quorum;
 
+import org.apache.zookeeper.server.quorum.flexible.QuorumVerifier;
+
 import java.util.ArrayList;
 import java.util.HashSet;
-import org.apache.zookeeper.server.quorum.flexible.QuorumVerifier;
 
 public class SyncedLearnerTracker {
 

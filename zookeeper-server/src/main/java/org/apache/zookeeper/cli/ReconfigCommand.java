@@ -18,17 +18,14 @@
 
 package org.apache.zookeeper.cli;
 
-import java.io.FileInputStream;
-import java.util.Properties;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.Parser;
-import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.*;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.admin.ZooKeeperAdmin;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+
+import java.io.FileInputStream;
+import java.util.Properties;
 
 /**
  * reconfig command for cli
@@ -71,11 +68,11 @@ public class ReconfigCommand extends CliCommand {
 
     public ReconfigCommand() {
         super("reconfig", "[-s] "
-                          + "[-v version] "
-                          + "[[-file path] | "
-                          + "[-members serverID=host:port1:port2;port3[,...]*]] | "
-                          + "[-add serverId=host:port1:port2;port3[,...]]* "
-                          + "[-remove serverId[,...]*]");
+                + "[-v version] "
+                + "[[-file path] | "
+                + "[-members serverID=host:port1:port2;port3[,...]*]] | "
+                + "[-add serverId=host:port1:port2;port3[,...]]* "
+                + "[-remove serverId[,...]*]");
     }
 
     @Override
@@ -105,7 +102,7 @@ public class ReconfigCommand extends CliCommand {
         // Simple error checking for conflicting modes
         if ((cl.hasOption("file") || cl.hasOption("members")) && (cl.hasOption("add") || cl.hasOption("remove"))) {
             throw new CliParseException("Can't use -file or -members together with -add or -remove (mixing incremental"
-                                        + " and non-incremental modes is not allowed)");
+                    + " and non-incremental modes is not allowed)");
         }
         if (cl.hasOption("file") && cl.hasOption("members")) {
             throw new CliParseException("Can't use -file and -members together (conflicting non-incremental modes)");

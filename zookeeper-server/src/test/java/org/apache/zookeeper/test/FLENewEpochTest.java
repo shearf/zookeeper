@@ -18,12 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.Semaphore;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.quorum.QuorumPeer;
@@ -35,6 +29,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.Semaphore;
+
+import static org.junit.Assert.fail;
 
 public class FLENewEpochTest extends ZKTestCase {
 
@@ -111,34 +113,34 @@ public class FLENewEpochTest extends ZKTestCase {
                     //votes[i] = v;
 
                     switch (i) {
-                    case 0:
-                        LOG.info("First peer, do nothing, just join");
-                        if (finish0.tryAcquire(1000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
-                            //if(threads.get(0).peer.getPeerState() == ServerState.LEADING ){
-                            LOG.info("Setting flag to false");
+                        case 0:
+                            LOG.info("First peer, do nothing, just join");
+                            if (finish0.tryAcquire(1000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                                //if(threads.get(0).peer.getPeerState() == ServerState.LEADING ){
+                                LOG.info("Setting flag to false");
+                                flag = false;
+                            }
+                            break;
+                        case 1:
+                            LOG.info("Second entering case");
+                            if (round[1] != 0) {
+                                finish0.release();
+                                flag = false;
+                            } else {
+                                finish3.acquire();
+                                start0.release();
+                            }
+                            LOG.info("Second is going to start second round");
+                            round[1]++;
+                            break;
+                        case 2:
+                            LOG.info("Third peer, shutting it down");
+                            QuorumBase.shutdown(peer);
                             flag = false;
-                        }
-                        break;
-                    case 1:
-                        LOG.info("Second entering case");
-                        if (round[1] != 0) {
-                            finish0.release();
-                            flag = false;
-                        } else {
-                            finish3.acquire();
-                            start0.release();
-                        }
-                        LOG.info("Second is going to start second round");
-                        round[1]++;
-                        break;
-                    case 2:
-                        LOG.info("Third peer, shutting it down");
-                        QuorumBase.shutdown(peer);
-                        flag = false;
-                        round[2] = 1;
-                        finish3.release();
-                        LOG.info("Third leaving");
-                        break;
+                            round[2] = 1;
+                            finish3.release();
+                            LOG.info("Third leaving");
+                            break;
                     }
                 }
             } catch (Exception e) {

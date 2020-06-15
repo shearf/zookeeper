@@ -18,11 +18,22 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.jute.BinaryOutputArchive;
+import org.apache.jute.OutputArchive;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.PortAssignment;
+import org.apache.zookeeper.ZKTestCase;
+import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.server.persistence.*;
+import org.apache.zookeeper.test.ClientBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,25 +46,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.CheckedOutputStream;
-import org.apache.jute.BinaryOutputArchive;
-import org.apache.jute.OutputArchive;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.ZKTestCase;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.Stat;
-import org.apache.zookeeper.server.persistence.FileHeader;
-import org.apache.zookeeper.server.persistence.FileSnap;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
-import org.apache.zookeeper.server.persistence.SnapStream;
-import org.apache.zookeeper.server.persistence.Util;
-import org.apache.zookeeper.test.ClientBase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
 
 public class PurgeTxnTest extends ZKTestCase {
 
@@ -77,6 +71,7 @@ public class PurgeTxnTest extends ZKTestCase {
 
     /**
      * test the purge
+     *
      * @throws Exception an exception might be thrown here
      */
     @Test
@@ -117,7 +112,7 @@ public class PurgeTxnTest extends ZKTestCase {
     /**
      * Tests purge when logs are rolling or a new snapshot is created, then
      * these newer files should alse be excluded in the current cycle.
-     *
+     * <p>
      * For frequent snapshotting, configured SnapCount to 30. There are three
      * threads which will create 1000 znodes each and simultaneously do purge
      * call
@@ -215,7 +210,7 @@ public class PurgeTxnTest extends ZKTestCase {
         assertEquals(nRecentCount, nRecentValidSnapFiles.size());
         for (File f : nRecentValidSnapFiles) {
             assertTrue("findNValidSnapshots() returned a non-snapshot: "
-                                      + f.getPath(), (Util.getZxidFromName(f.getName(), "snapshot") != -1));
+                    + f.getPath(), (Util.getZxidFromName(f.getName(), "snapshot") != -1));
         }
 
         txnLog.close();
@@ -410,6 +405,7 @@ public class PurgeTxnTest extends ZKTestCase {
     /**
      * Verifies that purge does not delete any log files which started before the oldest retained
      * snapshot but which might extend beyond it.
+     *
      * @throws Exception an exception might be thrown here
      */
     @Test

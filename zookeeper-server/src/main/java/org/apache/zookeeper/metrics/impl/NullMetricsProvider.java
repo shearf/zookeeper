@@ -18,15 +18,10 @@
 
 package org.apache.zookeeper.metrics.impl;
 
+import org.apache.zookeeper.metrics.*;
+
 import java.util.Properties;
 import java.util.function.BiConsumer;
-import org.apache.zookeeper.metrics.Counter;
-import org.apache.zookeeper.metrics.Gauge;
-import org.apache.zookeeper.metrics.MetricsContext;
-import org.apache.zookeeper.metrics.MetricsProvider;
-import org.apache.zookeeper.metrics.MetricsProviderLifeCycleException;
-import org.apache.zookeeper.metrics.Summary;
-import org.apache.zookeeper.metrics.SummarySet;
 
 /**
  * This is a dummy MetricsProvider which does nothing.

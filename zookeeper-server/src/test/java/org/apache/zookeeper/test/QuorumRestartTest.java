@@ -18,8 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.client.ZKClientConfig.ZOOKEEPER_CLIENT_CNXN_SOCKET;
-import static org.junit.Assert.assertTrue;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.junit.After;
@@ -27,6 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.apache.zookeeper.client.ZKClientConfig.ZOOKEEPER_CLIENT_CNXN_SOCKET;
+import static org.junit.Assert.assertTrue;
 
 public class QuorumRestartTest extends ZKTestCase {
 
@@ -48,6 +49,7 @@ public class QuorumRestartTest extends ZKTestCase {
      * A basic test for rolling restart. We are restarting the ZooKeeper servers one by one,
      * starting from the first server. We always make sure that all the nodes joined to the
      * Quorum before moving forward.
+     *
      * @throws Exception
      */
     @Test
@@ -71,6 +73,7 @@ public class QuorumRestartTest extends ZKTestCase {
     /**
      * Testing one of the errors reported in ZOOKEEPER-2164, when some servers can not
      * rejoin to the Quorum after restarting the servers backwards
+     *
      * @throws Exception
      */
     @Test
@@ -95,6 +98,7 @@ public class QuorumRestartTest extends ZKTestCase {
     /**
      * Testing one of the errors reported in ZOOKEEPER-2164, when some servers can not
      * rejoin to the Quorum after restarting the current leader multiple times
+     *
      * @throws Exception
      */
     @Test
@@ -126,8 +130,6 @@ public class QuorumRestartTest extends ZKTestCase {
         System.clearProperty(ZOOKEEPER_CLIENT_CNXN_SOCKET);
         System.clearProperty(ServerCnxnFactory.ZOOKEEPER_SERVER_CNXN_FACTORY);
     }
-
-
 
 
 }

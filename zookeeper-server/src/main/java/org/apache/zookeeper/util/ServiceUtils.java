@@ -18,11 +18,12 @@
 package org.apache.zookeeper.util;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.util.Objects;
-import java.util.function.Consumer;
 import org.apache.zookeeper.server.ExitCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Utilities for service management.

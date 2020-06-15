@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,15 +17,14 @@
  */
 package org.apache.zookeeper.inspector.gui.nodeviewer;
 
+import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
+
+import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.List;
-
-import javax.swing.JPanel;
-
-import org.apache.zookeeper.inspector.manager.ZooInspectorNodeManager;
 
 /**
  * A {@link JPanel} for displaying information about the currently selected
@@ -48,10 +47,10 @@ public abstract class ZooInspectorNodeViewer extends JPanel implements
 
     /**
      * Called whenever the selected nodes in the tree view changes.
-     * 
+     *
      * @param selectedNodes
      *            - the nodes currently selected in the tree view
-     * 
+     *
      */
     public abstract void nodeSelectionChanged(List<String> selectedNodes);
 
@@ -63,7 +62,7 @@ public abstract class ZooInspectorNodeViewer extends JPanel implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * java.awt.datatransfer.Transferable#getTransferData(java.awt.datatransfer
      * .DataFlavor)
@@ -79,16 +78,16 @@ public abstract class ZooInspectorNodeViewer extends JPanel implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
      */
     public DataFlavor[] getTransferDataFlavors() {
-        return new DataFlavor[] { nodeViewerDataFlavor };
+        return new DataFlavor[]{nodeViewerDataFlavor};
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seejava.awt.datatransfer.Transferable#isDataFlavorSupported(java.awt.
      * datatransfer.DataFlavor)
      */
@@ -98,7 +97,7 @@ public abstract class ZooInspectorNodeViewer extends JPanel implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -112,7 +111,7 @@ public abstract class ZooInspectorNodeViewer extends JPanel implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override

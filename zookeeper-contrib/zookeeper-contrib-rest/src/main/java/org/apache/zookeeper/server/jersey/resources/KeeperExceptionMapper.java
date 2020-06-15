@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,14 @@
 
 package org.apache.zookeeper.server.jersey.resources;
 
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.server.jersey.jaxb.ZError;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.server.jersey.jaxb.ZError;
 
 
 /**
@@ -45,39 +45,39 @@ public class KeeperExceptionMapper implements ExceptionMapper<KeeperException> {
 
         String path = e.getPath();
 
-        switch(e.code()) {
-        case AUTHFAILED:
-            status = Response.Status.UNAUTHORIZED;
-            message = path + " not authorized";
-            break;
-        case BADARGUMENTS:
-            status = Response.Status.BAD_REQUEST;
-            message = path + " bad arguments";
-            break;
-        case BADVERSION:
-            status = Response.Status.PRECONDITION_FAILED;
-            message = path + " bad version";
-            break;
-        case INVALIDACL:
-            status = Response.Status.BAD_REQUEST;
-            message = path + " invalid acl";
-            break;
-        case NODEEXISTS:
-            status = Response.Status.CONFLICT;
-            message = path + " already exists";
-            break;
-        case NONODE:
-            status = Response.Status.NOT_FOUND;
-            message = path + " not found";
-            break;
-        case NOTEMPTY:
-            status = Response.Status.CONFLICT;
-            message = path + " not empty";
-            break;
-        default:
-            status = Response.Status.fromStatusCode(502); // bad gateway
-            message = "Error processing request for " + path
-                + " : " + e.getMessage();
+        switch (e.code()) {
+            case AUTHFAILED:
+                status = Response.Status.UNAUTHORIZED;
+                message = path + " not authorized";
+                break;
+            case BADARGUMENTS:
+                status = Response.Status.BAD_REQUEST;
+                message = path + " bad arguments";
+                break;
+            case BADVERSION:
+                status = Response.Status.PRECONDITION_FAILED;
+                message = path + " bad version";
+                break;
+            case INVALIDACL:
+                status = Response.Status.BAD_REQUEST;
+                message = path + " invalid acl";
+                break;
+            case NODEEXISTS:
+                status = Response.Status.CONFLICT;
+                message = path + " already exists";
+                break;
+            case NONODE:
+                status = Response.Status.NOT_FOUND;
+                message = path + " not found";
+                break;
+            case NOTEMPTY:
+                status = Response.Status.CONFLICT;
+                message = path + " not empty";
+                break;
+            default:
+                status = Response.Status.fromStatusCode(502); // bad gateway
+                message = "Error processing request for " + path
+                        + " : " + e.getMessage();
         }
 
         return Response.status(status).entity(

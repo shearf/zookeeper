@@ -18,11 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZKTestCase;
@@ -39,6 +34,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Due to race condition or bad client code, the leader may get request from
@@ -75,7 +77,7 @@ public class LeaderSessionTrackerTest extends ZKTestCase {
      * When we create ephemeral node, we need to check against global
      * session, so the leader never accept request from an expired session
      * (that we no longer track)
-     *
+     * <p>
      * This is not the same as SessionInvalidationTest since session
      * is not in closing state
      */

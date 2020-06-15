@@ -19,13 +19,14 @@
 package org.apache.zookeeper.server;
 
 
+import org.apache.zookeeper.ZKTestCase;
+import org.junit.Before;
+import org.junit.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import org.apache.zookeeper.ZKTestCase;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ServerStatsTest extends ZKTestCase {
 

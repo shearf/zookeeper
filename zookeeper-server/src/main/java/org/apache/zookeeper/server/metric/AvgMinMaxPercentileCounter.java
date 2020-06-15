@@ -22,6 +22,8 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Reservoir;
 import com.codahale.metrics.Snapshot;
 import com.codahale.metrics.UniformSnapshot;
+import org.apache.zookeeper.metrics.Summary;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,7 +31,6 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
-import org.apache.zookeeper.metrics.Summary;
 
 /**
  * Generic long counter that keep track of min/max/avg/percentiles.
@@ -121,6 +122,7 @@ public class AvgMinMaxPercentileCounter extends Metric implements Summary {
         reservoir.reset();
     }
 
+    @Override
     public void add(long value) {
         addDataPoint(value);
     }

@@ -18,13 +18,15 @@
 
 package org.apache.zookeeper.server.util;
 
-import static org.junit.Assert.assertEquals;
-import java.io.File;
 import org.apache.zookeeper.ZKTestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+
+import static org.junit.Assert.assertEquals;
 
 public class VerifyingFileFactoryTest extends ZKTestCase {
 

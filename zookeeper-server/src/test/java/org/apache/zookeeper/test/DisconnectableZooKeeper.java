@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.test;
 
-import java.io.IOException;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
+
+import java.io.IOException;
 
 public class DisconnectableZooKeeper extends ZooKeeper {
 
@@ -33,7 +34,8 @@ public class DisconnectableZooKeeper extends ZooKeeper {
         super(host, sessionTimeout, watcher, sessionId, sessionPasswd);
     }
 
-    /** Testing only!!! Really!!!! This is only here to test when the client
+    /**
+     * Testing only!!! Really!!!! This is only here to test when the client
      * disconnects from the server w/o sending a session disconnect (ie
      * ending the session cleanly). The server will eventually notice the
      * client is no longer pinging and will timeout the session.

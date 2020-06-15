@@ -18,27 +18,6 @@
 
 package org.apache.zookeeper;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.Watcher.Event.EventType;
@@ -52,6 +31,17 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 /**
  * Verifies removing watches using ZooKeeper client apis
@@ -94,12 +84,12 @@ public class RemoveWatchesTest extends ClientBase {
     }
 
     private void removeWatches(
-        ZooKeeper zk,
-        String path,
-        Watcher watcher,
-        WatcherType watcherType,
-        boolean local,
-        KeeperException.Code rc) throws InterruptedException, KeeperException {
+            ZooKeeper zk,
+            String path,
+            Watcher watcher,
+            WatcherType watcherType,
+            boolean local,
+            KeeperException.Code rc) throws InterruptedException, KeeperException {
         LOG.info("Sending removeWatches req using zk {} path: {} type: {} watcher: {} ", zk, path, watcherType, watcher);
         if (useAsync) {
             MyCallback c1 = new MyCallback(rc.intValue(), path);
@@ -115,11 +105,11 @@ public class RemoveWatchesTest extends ClientBase {
     }
 
     private void removeAllWatches(
-        ZooKeeper zk,
-        String path,
-        WatcherType watcherType,
-        boolean local,
-        KeeperException.Code rc) throws InterruptedException, KeeperException {
+            ZooKeeper zk,
+            String path,
+            WatcherType watcherType,
+            boolean local,
+            KeeperException.Code rc) throws InterruptedException, KeeperException {
         LOG.info("Sending removeWatches req using zk {} path: {} type: {} ", zk, path, watcherType);
         if (useAsync) {
             MyCallback c1 = new MyCallback(rc.intValue(), path);
@@ -638,23 +628,22 @@ public class RemoveWatchesTest extends ClientBase {
     /**
      * Verify that if a given watcher doesn't exist, the server properly
      * returns an error code for it.
-     *
+     * <p>
      * In our Java client implementation, we check that a given watch exists at
      * two points:
-     *
+     * <p>
      * 1) before submitting the RemoveWatches request
      * 2) after a successful server response, when the watcher needs to be
-     *    removed
-     *
+     * removed
+     * <p>
      * Since this can be racy (i.e. a watch can fire while a RemoveWatches
      * request is in-flight), we need to verify that the watch was actually
      * removed (i.e. from ZKDatabase and DataTree) and return NOWATCHER if
      * needed.
-     *
+     * <p>
      * Also, other implementations might not do a client side check before
      * submitting a RemoveWatches request. If we don't do a server side check,
      * we would just return ZOK even if no watch was removed.
-     *
      */
     @Test(timeout = 90000)
     public void testNoWatcherServerException() throws InterruptedException, IOException, TimeoutException {
@@ -787,26 +776,26 @@ public class RemoveWatchesTest extends ClientBase {
         final CountDownLatch rmWatchCount = new CountDownLatch(2);
         Watcher w1 = event -> {
             switch (event.getType()) {
-            case DataWatchRemoved:
-                rmWatchCount.countDown();
-                break;
-            case NodeDataChanged:
-                dWatchCount.countDown();
-                break;
-            default:
-                break;
+                case DataWatchRemoved:
+                    rmWatchCount.countDown();
+                    break;
+                case NodeDataChanged:
+                    dWatchCount.countDown();
+                    break;
+                default:
+                    break;
             }
         };
         Watcher w2 = event -> {
             switch (event.getType()) {
-            case DataWatchRemoved:
-                rmWatchCount.countDown();
-                break;
-            case NodeDataChanged:
-                dWatchCount.countDown();
-                break;
-            default:
-                break;
+                case DataWatchRemoved:
+                    rmWatchCount.countDown();
+                    break;
+                case NodeDataChanged:
+                    dWatchCount.countDown();
+                    break;
+                default:
+                    break;
             }
         };
         // Add multiple data watches
@@ -833,26 +822,26 @@ public class RemoveWatchesTest extends ClientBase {
         final CountDownLatch rmWatchCount = new CountDownLatch(2);
         Watcher w1 = event -> {
             switch (event.getType()) {
-            case ChildWatchRemoved:
-                rmWatchCount.countDown();
-                break;
-            case NodeChildrenChanged:
-                cWatchCount.countDown();
-                break;
-            default:
-                break;
+                case ChildWatchRemoved:
+                    rmWatchCount.countDown();
+                    break;
+                case NodeChildrenChanged:
+                    cWatchCount.countDown();
+                    break;
+                default:
+                    break;
             }
         };
         Watcher w2 = event -> {
             switch (event.getType()) {
-            case ChildWatchRemoved:
-                rmWatchCount.countDown();
-                break;
-            case NodeChildrenChanged:
-                cWatchCount.countDown();
-                break;
-            default:
-                break;
+                case ChildWatchRemoved:
+                    rmWatchCount.countDown();
+                    break;
+                case NodeChildrenChanged:
+                    cWatchCount.countDown();
+                    break;
+                default:
+                    break;
             }
         };
         // Add multiple child watches
@@ -879,30 +868,30 @@ public class RemoveWatchesTest extends ClientBase {
         final CountDownLatch rmWatchCount = new CountDownLatch(4);
         Watcher w1 = event -> {
             switch (event.getType()) {
-            case ChildWatchRemoved:
-            case DataWatchRemoved:
-                rmWatchCount.countDown();
-                break;
-            case NodeChildrenChanged:
-            case NodeDataChanged:
-                watchCount.countDown();
-                break;
-            default:
-                break;
+                case ChildWatchRemoved:
+                case DataWatchRemoved:
+                    rmWatchCount.countDown();
+                    break;
+                case NodeChildrenChanged:
+                case NodeDataChanged:
+                    watchCount.countDown();
+                    break;
+                default:
+                    break;
             }
         };
         Watcher w2 = event -> {
             switch (event.getType()) {
-            case ChildWatchRemoved:
-            case DataWatchRemoved:
-                rmWatchCount.countDown();
-                break;
-            case NodeChildrenChanged:
-            case NodeDataChanged:
-                watchCount.countDown();
-                break;
-            default:
-                break;
+                case ChildWatchRemoved:
+                case DataWatchRemoved:
+                    rmWatchCount.countDown();
+                    break;
+                case NodeChildrenChanged:
+                case NodeDataChanged:
+                    watchCount.countDown();
+                    break;
+                default:
+                    break;
             }
         };
         // Add multiple child watches
@@ -938,12 +927,12 @@ public class RemoveWatchesTest extends ClientBase {
 
         @Override
         protected boolean removeWatches(
-            Map<String, Set<Watcher>> pathVsWatcher,
-            Watcher watcher,
-            String path,
-            boolean local,
-            int rc,
-            Set<Watcher> removedWatchers) {
+                Map<String, Set<Watcher>> pathVsWatcher,
+                Watcher watcher,
+                String path,
+                boolean local,
+                int rc,
+                Set<Watcher> removedWatchers) {
             lastReturnCode = rc;
             return false;
         }
@@ -955,6 +944,7 @@ public class RemoveWatchesTest extends ClientBase {
         private String eventPath;
         private CountDownLatch latch;
         private List<EventType> eventsAfterWatchRemoval = new ArrayList<EventType>();
+
         MyWatcher(String path, int count) {
             this.path = path;
             latch = new CountDownLatch(count);
@@ -1039,8 +1029,8 @@ public class RemoveWatchesTest extends ClientBase {
      * Checks if a session is registered with the server as a watcher.
      *
      * @param sessionId the session ID to check
-     * @param path the path to check for watchers
-     * @param type the type of watcher
+     * @param path      the path to check for watchers
+     * @param type      the type of watcher
      * @return true if the client session is a watcher on path for the type
      */
     private boolean isServerSessionWatcher(long sessionId, String path, WatcherType type) {

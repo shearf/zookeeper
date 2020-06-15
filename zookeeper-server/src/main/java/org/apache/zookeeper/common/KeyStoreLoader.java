@@ -32,10 +32,10 @@ interface KeyStoreLoader {
      * associated X509 cert chain.
      *
      * @return a new KeyStore
-     * @throws IOException if loading the key store fails due to an IO error,
-     *         such as "file not found".
+     * @throws IOException              if loading the key store fails due to an IO error,
+     *                                  such as "file not found".
      * @throws GeneralSecurityException if loading the key store fails due to
-     *         a security error, such as "unsupported crypto algorithm".
+     *                                  a security error, such as "unsupported crypto algorithm".
      */
     KeyStore loadKeyStore() throws IOException, GeneralSecurityException;
 
@@ -44,10 +44,10 @@ interface KeyStoreLoader {
      * trusted Certificate Authority (CA).
      *
      * @return a new KeyStore
-     * @throws IOException if loading the trust store fails due to an IO error,
-     *         such as "file not found".
+     * @throws IOException              if loading the trust store fails due to an IO error,
+     *                                  such as "file not found".
      * @throws GeneralSecurityException if loading the trust store fails due to
-     *         a security error, such as "unsupported crypto algorithm".
+     *                                  a security error, such as "unsupported crypto algorithm".
      */
     KeyStore loadTrustStore() throws IOException, GeneralSecurityException;
 

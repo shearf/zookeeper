@@ -24,6 +24,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         }
         return res;
     }
+
     opts = opts || {};
     if (!this.raphael.is(valuesx[0], "array")) {
         valuesx = [valuesx];
@@ -76,16 +77,16 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         +ax[3] && axis.push(this.g.axis(x + gutter, y + height - gutter, height - 2 * gutter, miny, maxy, opts.axisystep || Math.floor((height - 2 * gutter) / 20), 1, opts.westlabels));
     }
     if (opts.northAxisLabel) {
-	this.g.text(x + gutter + width/2, gutter, opts.northAxisLabel);
+        this.g.text(x + gutter + width / 2, gutter, opts.northAxisLabel);
     }
     if (opts.southAxisLabel) {
-	this.g.text(x + gutter + width/2, y + height + 20, opts.southAxisLabel);
+        this.g.text(x + gutter + width / 2, y + height + 20, opts.southAxisLabel);
     }
     if (opts.westAxisLabel) {
-	this.g.text(gutter, y + gutter + height/2, opts.westAxisLabel).attr({rotation: -90});
+        this.g.text(gutter, y + gutter + height / 2, opts.westAxisLabel).attr({rotation: -90});
     }
     if (opts.eastAxisLabel) {
-	this.g.text(x + gutter + width + 20, y + gutter + height/2, opts.eastAxisLabel).attr({rotation: 90});
+        this.g.text(x + gutter + width + 20, y + gutter + height / 2, opts.eastAxisLabel).attr({rotation: 90});
     }
 
     var lines = this.set(),
@@ -107,15 +108,19 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         for (var j = 0, jj = valuesy[i].length; j < jj; j++) {
             var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx;
             var Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
-            (Raphael.is(sym, "array") ? sym[j] : sym) && symset.push(this.g[Raphael.fn.g.markers[this.raphael.is(sym, "array") ? sym[j] : sym]](X, Y, (opts.width || 2) * 3).attr({fill: colors[i], stroke: "none"}));
+            (Raphael.is(sym, "array") ? sym[j] : sym) && symset.push(this.g[Raphael.fn.g.markers[this.raphael.is(sym, "array") ? sym[j] : sym]](X, Y, (opts.width || 2) * 3).attr({
+                fill: colors[i],
+                stroke: "none"
+            }));
             path = path.concat([j ? "L" : "M", X, Y]);
         }
         symbols.push(symset);
         if (opts.shade) {
-            shades[i].attr({path: path.concat(["L", X, y + height - gutter, "L",  x + gutter + ((valuesx[i] || valuesx[0])[0] - minx) * kx, y + height - gutter, "z"]).join(",")});
+            shades[i].attr({path: path.concat(["L", X, y + height - gutter, "L", x + gutter + ((valuesx[i] || valuesx[0])[0] - minx) * kx, y + height - gutter, "z"]).join(",")});
         }
         !opts.nostroke && line.attr({path: path.join(",")});
     }
+
     function createColumns(f) {
         // unite Xs together
         var Xs = [];
@@ -136,7 +141,11 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
             var X = xs[i] - (xs[i] - (xs[i - 1] || x)) / 2,
                 w = ((xs[i + 1] || x + width) - xs[i]) / 2 + (xs[i] - (xs[i - 1] || x)) / 2,
                 C;
-            f ? (C = {}) : cvrs.push(C = that.rect(X - 1, y, Math.max(w + 1, 1), height).attr({stroke: "none", fill: "#000", opacity: 0}));
+            f ? (C = {}) : cvrs.push(C = that.rect(X - 1, y, Math.max(w + 1, 1), height).attr({
+                stroke: "none",
+                fill: "#000",
+                opacity: 0
+            }));
             C.values = [];
             C.symbols = that.set();
             C.y = [];
@@ -156,6 +165,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         }
         !f && (columns = cvrs);
     }
+
     function createDots(f) {
         var cvrs = f || that.set(),
             C;
@@ -164,7 +174,11 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
                 var X = x + gutter + ((valuesx[i] || valuesx[0])[j] - minx) * kx,
                     nearX = x + gutter + ((valuesx[i] || valuesx[0])[j ? j - 1 : 1] - minx) * kx,
                     Y = y + height - gutter - (valuesy[i][j] - miny) * ky;
-                f ? (C = {}) : cvrs.push(C = that.circle(X, Y, Math.abs(nearX - X) / 2).attr({stroke: "none", fill: "#000", opacity: 0}));
+                f ? (C = {}) : cvrs.push(C = that.circle(X, Y, Math.abs(nearX - X) / 2).attr({
+                    stroke: "none",
+                    fill: "#000",
+                    opacity: 0
+                }));
                 C.x = X;
                 C.y = Y;
                 C.value = valuesy[i][j];
@@ -178,6 +192,7 @@ Raphael.fn.g.linechart = function (x, y, width, height, valuesx, valuesy, opts) 
         }
         !f && (dots = cvrs);
     }
+
     chart.push(lines, shades, symbols, axis, columns, dots);
     chart.lines = lines;
     chart.shades = shades;

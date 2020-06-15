@@ -18,13 +18,14 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.zookeeper.server.Request;
 import org.apache.zookeeper.server.RequestProcessor;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Allows the blocking of the request processor queue on a ZooKeeperServer.
- *
+ * <p>
  * This is used to simulate arbitrary length delays or to produce delays
  * in request processing that are maximally inconvenient for a given feature
  * for the purposes of testing it.

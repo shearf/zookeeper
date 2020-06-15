@@ -18,12 +18,9 @@
 
 package org.apache.jute;
 
+import java.io.*;
+
 import static org.junit.Assert.fail;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * TestOutputArchive creates an output archive from a given outputstream.

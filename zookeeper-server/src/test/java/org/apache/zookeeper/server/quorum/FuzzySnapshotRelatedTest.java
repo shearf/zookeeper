@@ -18,9 +18,26 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.apache.jute.OutputArchive;
+import org.apache.zookeeper.AsyncCallback.MultiCallback;
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.KeeperException.NoNodeException;
+import org.apache.zookeeper.KeeperException.NodeExistsException;
+import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.ZooKeeper.States;
+import org.apache.zookeeper.data.ACL;
+import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.metrics.MetricsUtils;
+import org.apache.zookeeper.server.*;
+import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+import org.apache.zookeeper.test.ClientBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.sasl.SaslException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,33 +46,8 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.security.sasl.SaslException;
-import org.apache.jute.OutputArchive;
-import org.apache.zookeeper.AsyncCallback.MultiCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException.NoNodeException;
-import org.apache.zookeeper.KeeperException.NodeExistsException;
-import org.apache.zookeeper.Op;
-import org.apache.zookeeper.OpResult;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.ZooKeeper.States;
-import org.apache.zookeeper.data.ACL;
-import org.apache.zookeeper.data.Stat;
-import org.apache.zookeeper.metrics.MetricsUtils;
-import org.apache.zookeeper.server.DataNode;
-import org.apache.zookeeper.server.DataTree;
-import org.apache.zookeeper.server.ServerMetrics;
-import org.apache.zookeeper.server.ZKDatabase;
-import org.apache.zookeeper.server.ZooKeeperServer;
-import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
-import org.apache.zookeeper.test.ClientBase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
 
 /**
  * Test cases used to catch corner cases due to fuzzy snapshot.
@@ -83,7 +75,7 @@ public class FuzzySnapshotRelatedTest extends QuorumPeerTestBase {
         for (int i = 0; i < ENSEMBLE_SERVERS; i++) {
             clientPorts[i] = PortAssignment.unique();
             server = "server." + i + "=127.0.0.1:" + PortAssignment.unique() + ":" + PortAssignment.unique()
-                     + ":participant;127.0.0.1:" + clientPorts[i];
+                    + ":participant;127.0.0.1:" + clientPorts[i];
             sb.append(server + "\n");
         }
         String currentQuorumCfgSection = sb.toString();
@@ -175,7 +167,7 @@ public class FuzzySnapshotRelatedTest extends QuorumPeerTestBase {
     /**
      * It's possibel during SNAP sync, the parent is serialized before the
      * child get deleted during sending the snapshot over.
-     *
+     * <p>
      * In which case, we need to make sure the pzxid get correctly updated
      * when applying the txns received.
      */
@@ -209,7 +201,7 @@ public class FuzzySnapshotRelatedTest extends QuorumPeerTestBase {
     /**
      * It's possible during taking fuzzy snapshot, the parent is serialized
      * before the child get deleted in the fuzzy range.
-     *
+     * <p>
      * In which case, we need to make sure the pzxid get correctly updated
      * when replaying the txns.
      */
@@ -268,7 +260,8 @@ public class FuzzySnapshotRelatedTest extends QuorumPeerTestBase {
                 ), new MultiCallback() {
                     @Override
                     public void processResult(int rc, String path, Object ctx,
-                            List<OpResult> opResults) {}
+                                              List<OpResult> opResults) {
+                    }
                 }, null);
 
                 LOG.info("Wait for the signal to continue");
@@ -354,7 +347,7 @@ public class FuzzySnapshotRelatedTest extends QuorumPeerTestBase {
 
             assertEquals(stat1, stat2);
         } finally {
-            for (ZooKeeper z: compareZk) {
+            for (ZooKeeper z : compareZk) {
                 z.close();
             }
         }
@@ -482,7 +475,7 @@ public class FuzzySnapshotRelatedTest extends QuorumPeerTestBase {
         }
 
         public Stat setData(String path, byte data[], int version, long zxid,
-                long time) throws NoNodeException {
+                            long time) throws NoNodeException {
             if (setListener != null) {
                 setListener.process();
             }

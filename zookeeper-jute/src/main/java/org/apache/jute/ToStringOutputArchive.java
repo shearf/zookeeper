@@ -74,22 +74,26 @@ public class ToStringOutputArchive implements OutputArchive {
         throwExceptionOnError(tag);
     }
 
+    @Override
     public void writeFloat(float f, String tag) throws IOException {
         writeDouble((double) f, tag);
     }
 
+    @Override
     public void writeDouble(double d, String tag) throws IOException {
         printCommaUnlessFirst();
         stream.print(d);
         throwExceptionOnError(tag);
     }
 
+    @Override
     public void writeString(String s, String tag) throws IOException {
         printCommaUnlessFirst();
         stream.print(escapeString(s));
         throwExceptionOnError(tag);
     }
 
+    @Override
     public void writeBuffer(byte[] buf, String tag)
             throws IOException {
         printCommaUnlessFirst();

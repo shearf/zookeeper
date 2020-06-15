@@ -18,20 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedInputStream;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.jute.InputArchive;
 import org.apache.zookeeper.CreateMode;
@@ -47,14 +33,27 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedInputStream;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 public class CRCTest extends ZKTestCase {
 
     private static final Logger LOG = LoggerFactory.getLogger(CRCTest.class);
 
     private static final String HOSTPORT = "127.0.0.1:" + PortAssignment.unique();
+
     /**
      * corrupt a file by writing m at 500 b
      * offset
+     *
      * @param file the file to be corrupted
      * @throws IOException
      */
@@ -69,7 +68,9 @@ public class CRCTest extends ZKTestCase {
         raf.close();
     }
 
-    /** return if checksum matches for a snapshot **/
+    /**
+     * return if checksum matches for a snapshot
+     **/
     private boolean getCheckSum(FileSnap snap, File snapFile) throws IOException {
         DataTree dt = new DataTree();
         Map<Long, Integer> sessions = new ConcurrentHashMap<Long, Integer>();
@@ -95,10 +96,12 @@ public class CRCTest extends ZKTestCase {
         return (val != checksum);
     }
 
-    /** test checksums for the logs and snapshots.
+    /**
+     * test checksums for the logs and snapshots.
      * the reader should fail on reading
      * a corrupt snapshot and a corrupt log
      * file
+     *
      * @throws Exception
      */
     @Test

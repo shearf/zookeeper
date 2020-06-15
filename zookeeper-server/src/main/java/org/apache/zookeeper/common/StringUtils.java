@@ -29,7 +29,6 @@ public class StringUtils {
      * This method returns an immutable List&lt;String&gt;, but different from String's split()
      * it trims the results in the input String, and removes any empty string from
      * the resulting List.
-     *
      */
     public static List<String> split(String value, String separator) {
         String[] splits = value.split(separator);
@@ -47,7 +46,6 @@ public class StringUtils {
      * This method takes a List&lt;String&gt; and a delimiter and joins the strings
      * into a single string, where the original strings are separated using
      * the given delimiter.
-     *
      */
     public static String joinStrings(List<String> list, String delim) {
         if (list == null) {

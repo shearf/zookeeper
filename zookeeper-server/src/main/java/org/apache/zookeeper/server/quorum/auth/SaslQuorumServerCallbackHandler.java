@@ -18,21 +18,18 @@
 
 package org.apache.zookeeper.server.quorum.auth;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.security.auth.callback.*;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.security.sasl.AuthorizeCallback;
 import javax.security.sasl.RealmCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This is used by the SASL mechanisms to get further information to complete
@@ -50,9 +47,9 @@ public class SaslQuorumServerCallbackHandler implements CallbackHandler {
     private final Set<String> authzHosts;
 
     public SaslQuorumServerCallbackHandler(
-        Configuration configuration,
-        String serverSection,
-        Set<String> authzHosts) throws IOException {
+            Configuration configuration,
+            String serverSection,
+            Set<String> authzHosts) throws IOException {
         AppConfigurationEntry[] configurationEntries = configuration.getAppConfigurationEntry(serverSection);
 
         if (configurationEntries == null) {
@@ -141,7 +138,7 @@ public class SaslQuorumServerCallbackHandler implements CallbackHandler {
         if (ac.isAuthorized()) {
             ac.setAuthorizedID(authorizationID);
             LOG.info("Successfully authenticated learner: authenticationID={};  authorizationID={}.",
-                     authenticationID, authorizationID);
+                    authenticationID, authorizationID);
         }
         LOG.debug("SASL authorization completed, authorized flag set to {}", ac.isAuthorized());
     }

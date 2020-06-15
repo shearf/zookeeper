@@ -18,12 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZooKeeper;
@@ -33,6 +27,12 @@ import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.test.ClientBase;
 import org.apache.zookeeper.test.ReconfigTest;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.*;
 
 public class StandaloneDisabledTest extends QuorumPeerTestBase {
 
@@ -61,15 +61,15 @@ public class StandaloneDisabledTest extends QuorumPeerTestBase {
         startServer(leaderId, serverStrings.get(leaderId) + "\n");
         ReconfigTest.testServerHasConfig(zkHandles[leaderId], null, null);
         LOG.info(
-            "Initial Configuration:\n{}",
-            new String(zkHandles[leaderId].getConfig(this, new Stat())));
+                "Initial Configuration:\n{}",
+                new String(zkHandles[leaderId].getConfig(this, new Stat())));
 
         //start and add 2 followers
         startFollowers();
         testReconfig(leaderId, true, reconfigServers);
         LOG.info(
-            "Configuration after adding 2 followers:\n{}",
-            new String(zkHandles[leaderId].getConfig(this, new Stat())));
+                "Configuration after adding 2 followers:\n{}",
+                new String(zkHandles[leaderId].getConfig(this, new Stat())));
 
         //shutdown leader- quorum should still exist
         shutDownServer(leaderId);
@@ -92,8 +92,8 @@ public class StandaloneDisabledTest extends QuorumPeerTestBase {
         reconfigServers.add(Integer.toString(follower1));
         testReconfig(follower2, false, reconfigServers);
         LOG.info(
-            "Configuration after removing leader and follower 1:\n{}",
-            new String(zkHandles[follower2].getConfig(this, new Stat())));
+                "Configuration after removing leader and follower 1:\n{}",
+                new String(zkHandles[follower2].getConfig(this, new Stat())));
 
         // Kill server 1 to avoid it interferences with FLE of the quorum {2, 3, 4}.
         shutDownServer(follower1);
@@ -117,8 +117,8 @@ public class StandaloneDisabledTest extends QuorumPeerTestBase {
         testReconfig(follower2, true, reconfigServers); //add partcipants
         testReconfig(follower2, true, observerStrings); //change to observers
         LOG.info(
-            "Configuration after adding two observers:\n{}",
-            new String(zkHandles[follower2].getConfig(this, new Stat())));
+                "Configuration after adding two observers:\n{}",
+                new String(zkHandles[follower2].getConfig(this, new Stat())));
 
         shutDownData();
     }
@@ -162,7 +162,7 @@ public class StandaloneDisabledTest extends QuorumPeerTestBase {
         for (int i = 0; i < NUM_SERVERS; i++) {
             clientPorts[i] = PortAssignment.unique();
             String server = "server." + i + "=localhost:" + PortAssignment.unique() + ":" + PortAssignment.unique() + ":participant;"
-                            + "localhost:" + clientPorts[i];
+                    + "localhost:" + clientPorts[i];
             serverStrings.add(server);
         }
         return serverStrings;
@@ -177,8 +177,8 @@ public class StandaloneDisabledTest extends QuorumPeerTestBase {
         peers[id] = new MainThread(id, clientPorts[id], config);
         peers[id].start();
         assertTrue(
-            "Server " + id + " is not up",
-            ClientBase.waitForServerUp("127.0.0.1:" + clientPorts[id], CONNECTION_TIMEOUT));
+                "Server " + id + " is not up",
+                ClientBase.waitForServerUp("127.0.0.1:" + clientPorts[id], CONNECTION_TIMEOUT));
         assertTrue("Error- Server started in Standalone Mode!", peers[id].isQuorumPeerRunning());
         zkHandles[id] = ClientBase.createZKClient("127.0.0.1:" + clientPorts[id]);
         zkAdminHandles[id] = new ZooKeeperAdmin("127.0.0.1:" + clientPorts[id], CONNECTION_TIMEOUT, this);
@@ -207,15 +207,16 @@ public class StandaloneDisabledTest extends QuorumPeerTestBase {
         reconfigServers.clear();
         for (int i = 1; i <= 2; i++) {
             String config = serverStrings.get(leaderId)
-                                    + "\n"
-                                    + serverStrings.get(i)
-                                    + "\n"
-                                    + serverStrings.get(i % 2 + 1)
-                                    + "\n";
+                    + "\n"
+                    + serverStrings.get(i)
+                    + "\n"
+                    + serverStrings.get(i % 2 + 1)
+                    + "\n";
             startServer(i, config);
             reconfigServers.add(serverStrings.get(i));
         }
     }
+
     /**
      * Starts servers 1 and 2 as participants,
      * adds them to the list to be reconfigured
@@ -260,12 +261,12 @@ public class StandaloneDisabledTest extends QuorumPeerTestBase {
     public void startObserver() throws Exception {
         int clientPort = PortAssignment.unique();
         String config = "server." + observer1 + "=localhost:" + PortAssignment.unique() + ":" + clientPort
-                        + ":observer;" + "localhost:" + PortAssignment.unique();
+                + ":observer;" + "localhost:" + PortAssignment.unique();
         MainThread observer = new MainThread(observer1, clientPort, config);
         observer.start();
         assertFalse(
-            "Observer was able to start by itself!",
-            ClientBase.waitForServerUp("127.0.0.1:" + clientPort, CONNECTION_TIMEOUT));
+                "Observer was able to start by itself!",
+                ClientBase.waitForServerUp("127.0.0.1:" + clientPort, CONNECTION_TIMEOUT));
     }
 
 }

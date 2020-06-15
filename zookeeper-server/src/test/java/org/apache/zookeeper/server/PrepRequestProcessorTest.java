@@ -18,33 +18,11 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.Record;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.KeeperException.SessionExpiredException;
 import org.apache.zookeeper.KeeperException.SessionMovedException;
-import org.apache.zookeeper.MultiOperationRecord;
-import org.apache.zookeeper.Op;
-import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooDefs.OpCode;
 import org.apache.zookeeper.data.Id;
@@ -54,11 +32,7 @@ import org.apache.zookeeper.proto.RequestHeader;
 import org.apache.zookeeper.proto.SetDataRequest;
 import org.apache.zookeeper.server.ZooKeeperServer.ChangeRecord;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
-import org.apache.zookeeper.server.quorum.Leader;
-import org.apache.zookeeper.server.quorum.LeaderBeanTest;
-import org.apache.zookeeper.server.quorum.LeaderZooKeeperServer;
-import org.apache.zookeeper.server.quorum.QuorumPeer;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+import org.apache.zookeeper.server.quorum.*;
 import org.apache.zookeeper.server.quorum.flexible.QuorumVerifier;
 import org.apache.zookeeper.test.ClientBase;
 import org.apache.zookeeper.txn.ErrorTxn;
@@ -67,6 +41,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class PrepRequestProcessorTest extends ClientBase {
@@ -209,7 +196,7 @@ public class PrepRequestProcessorTest extends ClientBase {
         processor.pRequest(createRequest(record, OpCode.create, false));
         assertTrue("request hasn't been processed in chain", pLatch.await(5, TimeUnit.SECONDS));
 
-        String newMember = "server.0=localhost:" + PortAssignment.unique()  + ":" + PortAssignment.unique() + ":participant";
+        String newMember = "server.0=localhost:" + PortAssignment.unique() + ":" + PortAssignment.unique() + ":participant";
         record = new ReconfigRequest(null, null, newMember, 0);
         pLatch = new CountDownLatch(1);
         processor.pRequest(createRequest(record, OpCode.reconfig, true));
@@ -310,6 +297,7 @@ public class PrepRequestProcessorTest extends ClientBase {
             outcome = request;
             pLatch.countDown();
         }
+
         @Override
         public void shutdown() {
             // TODO Auto-generated method stub
@@ -325,66 +313,80 @@ public class PrepRequestProcessorTest extends ClientBase {
             // TODO Auto-generated method stub
             return false;
         }
+
         @Override
         public boolean commitSession(long id, int to) {
             // TODO Auto-generated method stub
             return false;
         }
+
         @Override
         public void checkSession(long sessionId, Object owner) throws SessionExpiredException, SessionMovedException {
             // TODO Auto-generated method stub
         }
+
         @Override
         public long createSession(int sessionTimeout) {
             // TODO Auto-generated method stub
             return 0;
         }
+
         @Override
         public void dumpSessions(PrintWriter pwriter) {
             // TODO Auto-generated method stub
 
         }
+
         @Override
         public void removeSession(long sessionId) {
             // TODO Auto-generated method stub
 
         }
+
         public int upgradeSession(long sessionId) {
             // TODO Auto-generated method stub
             return 0;
         }
+
         @Override
         public void setOwner(long id, Object owner) throws SessionExpiredException {
             // TODO Auto-generated method stub
 
         }
+
         @Override
         public void shutdown() {
             // TODO Auto-generated method stub
 
         }
+
         @Override
         public boolean touchSession(long sessionId, int sessionTimeout) {
             // TODO Auto-generated method stub
             return false;
         }
+
         @Override
         public void setSessionClosing(long sessionId) {
             // TODO Auto-generated method stub
         }
+
         @Override
         public boolean isTrackingSession(long sessionId) {
             // TODO Auto-generated method stub
             return false;
         }
+
         @Override
         public void checkGlobalSession(long sessionId, Object owner) throws SessionExpiredException, SessionMovedException {
             // TODO Auto-generated method stub
         }
+
         @Override
         public Map<Long, Set<Long>> getSessionExpiryMap() {
             return new HashMap<Long, Set<Long>>();
         }
+
         @Override
         public long getLocalSessionCount() {
             return 0;

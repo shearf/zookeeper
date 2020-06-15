@@ -18,13 +18,14 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import javax.management.ObjectName;
 import org.apache.zookeeper.jmx.MBeanRegistry;
 import org.apache.zookeeper.jmx.ZKMBeanInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.management.ObjectName;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 public class LearnerHandlerBean implements LearnerHandlerMXBean, ZKMBeanInfo {
 
@@ -46,10 +47,10 @@ public class LearnerHandlerBean implements LearnerHandlerMXBean, ZKMBeanInfo {
     @Override
     public String getName() {
         return MBeanRegistry.getInstance()
-                            .makeFullPath(
-                                "Learner_Connections",
-                                ObjectName.quote(remoteAddr),
-                                String.format("\"id:%d\"", learnerHandler.getSid()));
+                .makeFullPath(
+                        "Learner_Connections",
+                        ObjectName.quote(remoteAddr),
+                        String.format("\"id:%d\"", learnerHandler.getSid()));
     }
 
     @Override

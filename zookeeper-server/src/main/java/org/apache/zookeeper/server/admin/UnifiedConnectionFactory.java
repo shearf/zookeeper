@@ -18,8 +18,6 @@
 
 package org.apache.zookeeper.server.admin;
 
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLSession;
 import org.apache.zookeeper.server.ServerMetrics;
 import org.eclipse.jetty.io.Connection;
 import org.eclipse.jetty.io.EndPoint;
@@ -30,6 +28,9 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLSession;
 
 /**
  * The purpose of this class is to dynamically determine whether to create
@@ -106,20 +107,20 @@ public class UnifiedConnectionFactory extends AbstractConnectionFactory {
     }
 
     protected SslConnection newSslConnection(
-        final Connector connector,
-        final EndPoint endPoint,
-        final SSLEngine engine) {
+            final Connector connector,
+            final EndPoint endPoint,
+            final SSLEngine engine) {
         return new SslConnection(connector.getByteBufferPool(), connector.getExecutor(), endPoint, engine);
     }
 
     @Override
     public String toString() {
         return String.format(
-            "%s@%x{%s->%s}",
-            this.getClass().getSimpleName(),
-            this.hashCode(),
-            this.getProtocol(),
-            this.nextProtocol);
+                "%s@%x{%s->%s}",
+                this.getClass().getSimpleName(),
+                this.hashCode(),
+                this.getProtocol(),
+                this.nextProtocol);
     }
 
 }

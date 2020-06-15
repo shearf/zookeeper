@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,11 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
@@ -34,6 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
 
 
 public class FLEMalformedNotificationMessageTest extends ZKTestCase {
@@ -63,9 +64,9 @@ public class FLEMalformedNotificationMessageTest extends ZKTestCase {
         for (int i = 0; i < count; i++) {
             int clientport = PortAssignment.unique();
             peers.put((long) i,
-                      new QuorumServer(i,
-                                       new InetSocketAddress(clientport),
-                                       new InetSocketAddress(PortAssignment.unique())));
+                    new QuorumServer(i,
+                            new InetSocketAddress(clientport),
+                            new InetSocketAddress(PortAssignment.unique())));
             tmpdir[i] = ClientBase.createTmpDir();
             port[i] = clientport;
         }
@@ -218,7 +219,7 @@ public class FLEMalformedNotificationMessageTest extends ZKTestCase {
         requestBuffer.putLong(0);                              // zxid
         requestBuffer.putLong(0);                              // electionEpoch
         requestBuffer.putShort((short) 0);                      // this is the first two bytes of a proper
-                                                               // 8 bytes Long we should send here
+        // 8 bytes Long we should send here
         mockCnxManager.toSend(0L, requestBuffer);
 
         /*

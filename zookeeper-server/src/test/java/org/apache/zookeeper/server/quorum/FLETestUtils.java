@@ -17,13 +17,15 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.nio.ByteBuffer;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.quorum.QuorumPeer.ServerState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class FLETestUtils extends ZKTestCase {
 

@@ -18,14 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.NewConfigNoQuorum;
 import org.apache.zookeeper.ZooKeeper;
@@ -37,6 +29,12 @@ import org.apache.zookeeper.test.ReconfigTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.*;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ReconfigFailureCasesTest extends QuorumPeerTestBase {
 
@@ -77,10 +75,10 @@ public class ReconfigFailureCasesTest extends QuorumPeerTestBase {
 
         for (int i = 1; i <= 5; i++) {
             members.add("server." + i + "=127.0.0.1:"
-                        + qu.getPeer(i).peer.getQuorumAddress().getAllPorts().get(0)
-                        + ":" + qu.getPeer(i).peer.getElectionAddress().getAllPorts().get(0)
-                        + ";" + "127.0.0.1:"
-                        + qu.getPeer(i).peer.getClientPort());
+                    + qu.getPeer(i).peer.getQuorumAddress().getAllPorts().get(0)
+                    + ":" + qu.getPeer(i).peer.getElectionAddress().getAllPorts().get(0)
+                    + ";" + "127.0.0.1:"
+                    + qu.getPeer(i).peer.getClientPort());
         }
 
         // Change the quorum system from majority to hierarchical.
@@ -204,8 +202,8 @@ public class ReconfigFailureCasesTest extends QuorumPeerTestBase {
 
         for (int i = 1; i < SERVER_COUNT; i++) {
             assertTrue(
-                "waiting for server " + i + " being up",
-                ClientBase.waitForServerUp("127.0.0.1:" + ports[i][2], CONNECTION_TIMEOUT * 2));
+                    "waiting for server " + i + " being up",
+                    ClientBase.waitForServerUp("127.0.0.1:" + ports[i][2], CONNECTION_TIMEOUT * 2));
         }
 
         try {

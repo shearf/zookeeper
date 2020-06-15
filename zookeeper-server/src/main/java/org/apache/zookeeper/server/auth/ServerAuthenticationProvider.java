@@ -18,11 +18,12 @@
 
 package org.apache.zookeeper.server.auth;
 
-import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.server.ServerCnxn;
 import org.apache.zookeeper.server.ZooKeeperServer;
+
+import java.util.List;
 
 /**
  * A variation on {@link AuthenticationProvider} that provides additional
@@ -36,10 +37,8 @@ public abstract class ServerAuthenticationProvider implements AuthenticationProv
         private final ServerCnxn cnxn;
 
         /**
-         * @param zks
-         *                the ZooKeeper server instance
-         * @param cnxn
-         *                the cnxn that received the authentication information.
+         * @param zks  the ZooKeeper server instance
+         * @param cnxn the cnxn that received the authentication information.
          */
         public ServerObjs(ZooKeeperServer zks, ServerCnxn cnxn) {
             this.zks = zks;
@@ -65,16 +64,11 @@ public abstract class ServerAuthenticationProvider implements AuthenticationProv
         private final List<ACL> setAcls;
 
         /**
-         * @param path
-         *                the path of the operation being authenticated
-         * @param id
-         *                the id to check.
-         * @param aclExpr
-         *                the expression to match ids against.
-         * @param perm
-         *                the permission value being authenticated
-         * @param setAcls
-         *                for set ACL operations, the list of ACLs being set. Otherwise null.
+         * @param path    the path of the operation being authenticated
+         * @param id      the id to check.
+         * @param aclExpr the expression to match ids against.
+         * @param perm    the permission value being authenticated
+         * @param setAcls for set ACL operations, the list of ACLs being set. Otherwise null.
          */
         public MatchValues(String path, String id, String aclExpr, int perm, List<ACL> setAcls) {
             this.path = path;
@@ -112,10 +106,8 @@ public abstract class ServerAuthenticationProvider implements AuthenticationProv
      * implementor may attach new ids to the authInfo field of cnxn or may use
      * cnxn to send packets back to the client.
      *
-     * @param serverObjs
-     *                cnxn/server/etc that received the authentication information.
-     * @param authData
-     *                the authentication data received.
+     * @param serverObjs cnxn/server/etc that received the authentication information.
+     * @param authData   the authentication data received.
      * @return indication of success or failure
      */
     public abstract KeeperException.Code handleAuthentication(ServerObjs serverObjs, byte[] authData);
@@ -125,10 +117,8 @@ public abstract class ServerAuthenticationProvider implements AuthenticationProv
      * expression in the ACL. This allows schemes to use application specific
      * wild cards.
      *
-     * @param serverObjs
-     *                cnxn/server/etc that received the authentication information.
-     * @param matchValues
-     *                values to be matched
+     * @param serverObjs  cnxn/server/etc that received the authentication information.
+     * @param matchValues values to be matched
      */
     public abstract boolean matches(ServerObjs serverObjs, MatchValues matchValues);
 

@@ -18,7 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertFalse;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -26,6 +25,8 @@ import org.apache.zookeeper.server.quorum.QuorumPeerTestBase;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertFalse;
 
 public class ObserverTest extends QuorumPeerTestBase implements Watcher {
 
@@ -36,6 +37,7 @@ public class ObserverTest extends QuorumPeerTestBase implements Watcher {
     /**
      * This test ensures that an Observer does not elect itself as a leader, or
      * indeed come up properly, if it is the lone member of an ensemble.
+     *
      * @throws Exception
      */
     @Test
@@ -61,7 +63,7 @@ public class ObserverTest extends QuorumPeerTestBase implements Watcher {
         final int CLIENT_PORT_QP1 = PortAssignment.unique();
 
         String quorumCfgSection = "server.1=127.0.0.1:" + (PortAssignment.unique()) + ":" + (PortAssignment.unique()) + ":observer\n"
-                                  + "server.2=127.0.0.1:" + (PortAssignment.unique()) + ":" + (PortAssignment.unique()) + "\npeerType=observer\n";
+                + "server.2=127.0.0.1:" + (PortAssignment.unique()) + ":" + (PortAssignment.unique()) + "\npeerType=observer\n";
 
         MainThread q1 = new MainThread(1, CLIENT_PORT_QP1, quorumCfgSection);
         q1.start();

@@ -18,36 +18,26 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.client.ZKClientConfig.ENABLE_CLIENT_SASL_KEY;
-import static org.apache.zookeeper.client.ZKClientConfig.LOGIN_CONTEXT_NAME_KEY;
-import static org.apache.zookeeper.client.ZKClientConfig.ZK_SASL_CLIENT_USERNAME;
-import static org.apache.zookeeper.client.ZKClientConfig.ZOOKEEPER_SERVER_PRINCIPAL;
-import static org.apache.zookeeper.client.ZKClientConfig.ZOOKEEPER_SERVER_REALM;
-import static org.junit.Assert.fail;
+import org.apache.commons.io.FileUtils;
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.client.ZKClientConfig;
+import org.apache.zookeeper.common.ClientX509Util;
+import org.apache.zookeeper.server.ServerCnxnFactory;
+import org.apache.zookeeper.server.quorum.auth.KerberosTestUtils;
+import org.apache.zookeeper.server.quorum.auth.MiniKdc;
+import org.junit.*;
+
+import javax.security.auth.login.Configuration;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.util.Properties;
-import javax.security.auth.login.Configuration;
-import org.apache.commons.io.FileUtils;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.Environment;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.client.ZKClientConfig;
-import org.apache.zookeeper.common.ClientX509Util;
-import org.apache.zookeeper.server.ServerCnxnFactory;
-import org.apache.zookeeper.server.quorum.auth.KerberosTestUtils;
-import org.apache.zookeeper.server.quorum.auth.MiniKdc;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import static org.apache.zookeeper.client.ZKClientConfig.*;
+import static org.junit.Assert.fail;
 
 public class SaslKerberosAuthOverSSLTest extends ClientBase {
 
@@ -60,7 +50,6 @@ public class SaslKerberosAuthOverSSLTest extends ClientBase {
     private static Properties conf;
 
 
-
     @BeforeClass
     public static void setupKdc() {
         startMiniKdc();
@@ -71,7 +60,6 @@ public class SaslKerberosAuthOverSSLTest extends ClientBase {
         stopMiniKdc();
         FileUtils.deleteQuietly(kdcWorkDir);
     }
-
 
 
     @Before
@@ -220,7 +208,6 @@ public class SaslKerberosAuthOverSSLTest extends ClientBase {
         System.clearProperty("zookeeper.ssl.quorum.clientAuth");
         clientX509Util.close();
     }
-
 
 
     public static void startMiniKdc() {

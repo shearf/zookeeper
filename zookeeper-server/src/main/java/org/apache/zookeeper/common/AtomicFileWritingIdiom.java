@@ -18,12 +18,7 @@
 
 package org.apache.zookeeper.common;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 
 /*
  *  Used to perform an atomic write into a file.
@@ -55,9 +50,9 @@ public class AtomicFileWritingIdiom {
     }
 
     private AtomicFileWritingIdiom(
-        File targetFile,
-        OutputStreamStatement osStmt,
-        WriterStatement wStmt) throws IOException {
+            File targetFile,
+            OutputStreamStatement osStmt,
+            WriterStatement wStmt) throws IOException {
         AtomicFileOutputStream out = null;
         boolean error = true;
         try {

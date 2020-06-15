@@ -18,20 +18,17 @@
 
 package org.apache.zookeeper.util;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.util.Base64.getMimeDecoder;
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
-import static javax.crypto.Cipher.DECRYPT_MODE;
+import javax.crypto.Cipher;
+import javax.crypto.EncryptedPrivateKeyInfo;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.GeneralSecurityException;
-import java.security.KeyFactory;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -44,19 +41,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.crypto.Cipher;
-import javax.crypto.EncryptedPrivateKeyInfo;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.security.auth.x500.X500Principal;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Base64.getMimeDecoder;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static javax.crypto.Cipher.DECRYPT_MODE;
 
 /**
  * Note: this class is copied from io.airlift.security.pem.PemReader (see
  * https://github.com/airlift/airlift/blob/master/security/src/main/java/io/airlift/security/pem/PemReader.java) with
  * permission of the authors, to avoid adding an extra library dependency to Zookeeper.
  * The file was copied from commit hash 86348546af43217f4d04a0cdad624b0ae4751c2c.
- *
+ * <p>
  * The following modifications have been made to the original source code:
  * <ul>
  * <li>imports have been rearranged to match Zookeeper import order style.</li>
@@ -67,22 +63,22 @@ import javax.security.auth.x500.X500Principal;
 public final class PemReader {
 
     private static final Pattern CERT_PATTERN = Pattern.compile(
-        "-+BEGIN\\s+.*CERTIFICATE[^-]*-+(?:\\s|\\r|\\n)+" + // Header
-        "([a-z0-9+/=\\r\\n]+)" +                    // Base64 text
-        "-+END\\s+.*CERTIFICATE[^-]*-+",            // Footer
-        CASE_INSENSITIVE);
+            "-+BEGIN\\s+.*CERTIFICATE[^-]*-+(?:\\s|\\r|\\n)+" + // Header
+                    "([a-z0-9+/=\\r\\n]+)" +                    // Base64 text
+                    "-+END\\s+.*CERTIFICATE[^-]*-+",            // Footer
+            CASE_INSENSITIVE);
 
     private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile(
-        "-+BEGIN\\s+.*PRIVATE\\s+KEY[^-]*-+(?:\\s|\\r|\\n)+" + // Header
-        "([a-z0-9+/=\\r\\n]+)" +                       // Base64 text
-        "-+END\\s+.*PRIVATE\\s+KEY[^-]*-+",            // Footer
-        CASE_INSENSITIVE);
+            "-+BEGIN\\s+.*PRIVATE\\s+KEY[^-]*-+(?:\\s|\\r|\\n)+" + // Header
+                    "([a-z0-9+/=\\r\\n]+)" +                       // Base64 text
+                    "-+END\\s+.*PRIVATE\\s+KEY[^-]*-+",            // Footer
+            CASE_INSENSITIVE);
 
     private static final Pattern PUBLIC_KEY_PATTERN = Pattern.compile(
-        "-+BEGIN\\s+.*PUBLIC\\s+KEY[^-]*-+(?:\\s|\\r|\\n)+" + // Header
-        "([a-z0-9+/=\\r\\n]+)" +                      // Base64 text
-        "-+END\\s+.*PUBLIC\\s+KEY[^-]*-+",            // Footer
-        CASE_INSENSITIVE);
+            "-+BEGIN\\s+.*PUBLIC\\s+KEY[^-]*-+(?:\\s|\\r|\\n)+" + // Header
+                    "([a-z0-9+/=\\r\\n]+)" +                      // Base64 text
+                    "-+END\\s+.*PUBLIC\\s+KEY[^-]*-+",            // Footer
+            CASE_INSENSITIVE);
 
     private PemReader() {
     }
@@ -105,15 +101,15 @@ public final class PemReader {
         List<X509Certificate> certificateChain = readCertificateChain(certificateChainFile);
         if (certificateChain.isEmpty()) {
             throw new CertificateException("Certificate file does not contain any certificates: "
-                                           + certificateChainFile);
+                    + certificateChainFile);
         }
 
         KeyStore keyStore = KeyStore.getInstance("JKS");
         keyStore.load(null, null);
         keyStore.setKeyEntry("key",
-                             key,
-                             keyPassword.orElse("").toCharArray(),
-                             certificateChain.toArray(new Certificate[0]));
+                key,
+                keyPassword.orElse("").toCharArray(),
+                certificateChain.toArray(new Certificate[0]));
         return keyStore;
     }
 

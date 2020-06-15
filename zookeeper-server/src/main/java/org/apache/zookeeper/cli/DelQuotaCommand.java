@@ -18,20 +18,15 @@
 
 package org.apache.zookeeper.cli;
 
-import java.io.IOException;
-import java.util.List;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.Parser;
-import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.*;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Quotas;
 import org.apache.zookeeper.StatsTrack;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * delQuota command for cli
@@ -91,9 +86,9 @@ public class DelQuotaCommand extends CliCommand {
     /**
      * this method deletes quota for a node.
      *
-     * @param zk the zookeeper client
-     * @param path the path to delete quota for
-     * @param bytes true if number of bytes needs to be unset
+     * @param zk       the zookeeper client
+     * @param path     the path to delete quota for
+     * @param bytes    true if number of bytes needs to be unset
      * @param numNodes true if number of nodes needs to be unset
      * @return true if quota deletion is successful
      * @throws KeeperException
@@ -101,10 +96,10 @@ public class DelQuotaCommand extends CliCommand {
      * @throws InterruptedException
      */
     public static boolean delQuota(
-        ZooKeeper zk,
-        String path,
-        boolean bytes,
-        boolean numNodes) throws KeeperException, IOException, InterruptedException, MalformedPathException {
+            ZooKeeper zk,
+            String path,
+            boolean bytes,
+            boolean numNodes) throws KeeperException, IOException, InterruptedException, MalformedPathException {
         String parentPath = Quotas.quotaZookeeper + path;
         String quotaPath = Quotas.quotaZookeeper + path + "/" + Quotas.limitNode;
         if (zk.exists(quotaPath, false) == null) {
@@ -144,17 +139,17 @@ public class DelQuotaCommand extends CliCommand {
     /**
      * trim the quota tree to recover unwanted tree elements in the quota's tree
      *
-     * @param zk the zookeeper client
+     * @param zk   the zookeeper client
      * @param path the path to start from and go up and see if their is any
-     * unwanted parent in the path.
+     *             unwanted parent in the path.
      * @return true if successful
      * @throws KeeperException
      * @throws IOException
      * @throws InterruptedException
      */
     private static boolean trimProcQuotas(
-        ZooKeeper zk,
-        String path) throws KeeperException, IOException, InterruptedException {
+            ZooKeeper zk,
+            String path) throws KeeperException, IOException, InterruptedException {
         if (Quotas.quotaZookeeper.equals(path)) {
             return true;
         }

@@ -18,48 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.common.NetUtils.formatInetAddr;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
-import java.nio.channels.UnresolvedAddressException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import javax.net.ssl.SSLSocket;
 import org.apache.zookeeper.common.NetUtils;
 import org.apache.zookeeper.common.X509Exception;
 import org.apache.zookeeper.server.ExitCode;
@@ -74,17 +32,34 @@ import org.apache.zookeeper.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLSocket;
+import java.io.*;
+import java.net.*;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.channels.UnresolvedAddressException;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static org.apache.zookeeper.common.NetUtils.formatInetAddr;
+
 
 /**
  * This class implements a connection manager for leader election using TCP. It
  * maintains one connection for every pair of servers. The tricky part is to
  * guarantee that there is exactly one connection for every pair of servers that
  * are operating correctly and that can communicate over the network.
- *
+ * <p>
  * If two servers try to start a connection concurrently, then the connection
  * manager uses a very simple tie-breaking mechanism to decide which connection
  * to drop based on the IP addressed of the two parties.
- *
+ * <p>
  * For every peer, the manager maintains a queue of messages to send. If the
  * connection to any particular peer drops, then the sender thread puts the
  * message back on the list. As this implementation currently uses a queue
@@ -92,7 +67,6 @@ import org.slf4j.LoggerFactory;
  * message to the tail of the queue, thus changing the order of messages.
  * Although this is not a problem for the leader election, it could be a problem
  * when consolidating peer communication. This is to be verified, though.
- *
  */
 
 public class QuorumCnxManager {
@@ -192,6 +166,7 @@ public class QuorumCnxManager {
      */
     static final Supplier<Socket> DEFAULT_SOCKET_FACTORY = () -> new Socket();
     private static Supplier<Socket> SOCKET_FACTORY = DEFAULT_SOCKET_FACTORY;
+
     static void setSocketFactory(Supplier<Socket> factory) {
         SOCKET_FACTORY = factory;
     }
@@ -289,7 +264,7 @@ public class QuorumCnxManager {
         /**
          * Returns true if the specified hostname is a wildcard address,
          * like 0.0.0.0 for IPv4 or :: for IPv6
-         *
+         * <p>
          * (the function is package-private to be visible for testing)
          */
         static boolean isWildcardAddress(final String hostname) {
@@ -308,8 +283,8 @@ public class QuorumCnxManager {
     }
 
     public QuorumCnxManager(QuorumPeer self, final long mySid, Map<Long, QuorumPeer.QuorumServer> view,
-        QuorumAuthServer authServer, QuorumAuthLearner authLearner, int socketTimeout, boolean listenOnAllIPs,
-        int quorumCnxnThreadsSize, boolean quorumSaslAuthEnabled) {
+                            QuorumAuthServer authServer, QuorumAuthLearner authLearner, int socketTimeout, boolean listenOnAllIPs,
+                            int quorumCnxnThreadsSize, boolean quorumSaslAuthEnabled) {
 
         this.recvQueue = new CircularBlockingQueue<>(RECV_CAPACITY);
         this.queueSendMap = new ConcurrentHashMap<>();
@@ -347,10 +322,10 @@ public class QuorumCnxManager {
         final ThreadGroup group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
 
         final ThreadFactory daemonThFactory = runnable -> new Thread(group, runnable,
-            String.format("QuorumConnectionThread-[myid=%d]-%d", mySid, threadIndex.getAndIncrement()));
+                String.format("QuorumConnectionThread-[myid=%d]-%d", mySid, threadIndex.getAndIncrement()));
 
         this.connectionExecutor = new ThreadPoolExecutor(3, quorumCnxnThreadsSize, 60, TimeUnit.SECONDS,
-                                                         new SynchronousQueue<>(), daemonThFactory);
+                new SynchronousQueue<>(), daemonThFactory);
         this.connectionExecutor.allowCoreThreadTimeOut(true);
     }
 
@@ -385,13 +360,13 @@ public class QuorumCnxManager {
                 SSLSocket sslSock = (SSLSocket) sock;
                 sslSock.startHandshake();
                 LOG.info("SSL handshake complete with {} - {} - {}",
-                         sslSock.getRemoteSocketAddress(),
-                         sslSock.getSession().getProtocol(),
-                         sslSock.getSession().getCipherSuite());
+                        sslSock.getRemoteSocketAddress(),
+                        sslSock.getSession().getProtocol(),
+                        sslSock.getSession().getCipherSuite());
             }
 
             LOG.debug("Connected to server {} using election address: {}:{}",
-                      sid, sock.getInetAddress(), sock.getPort());
+                    sid, sock.getInetAddress(), sock.getPort());
         } catch (X509Exception e) {
             LOG.warn("Cannot open secure channel to {} at election address {}", sid, electionAddr, e);
             closeSocket(sock);
@@ -406,10 +381,10 @@ public class QuorumCnxManager {
             startConnection(sock, sid);
         } catch (IOException e) {
             LOG.error(
-              "Exception while connecting, id: {}, addr: {}, closing learner connection",
-              sid,
-              sock.getRemoteSocketAddress(),
-              e);
+                    "Exception while connecting, id: {}, addr: {}, closing learner connection",
+                    sid,
+                    sock.getRemoteSocketAddress(),
+                    e);
             closeSocket(sock);
         }
     }
@@ -445,6 +420,7 @@ public class QuorumCnxManager {
     private class QuorumConnectionReqThread extends ZooKeeperThread {
         final MultipleAddresses electionAddr;
         final Long sid;
+
         QuorumConnectionReqThread(final MultipleAddresses electionAddr, final Long sid) {
             super("QuorumConnectionReqThread-" + sid);
             this.electionAddr = electionAddr;
@@ -543,7 +519,6 @@ public class QuorumCnxManager {
      * connection if it wins. Notice that it checks whether it has a connection
      * to this server already or not. If it does, then it sends the smallest
      * possible long value to lose the challenge.
-     *
      */
     public void receiveConnection(final Socket sock) {
         DataInputStream din = null;
@@ -581,6 +556,7 @@ public class QuorumCnxManager {
     private class QuorumConnectionReceiverThread extends ZooKeeperThread {
 
         private final Socket sock;
+
         QuorumConnectionReceiverThread(final Socket sock) {
             super("QuorumConnectionReceiverThread-" + sock.getRemoteSocketAddress());
             this.sock = sock;
@@ -660,7 +636,7 @@ public class QuorumCnxManager {
         } else if (sid == self.getId()) {
             // we saw this case in ZOOKEEPER-2164
             LOG.warn("We got a connection request from a server with our own ID. "
-                     + "This should be either a configuration error, or a bug.");
+                    + "This should be either a configuration error, or a bug.");
         } else { // Otherwise start worker threads to receive data.
             SendWorker sw = new SendWorker(sock, sid);
             RecvWorker rw = new RecvWorker(sock, din, sid, sw);
@@ -708,11 +684,11 @@ public class QuorumCnxManager {
     /**
      * Try to establish a connection to server with id sid using its electionAddr.
      * The function will return quickly and the connection will be established asynchronously.
-     *
+     * <p>
      * VisibleForTesting.
      *
-     *  @param sid  server id
-     *  @return boolean success indication
+     * @param sid server id
+     * @return boolean success indication
      */
     synchronized boolean connectOne(long sid, MultipleAddresses electionAddr) {
         if (senderWorkerMap.get(sid) != null) {
@@ -736,7 +712,7 @@ public class QuorumCnxManager {
      * Try to establish a connection to server with id sid.
      * The function will return quickly and the connection will be established asynchronously.
      *
-     *  @param sid  server id
+     * @param sid server id
      */
     synchronized void connectOne(long sid) {
         if (senderWorkerMap.get(sid) != null) {
@@ -765,8 +741,8 @@ public class QuorumCnxManager {
                 }
             }
             if (lastSeenQV != null
-                && lastProposedView.containsKey(sid)
-                && (!knownId
+                    && lastProposedView.containsKey(sid)
+                    && (!knownId
                     || (lastProposedView.get(sid).electionAddr != lastCommittedView.get(sid).electionAddr))) {
                 knownId = true;
                 LOG.debug("Server {} knows {} already, it is in the lastProposedView", self.getId(), sid);
@@ -846,8 +822,7 @@ public class QuorumCnxManager {
     /**
      * Helper method to set socket options.
      *
-     * @param sock
-     *            Reference to socket
+     * @param sock Reference to socket
      */
     private void setSockOpts(Socket sock) throws SocketException {
         sock.setTcpNoDelay(true);
@@ -858,8 +833,7 @@ public class QuorumCnxManager {
     /**
      * Helper method to close a socket.
      *
-     * @param sock
-     *            Reference to socket
+     * @param sock Reference to socket
      */
     private void closeSocket(Socket sock) {
         if (sock == null) {
@@ -924,10 +898,10 @@ public class QuorumCnxManager {
                 portBindMaxRetry = maxRetry;
             } else {
                 LOG.info(
-                  "'{}' contains invalid value: {}(must be >= 0). Use default value of {} instead.",
-                  ELECTION_PORT_BIND_RETRY,
-                  maxRetry,
-                  DEFAULT_PORT_BIND_MAX_RETRY);
+                        "'{}' contains invalid value: {}(must be >= 0). Use default value of {} instead.",
+                        ELECTION_PORT_BIND_RETRY,
+                        maxRetry,
+                        DEFAULT_PORT_BIND_MAX_RETRY);
                 portBindMaxRetry = DEFAULT_PORT_BIND_MAX_RETRY;
             }
         }
@@ -953,7 +927,7 @@ public class QuorumCnxManager {
 
                 CountDownLatch latch = new CountDownLatch(addresses.size());
                 listenerHandlers = addresses.stream().map(address ->
-                                new ListenerHandler(address, self.shouldUsePortUnification(), self.isSslQuorum(), latch))
+                        new ListenerHandler(address, self.shouldUsePortUnification(), self.isSslQuorum(), latch))
                         .collect(Collectors.toList());
 
                 ExecutorService executor = Executors.newFixedThreadPool(addresses.size());
@@ -979,10 +953,10 @@ public class QuorumCnxManager {
             LOG.info("Leaving listener");
             if (!shutdown) {
                 LOG.error(
-                  "As I'm leaving the listener thread, I won't be able to participate in leader election any longer: {}",
-                  self.getElectionAddress().getAllAddresses().stream()
-                    .map(NetUtils::formatInetAddr)
-                    .collect(Collectors.joining("|")));
+                        "As I'm leaving the listener thread, I won't be able to participate in leader election any longer: {}",
+                        self.getElectionAddress().getAllAddresses().stream()
+                                .map(NetUtils::formatInetAddr)
+                                .collect(Collectors.joining("|")));
                 if (socketException.get()) {
                     // After leaving listener thread, the host cannot join the quorum anymore,
                     // this is a severe error that we cannot recover from, so we need to exit
@@ -1110,10 +1084,10 @@ public class QuorumCnxManager {
                 }
                 if (!shutdown) {
                     LOG.error(
-                      "Leaving listener thread for address {} after {} errors. Use {} property to increase retry count.",
-                      formatInetAddr(address),
-                      numRetries,
-                      ELECTION_PORT_BIND_RETRY);
+                            "Leaving listener thread for address {} after {} errors. Use {} property to increase retry count.",
+                            formatInetAddr(address),
+                            numRetries,
+                            ELECTION_PORT_BIND_RETRY);
                 }
             }
 
@@ -1157,10 +1131,8 @@ public class QuorumCnxManager {
          * An instance of this thread receives messages to send
          * through a queue and sends them to the server sid.
          *
-         * @param sock
-         *            Socket to remote peer
-         * @param sid
-         *            Server identifier of remote peer
+         * @param sock Socket to remote peer
+         * @param sid  Server identifier of remote peer
          */
         SendWorker(Socket sock, Long sid) {
             super("SendWorker:" + sid);
@@ -1283,10 +1255,10 @@ public class QuorumCnxManager {
                 }
             } catch (Exception e) {
                 LOG.warn(
-                    "Exception when using channel: for id {} my id = {}",
-                    sid ,
-                    QuorumCnxManager.this.mySid,
-                    e);
+                        "Exception when using channel: for id {} my id = {}",
+                        sid,
+                        QuorumCnxManager.this.mySid,
+                        e);
             }
             this.finish();
 
@@ -1309,9 +1281,9 @@ public class QuorumCnxManager {
                         } catch (NullPointerException | IOException ignored) {
                         }
                         LOG.warn(
-                          "destination address {} not reachable anymore, shutting down the SendWorker for sid {}",
-                          address.toString(),
-                          sid);
+                                "destination address {} not reachable anymore, shutting down the SendWorker for sid {}",
+                                address.toString(),
+                                sid);
                         this.finish();
                     }
                 }).start();
@@ -1393,10 +1365,10 @@ public class QuorumCnxManager {
                 }
             } catch (Exception e) {
                 LOG.warn(
-                    "Connection broken for id {}, my id = {}",
-                    sid,
-                    QuorumCnxManager.this.mySid,
-                    e);
+                        "Connection broken for id {}, my id = {}",
+                        sid,
+                        QuorumCnxManager.this.mySid,
+                        e);
             } finally {
                 LOG.warn("Interrupting SendWorker thread from RecvWorker. sid: {}. myId: {}", sid, QuorumCnxManager.this.mySid);
                 sw.finish();
@@ -1412,23 +1384,22 @@ public class QuorumCnxManager {
      * removed and the new item is inserted at the tail of the queue. This is done
      * to prevent a thread from blocking while inserting an element in the queue.
      *
-     * @param queue Reference to the Queue
+     * @param queue  Reference to the Queue
      * @param buffer Reference to the buffer to be inserted in the queue
      */
     private void addToSendQueue(final BlockingQueue<ByteBuffer> queue,
-        final ByteBuffer buffer) {
+                                final ByteBuffer buffer) {
         final boolean success = queue.offer(buffer);
         if (!success) {
-          throw new RuntimeException("Could not insert into receive queue");
+            throw new RuntimeException("Could not insert into receive queue");
         }
     }
 
     /**
      * Returns true if queue is empty.
-     * @param queue
-     *          Reference to the queue
-     * @return
-     *      true if the specified queue is empty
+     *
+     * @param queue Reference to the queue
+     * @return true if the specified queue is empty
      */
     private boolean isSendQueueEmpty(final BlockingQueue<ByteBuffer> queue) {
         return queue.isEmpty();
@@ -1438,12 +1409,12 @@ public class QuorumCnxManager {
      * Retrieves and removes buffer at the head of this queue,
      * waiting up to the specified wait time if necessary for an element to
      * become available.
-     *
+     * <p>
      * {@link BlockingQueue#poll(long, java.util.concurrent.TimeUnit)}
      */
     private ByteBuffer pollSendQueue(final BlockingQueue<ByteBuffer> queue,
-          final long timeout, final TimeUnit unit) throws InterruptedException {
-       return queue.poll(timeout, unit);
+                                     final long timeout, final TimeUnit unit) throws InterruptedException {
+        return queue.poll(timeout, unit);
     }
 
     /**
@@ -1454,22 +1425,22 @@ public class QuorumCnxManager {
      * @param msg Reference to the message to be inserted in the queue
      */
     public void addToRecvQueue(final Message msg) {
-      final boolean success = this.recvQueue.offer(msg);
-      if (!success) {
-          throw new RuntimeException("Could not insert into receive queue");
-      }
+        final boolean success = this.recvQueue.offer(msg);
+        if (!success) {
+            throw new RuntimeException("Could not insert into receive queue");
+        }
     }
 
     /**
      * Retrieves and removes a message at the head of this queue,
      * waiting up to the specified wait time if necessary for an element to
      * become available.
-     *
+     * <p>
      * {@link BlockingQueue#poll(long, java.util.concurrent.TimeUnit)}
      */
     public Message pollRecvQueue(final long timeout, final TimeUnit unit)
-       throws InterruptedException {
-       return this.recvQueue.poll(timeout, unit);
+            throws InterruptedException {
+        return this.recvQueue.poll(timeout, unit);
     }
 
     public boolean connectedToPeer(long peerSid) {

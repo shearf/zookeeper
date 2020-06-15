@@ -25,33 +25,33 @@ LogGraph.LogTable = function (asyncq, canvas, starttime, endtime, filter) {
     table.id = "logtable";
     canvas.appendChild(table);
 
-    this.addLogLine = function(time, text) {
-	var tr = document.createElement("tr");
-	table.appendChild(tr);
-	
-	var td = document.createElement("td");
-	td.innerHTML = dateFormat(time, "h:MM:ss,l");
-	tr.appendChild(td);
+    this.addLogLine = function (time, text) {
+        var tr = document.createElement("tr");
+        table.appendChild(tr);
 
-	td = document.createElement("td");
-	td.innerHTML = text;
-	tr.appendChild(td);
+        var td = document.createElement("td");
+        td.innerHTML = dateFormat(time, "h:MM:ss,l");
+        tr.appendChild(td);
+
+        td = document.createElement("td");
+        td.innerHTML = text;
+        tr.appendChild(td);
     }
 
     var self = this;
-    var processdata = function(data) {
-	var events = data["events"];
-	var count = 0;
-	for (var i in events) {
-	    var e = events[i];
-	    if (e.type == "text") {
-		self.addLogLine(e.time, e.text);
-		count++;
-	    }
-	}
-	return count != 0;
+    var processdata = function (data) {
+        var events = data["events"];
+        var count = 0;
+        for (var i in events) {
+            var e = events[i];
+            if (e.type == "text") {
+                self.addLogLine(e.time, e.text);
+                count++;
+            }
+        }
+        return count != 0;
     };
 
-    var uri = "/data?start=" + self.starttime + "&end=" + self.endtime + "&filter=" + self.filter; 
+    var uri = "/data?start=" + self.starttime + "&end=" + self.endtime + "&filter=" + self.filter;
     LogGraph.loadData(asyncq, uri, processdata);
 };

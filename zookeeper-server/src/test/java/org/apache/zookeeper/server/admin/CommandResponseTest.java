@@ -17,12 +17,14 @@
 
 package org.apache.zookeeper.server.admin;
 
-import static org.junit.Assert.assertEquals;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.zookeeper.ZKTestCase;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class CommandResponseTest extends ZKTestCase {
 

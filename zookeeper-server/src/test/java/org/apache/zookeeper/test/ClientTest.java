@@ -18,32 +18,13 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.KeeperException.Code;
 import org.apache.zookeeper.KeeperException.InvalidACLException;
-import org.apache.zookeeper.TestableZooKeeper;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.EventType;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooDefs.Perms;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.data.Stat;
@@ -57,12 +38,25 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.*;
+
 public class ClientTest extends ClientBase {
 
     protected static final Logger LOG = LoggerFactory.getLogger(ClientTest.class);
     private boolean skipACL = System.getProperty("zookeeper.skipACL", "no").equals("yes");
 
-    /** Verify that pings are sent, keeping the "idle" client alive */
+    /**
+     * Verify that pings are sent, keeping the "idle" client alive
+     */
     @Test
     public void testPing() throws Exception {
         ZooKeeper zkIdle = null;
@@ -105,7 +99,9 @@ public class ClientTest extends ClientBase {
         performClientTest(true);
     }
 
-    /** Exercise the testable functions, verify tostring, etc... */
+    /**
+     * Exercise the testable functions, verify tostring, etc...
+     */
     @Test
     public void testTestability() throws Exception {
         TestableZooKeeper zk = createClient();
@@ -437,8 +433,8 @@ public class ClientTest extends ClientBase {
             zk.getChildren("/pat/ben", true);
             for (int i = 0; i < 10; i++) {
                 zk.create("/pat/ben/"
-                                  + i
-                                  + "-", Integer.toString(i).getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL);
+                        + i
+                        + "-", Integer.toString(i).getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL);
             }
             children = zk.getChildren("/pat/ben", false);
             Collections.sort(children);
@@ -776,6 +772,7 @@ public class ClientTest extends ClientBase {
 
     /**
      * We create a perfectly valid 'exists' request, except that the opcode is wrong.
+     *
      * @throws Exception
      */
     @Test

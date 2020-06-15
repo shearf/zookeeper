@@ -18,14 +18,15 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.io.Flushable;
-import java.io.IOException;
 import org.apache.zookeeper.ZooDefs.OpCode;
 import org.apache.zookeeper.server.Request;
 import org.apache.zookeeper.server.RequestProcessor;
 import org.apache.zookeeper.server.ServerMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Flushable;
+import java.io.IOException;
 
 public class SendAckRequestProcessor implements RequestProcessor, Flushable {
 
@@ -37,6 +38,7 @@ public class SendAckRequestProcessor implements RequestProcessor, Flushable {
         this.learner = peer;
     }
 
+    @Override
     public void processRequest(Request si) {
         if (si.type != OpCode.sync) {
             QuorumPacket qp = new QuorumPacket(Leader.ACK, si.getHdr().getZxid(), null, null);
@@ -58,6 +60,7 @@ public class SendAckRequestProcessor implements RequestProcessor, Flushable {
         }
     }
 
+    @Override
     public void flush() throws IOException {
         try {
             learner.writePacket(null, true);

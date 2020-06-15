@@ -18,18 +18,6 @@
 
 package org.apache.zookeeper.server.quorum.auth;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import org.apache.kerby.kerberos.kerb.KrbException;
 import org.apache.kerby.kerberos.kerb.server.KdcConfigKey;
 import org.apache.kerby.kerberos.kerb.server.SimpleKdcServer;
@@ -38,6 +26,10 @@ import org.apache.kerby.util.NetworkUtil;
 import org.apache.zookeeper.server.ExitCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * Mini KDC based on Apache Directory Server that can be embedded in testcases
@@ -182,6 +174,7 @@ public class MiniKdc {
      * <p>
      * The returned configuration is a copy, it can be customized before using
      * it to create a MiniKdc.
+     *
      * @return a MiniKdc default configuration.
      */
     public static Properties createConf() {
@@ -200,13 +193,14 @@ public class MiniKdc {
     public void setTransport(String transport) {
         this.transport = transport;
     }
+
     /**
      * Creates a MiniKdc.
      *
-     * @param conf MiniKdc configuration.
+     * @param conf    MiniKdc configuration.
      * @param workDir working directory, it should be the build directory. Under
-     * this directory an ApacheDS working directory will be created, this
-     * directory will be deleted when the MiniKdc stops.
+     *                this directory an ApacheDS working directory will be created, this
+     *                directory will be deleted when the MiniKdc stops.
      * @throws Exception thrown if the MiniKdc could not be created.
      */
     public MiniKdc(Properties conf, File workDir) throws Exception {
@@ -362,7 +356,7 @@ public class MiniKdc {
      * Creates a principal in the KDC with the specified user and password.
      *
      * @param principal principal name, do not include the domain.
-     * @param password password.
+     * @param password  password.
      * @throws Exception thrown if the principal could not be created.
      */
     public synchronized void createPrincipal(String principal, String password) throws Exception {
@@ -375,7 +369,7 @@ public class MiniKdc {
      * @param keytabFile keytab file to add the created principals.
      * @param principals principals to add to the KDC, do not include the domain.
      * @throws Exception thrown if the principals or the keytab file could not be
-     * created.
+     *                   created.
      */
     public synchronized void createPrincipal(File keytabFile, String... principals) throws Exception {
         simpleKdc.createPrincipals(principals);
@@ -391,7 +385,7 @@ public class MiniKdc {
      * Set the System property; return the old value for caching.
      *
      * @param sysprop property
-     * @param debug true or false
+     * @param debug   true or false
      * @return the previous value
      */
     private boolean getAndSet(String sysprop, String debug) {

@@ -18,24 +18,20 @@
 
 package org.apache.zookeeper.util;
 
-import java.security.Principal;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
+import org.apache.zookeeper.SaslClientCallbackHandler;
+import org.apache.zookeeper.server.auth.KerberosName;
+import org.ietf.jgss.*;
+import org.slf4j.Logger;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
 import javax.security.sasl.SaslException;
 import javax.security.sasl.SaslServer;
-import org.apache.zookeeper.SaslClientCallbackHandler;
-import org.apache.zookeeper.server.auth.KerberosName;
-import org.ietf.jgss.GSSContext;
-import org.ietf.jgss.GSSCredential;
-import org.ietf.jgss.GSSException;
-import org.ietf.jgss.GSSManager;
-import org.ietf.jgss.GSSName;
-import org.ietf.jgss.Oid;
-import org.slf4j.Logger;
+import java.security.Principal;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 public final class SecurityUtils {
 
@@ -44,23 +40,22 @@ public final class SecurityUtils {
     /**
      * Create an instance of a SaslClient. It will return null if there is an exception.
      *
-     * @param subject subject
+     * @param subject          subject
      * @param servicePrincipal principal
-     * @param protocol name of the protocol for which the authentication is being performed
-     * @param serverName name of the server to authenticate to
-     * @param LOG logger
-     * @param entity can be either zookeeper client or quorum learner
-     *
+     * @param protocol         name of the protocol for which the authentication is being performed
+     * @param serverName       name of the server to authenticate to
+     * @param LOG              logger
+     * @param entity           can be either zookeeper client or quorum learner
      * @return saslclient object
      * @throws SaslException
      */
     public static SaslClient createSaslClient(
-        final Subject subject,
-        final String servicePrincipal,
-        final String protocol,
-        final String serverName,
-        final Logger LOG,
-        final String entity) throws SaslException {
+            final Subject subject,
+            final String servicePrincipal,
+            final String protocol,
+            final String serverName,
+            final Logger LOG,
+            final String entity) throws SaslException {
         SaslClient saslClient;
         // Use subject.getPrincipals().isEmpty() as an indication of which SASL
         // mechanism to use: if empty, use DIGEST-MD5; otherwise, use GSSAPI.
@@ -119,18 +114,18 @@ public final class SecurityUtils {
                         LOG.info("{} will use GSSAPI as SASL mechanism.", entity);
                         String[] mechs = {"GSSAPI"};
                         LOG.debug(
-                            "creating sasl client: {}={};service={};serviceHostname={}",
-                            entity,
-                            clientPrincipalName,
-                            serviceName,
-                            serviceHostname);
+                                "creating sasl client: {}={};service={};serviceHostname={}",
+                                entity,
+                                clientPrincipalName,
+                                serviceName,
+                                serviceHostname);
                         SaslClient saslClient = Sasl.createSaslClient(
-                            mechs,
-                            clientPrincipalName,
-                            serviceName,
-                            serviceHostname,
-                            null,
-                            new SaslClientCallbackHandler(null, entity));
+                                mechs,
+                                clientPrincipalName,
+                                serviceName,
+                                serviceHostname,
+                                null,
+                                new SaslClientCallbackHandler(null, entity));
                         return saslClient;
                     }
                 });
@@ -145,19 +140,19 @@ public final class SecurityUtils {
     /**
      * Create an instance of a SaslServer. It will return null if there is an exception.
      *
-     * @param subject subject
-     * @param protocol protocol
-     * @param serverName server name
+     * @param subject         subject
+     * @param protocol        protocol
+     * @param serverName      server name
      * @param callbackHandler login callback handler
-     * @param LOG logger
+     * @param LOG             logger
      * @return sasl server object
      */
     public static SaslServer createSaslServer(
-        final Subject subject,
-        final String protocol,
-        final String serverName,
-        final CallbackHandler callbackHandler,
-        final Logger LOG) {
+            final Subject subject,
+            final String protocol,
+            final String serverName,
+            final CallbackHandler callbackHandler,
+            final Logger LOG) {
         if (subject != null) {
             // server is using a JAAS-authenticated subject: determine service
             // principal name and hostname from zk server's subject.
@@ -207,14 +202,14 @@ public final class SecurityUtils {
                             GSSManager manager = GSSManager.getInstance();
                             Oid krb5Mechanism = new Oid("1.2.840.113554.1.2.2");
                             GSSName gssName = manager.createName(
-                                servicePrincipalName + "@" + serviceHostname,
-                                GSSName.NT_HOSTBASED_SERVICE);
+                                    servicePrincipalName + "@" + serviceHostname,
+                                    GSSName.NT_HOSTBASED_SERVICE);
                             GSSCredential cred = manager.createCredential(gssName, GSSContext.DEFAULT_LIFETIME, krb5Mechanism, GSSCredential.ACCEPT_ONLY);
                             subject.getPrivateCredentials().add(cred);
                             LOG.debug(
-                                "Added private credential to service principal name: '{}', GSSCredential name: {}",
-                                servicePrincipalName,
-                                cred.getName());
+                                    "Added private credential to service principal name: '{}', GSSCredential name: {}",
+                                    servicePrincipalName,
+                                    cred.getName());
                         } catch (GSSException ex) {
                             LOG.warn("Cannot add private credential to subject; clients authentication may fail", ex);
                         }
@@ -259,10 +254,8 @@ public final class SecurityUtils {
      * If the principal name contains hostname pattern "_HOST" then it replaces
      * with the given hostname, which should be fully-qualified domain name.
      *
-     * @param principalConfig
-     *            the Kerberos principal name conf value to convert
-     * @param hostname
-     *            the fully-qualified domain name used for substitution
+     * @param principalConfig the Kerberos principal name conf value to convert
+     * @param hostname        the fully-qualified domain name used for substitution
      * @return converted Kerberos principal name
      */
     public static String getServerPrincipal(String principalConfig, String hostname) {

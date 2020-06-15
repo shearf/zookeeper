@@ -38,7 +38,7 @@ public class BinaryInputArchive implements InputArchive {
 
     static {
         final Integer configuredExtraMaxBuffer =
-            Integer.getInteger("zookeeper.jute.maxbuffer.extrasize", maxBuffer);
+                Integer.getInteger("zookeeper.jute.maxbuffer.extrasize", maxBuffer);
         if (configuredExtraMaxBuffer < 1024) {
             // Earlier hard coded value was 1024, So the value should not be less than that value
             extraMaxBuffer = 1024;

@@ -18,7 +18,6 @@
 
 package org.apache.zookeeper;
 
-import java.util.List;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
@@ -27,6 +26,8 @@ import org.junit.runners.parameterized.BlockJUnit4ClassRunnerWithParametersFacto
 import org.junit.runners.parameterized.TestWithParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class ZKParameterized {
 

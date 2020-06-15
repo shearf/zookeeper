@@ -18,7 +18,14 @@
 
 package org.apache.zookeeper.util;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.zookeeper.common.BaseX509ParameterizedTestCase;
+import org.apache.zookeeper.common.KeyStoreFileType;
+import org.apache.zookeeper.common.X509KeyType;
+import org.apache.zookeeper.common.X509TestContext;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStoreException;
@@ -27,13 +34,8 @@ import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.apache.zookeeper.common.BaseX509ParameterizedTestCase;
-import org.apache.zookeeper.common.KeyStoreFileType;
-import org.apache.zookeeper.common.X509KeyType;
-import org.apache.zookeeper.common.X509TestContext;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class PemReaderTest extends BaseX509ParameterizedTestCase {
@@ -63,8 +65,8 @@ public class PemReaderTest extends BaseX509ParameterizedTestCase {
     @Test
     public void testLoadPrivateKeyFromKeyStore() throws IOException, GeneralSecurityException {
         Optional<String> optPassword = x509TestContext.getKeyStorePassword().length() > 0
-                                               ? Optional.of(x509TestContext.getKeyStorePassword())
-                                               : Optional.empty();
+                ? Optional.of(x509TestContext.getKeyStorePassword())
+                : Optional.empty();
         PrivateKey privateKey = PemReader.loadPrivateKey(x509TestContext.getKeyStoreFile(KeyStoreFileType.PEM), optPassword);
         assertEquals(x509TestContext.getKeyStoreKeyPair().getPrivate(), privateKey);
     }

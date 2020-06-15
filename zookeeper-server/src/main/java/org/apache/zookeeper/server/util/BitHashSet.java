@@ -26,12 +26,12 @@ import java.util.Set;
 /**
  * Using BitSet to store all the elements, and use HashSet to cache limited
  * number of elements to find a balance between memory and time complexity.
- *
+ * <p>
  * Without HashSet, we need to use O(N) time to get the elements, N is
  * the bit numbers in elementBits. But we need to keep the size small to make
  * sure it doesn't cost too much in memory, there is a trade off between
  * memory and time complexity.
- *
+ * <p>
  * Previously, was deciding to dynamically switch between SparseBitSet and
  * HashSet based on the memory consumption, but it will take time to copy
  * data over and may have some herd effect of keep copying data from one

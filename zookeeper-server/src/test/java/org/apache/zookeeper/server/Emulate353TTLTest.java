@@ -18,12 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import java.util.concurrent.atomic.AtomicLong;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.TestableZooKeeper;
@@ -31,6 +25,11 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.Test;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
 
 public class Emulate353TTLTest extends ClientBase {
 
@@ -73,7 +72,7 @@ public class Emulate353TTLTest extends ClientBase {
         DataTree dataTree = serverFactory.zkServer.getZKDatabase().dataTree;
         long ephemeralOwner = EphemeralTypeEmulate353.ttlToEphemeralOwner(100);
         dataTree.createNode("/foo", new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, ephemeralOwner, dataTree.getNode("/").stat.getCversion()
-                                                                                                      + 1, 1, 1);
+                + 1, 1, 1);
 
         final AtomicLong fakeElapsed = new AtomicLong(0);
         ContainerManager containerManager = newContainerManager(fakeElapsed);

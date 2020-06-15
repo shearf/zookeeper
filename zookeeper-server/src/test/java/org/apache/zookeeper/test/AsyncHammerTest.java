@@ -18,25 +18,23 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.apache.zookeeper.test.ClientBase.verifyThreadTerminated;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import java.util.LinkedList;
 import org.apache.zookeeper.AsyncCallback.DataCallback;
 import org.apache.zookeeper.AsyncCallback.StringCallback;
 import org.apache.zookeeper.AsyncCallback.VoidCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.TestableZooKeeper;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.ZKTestCase;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.test.ClientBase.CountdownWatcher;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.LinkedList;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.apache.zookeeper.test.ClientBase.verifyThreadTerminated;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AsyncHammerTest extends ZKTestCase implements StringCallback, VoidCallback, DataCallback {
 
@@ -133,10 +131,10 @@ public class AsyncHammerTest extends ZKTestCase implements StringCallback, VoidC
                 if (bang) {
                     failed = true;
                     LOG.error(
-                        "Create failed for 0x{} with rc:{} path:{}",
-                        Long.toHexString(zk.getSessionId()),
-                        rc,
-                        path);
+                            "Create failed for 0x{} with rc:{} path:{}",
+                            Long.toHexString(zk.getSessionId()),
+                            rc,
+                            path);
                 }
                 decOutstanding();
                 return;
@@ -157,10 +155,10 @@ public class AsyncHammerTest extends ZKTestCase implements StringCallback, VoidC
                 if (bang) {
                     failed = true;
                     LOG.error(
-                        "Delete failed for 0x{} with rc:{} path:{}",
-                        Long.toHexString(zk.getSessionId()),
-                        rc,
-                        path);
+                            "Delete failed for 0x{} with rc:{} path:{}",
+                            Long.toHexString(zk.getSessionId()),
+                            rc,
+                            path);
                 }
             }
         }

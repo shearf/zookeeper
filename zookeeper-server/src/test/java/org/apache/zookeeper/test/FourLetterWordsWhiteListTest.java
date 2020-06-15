@@ -18,15 +18,17 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.client.FourLetterWordMain.send4LetterWord;
-import static org.junit.Assert.assertTrue;
-import java.io.IOException;
 import org.apache.zookeeper.TestableZooKeeper;
 import org.apache.zookeeper.common.X509Exception.SSLContextException;
 import org.apache.zookeeper.server.command.FourLetterCommands;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+
+import static org.apache.zookeeper.client.FourLetterWordMain.send4LetterWord;
+import static org.junit.Assert.assertTrue;
 
 public class FourLetterWordsWhiteListTest extends ClientBase {
 
@@ -105,8 +107,8 @@ public class FourLetterWordsWhiteListTest extends ClientBase {
         stopServer();
         FourLetterCommands.resetWhiteList();
         System.setProperty("zookeeper.4lw.commands.whitelist", "foo bar"
-                                                                       + " foo,,, "
-                                                                       + "bar :.,@#$%^&*() , , , , bar, bar, stat,        ");
+                + " foo,,, "
+                + "bar :.,@#$%^&*() , , , , bar, bar, stat,        ");
         startServer();
 
         // Just make sure we are good when admin made some mistakes in config file.
@@ -129,8 +131,8 @@ public class FourLetterWordsWhiteListTest extends ClientBase {
         stopServer();
         FourLetterCommands.resetWhiteList();
         System.setProperty("zookeeper.4lw.commands.whitelist", "ruok, envi, conf, stat, srvr, cons, dump,"
-                                                                       + "wchs, wchp, wchc, srst, crst, "
-                                                                       + "dirs, mntr, gtmk, isro, stmk");
+                + "wchs, wchp, wchc, srst, crst, "
+                + "dirs, mntr, gtmk, isro, stmk");
         startServer();
         verifyAllCommandsSuccess();
     }

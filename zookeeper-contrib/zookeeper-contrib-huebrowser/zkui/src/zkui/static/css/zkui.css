@@ -17,11 +17,11 @@
 */
 
 .zkui img.zkui_icon {
-	width: 55px;
-	height: 55px;
-	position: absolute;
-	top: 27px;
-	left: 3px;
+    width: 55px;
+    height: 55px;
+    position: absolute;
+    top: 27px;
+    left: 3px;
 }
 
 div.zkui .left_col li {
@@ -51,6 +51,6 @@ div.zkui .left_col li a:hover {
 
 div.zkui .createZnodeForm td,
 div.zkui .editZnodeForm td {
-  padding: 5px;
+    padding: 5px;
 }
 

@@ -17,23 +17,21 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.apache.zookeeper.AsyncCallback.MultiCallback;
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.OpResult.CreateResult;
+import org.apache.zookeeper.OpResult.ErrorResult;
+import org.apache.zookeeper.ZooDefs.Ids;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.zookeeper.AsyncCallback.MultiCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.Op;
-import org.apache.zookeeper.OpResult;
-import org.apache.zookeeper.OpResult.CreateResult;
-import org.apache.zookeeper.OpResult.ErrorResult;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
-import org.junit.Before;
-import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MultiAsyncTransactionTest extends ClientBase {
 
@@ -75,7 +73,7 @@ public class MultiAsyncTransactionTest extends ClientBase {
      * get rollbacked correctly when multi-op failed. This cause
      * create sequential node request in subsequent multi-op to failed because
      * sequential node name generation is incorrect.
-     *
+     * <p>
      * The check is to make sure that each request in multi-op failed with
      * the correct reason.
      */

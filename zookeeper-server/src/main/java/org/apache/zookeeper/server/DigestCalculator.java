@@ -18,10 +18,11 @@
 
 package org.apache.zookeeper.server;
 
-import java.nio.ByteBuffer;
-import java.util.zip.CRC32;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.StatPersisted;
+
+import java.nio.ByteBuffer;
+import java.util.zip.CRC32;
 
 /**
  * Defines how to calculate the digest for a given node.
@@ -35,10 +36,10 @@ public class DigestCalculator {
 
     /**
      * Calculate the digest based on the given params.
-     *
+     * <p>
      * Besides the path and data, the following stat fields are included in
      * the digest calculation:
-     *
+     * <p>
      * - long czxid    8 bytes
      * - long mzxid    8 bytes
      * - long pzxid    8 bytes

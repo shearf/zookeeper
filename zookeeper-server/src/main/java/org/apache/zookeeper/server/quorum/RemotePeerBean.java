@@ -18,8 +18,9 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.util.stream.Collectors;
 import org.apache.zookeeper.jmx.ZKMBeanInfo;
+
+import java.util.stream.Collectors;
 
 /**
  * A remote peer bean only provides limited information about the remote peer,
@@ -42,6 +43,7 @@ public class RemotePeerBean implements RemotePeerMXBean, ZKMBeanInfo {
     public String getName() {
         return "replica." + peer.id;
     }
+
     public boolean isHidden() {
         return false;
     }

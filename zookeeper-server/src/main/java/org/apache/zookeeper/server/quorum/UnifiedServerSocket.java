@@ -20,21 +20,17 @@ package org.apache.zookeeper.server.quorum;
 
 import io.netty.buffer.Unpooled;
 import io.netty.handler.ssl.SslHandler;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.nio.channels.SocketChannel;
-import javax.net.ssl.SSLSocket;
 import org.apache.zookeeper.common.X509Exception;
 import org.apache.zookeeper.common.X509Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLSocket;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.*;
+import java.nio.channels.SocketChannel;
 
 /**
  * A ServerSocket that can act either as a regular ServerSocket, as a SSLServerSocket, or as both, depending on
@@ -64,7 +60,8 @@ public class UnifiedServerSocket extends ServerSocket {
      * Secure client connections will be upgraded to TLS once this socket detects the ClientHello message (start of a
      * TLS handshake). Plaintext client connections will either be accepted or rejected depending on the value of
      * the <code>allowInsecureConnection</code> parameter.
-     * @param x509Util the X509Util that provides the SSLContext to use for secure connections.
+     *
+     * @param x509Util                the X509Util that provides the SSLContext to use for secure connections.
      * @param allowInsecureConnection if true, accept plaintext connections, otherwise close them.
      * @throws IOException if {@link ServerSocket#ServerSocket()} throws.
      */
@@ -79,9 +76,10 @@ public class UnifiedServerSocket extends ServerSocket {
      * Secure client connections will be upgraded to TLS once this socket detects the ClientHello message (start of a
      * TLS handshake). Plaintext client connections will either be accepted or rejected depending on the value of
      * the <code>allowInsecureConnection</code> parameter.
-     * @param x509Util the X509Util that provides the SSLContext to use for secure connections.
+     *
+     * @param x509Util                the X509Util that provides the SSLContext to use for secure connections.
      * @param allowInsecureConnection if true, accept plaintext connections, otherwise close them.
-     * @param port the port number, or {@code 0} to use a port number that is automatically allocated.
+     * @param port                    the port number, or {@code 0} to use a port number that is automatically allocated.
      * @throws IOException if {@link ServerSocket#ServerSocket(int)} throws.
      */
     public UnifiedServerSocket(X509Util x509Util, boolean allowInsecureConnection, int port) throws IOException {
@@ -96,10 +94,11 @@ public class UnifiedServerSocket extends ServerSocket {
      * Secure client connections will be upgraded to TLS once this socket detects the ClientHello message (start of a
      * TLS handshake). Plaintext client connections will either be accepted or rejected depending on the value of
      * the <code>allowInsecureConnection</code> parameter.
-     * @param x509Util the X509Util that provides the SSLContext to use for secure connections.
+     *
+     * @param x509Util                the X509Util that provides the SSLContext to use for secure connections.
      * @param allowInsecureConnection if true, accept plaintext connections, otherwise close them.
-     * @param port the port number, or {@code 0} to use a port number that is automatically allocated.
-     * @param backlog requested maximum length of the queue of incoming connections.
+     * @param port                    the port number, or {@code 0} to use a port number that is automatically allocated.
+     * @param backlog                 requested maximum length of the queue of incoming connections.
      * @throws IOException if {@link ServerSocket#ServerSocket(int, int)} throws.
      */
     public UnifiedServerSocket(X509Util x509Util, boolean allowInsecureConnection, int port, int backlog) throws IOException {
@@ -114,11 +113,12 @@ public class UnifiedServerSocket extends ServerSocket {
      * Secure client connections will be upgraded to TLS once this socket detects the ClientHello message (start of a
      * TLS handshake). Plaintext client connections will either be accepted or rejected depending on the value of
      * the <code>allowInsecureConnection</code> parameter.
-     * @param x509Util the X509Util that provides the SSLContext to use for secure connections.
+     *
+     * @param x509Util                the X509Util that provides the SSLContext to use for secure connections.
      * @param allowInsecureConnection if true, accept plaintext connections, otherwise close them.
-     * @param port the port number, or {@code 0} to use a port number that is automatically allocated.
-     * @param backlog requested maximum length of the queue of incoming connections.
-     * @param bindAddr the local InetAddress the server will bind to.
+     * @param port                    the port number, or {@code 0} to use a port number that is automatically allocated.
+     * @param backlog                 requested maximum length of the queue of incoming connections.
+     * @param bindAddr                the local InetAddress the server will bind to.
      * @throws IOException if {@link ServerSocket#ServerSocket(int, int, InetAddress)} throws.
      */
     public UnifiedServerSocket(X509Util x509Util, boolean allowInsecureConnection, int port, int backlog, InetAddress bindAddr) throws IOException {
@@ -149,23 +149,23 @@ public class UnifiedServerSocket extends ServerSocket {
      * the client is attempting to connect with TLS, the internal socket is upgraded to a SSLSocket. If not,
      * any bytes read from the socket are pushed back to the input stream, and the socket continues
      * to be treated as a plaintext socket.
-     *
+     * <p>
      * The methods that trigger this behavior are:
      * <ul>
      *     <li>{@link UnifiedSocket#getInputStream()}</li>
      *     <li>{@link UnifiedSocket#getOutputStream()}</li>
      *     <li>{@link UnifiedSocket#sendUrgentData(int)}</li>
      * </ul>
-     *
+     * <p>
      * Calling other socket methods (i.e option setters such as {@link Socket#setTcpNoDelay(boolean)}) does
      * not trigger mode detection.
-     *
+     * <p>
      * Because detecting the mode is a potentially blocking operation, it should not be done in the
      * accepting thread. Attempting to read from or write to the socket in the accepting thread opens the
      * caller up to a denial-of-service attack, in which a client connects and then does nothing. This would
      * prevent any other clients from connecting. Passing the socket returned by accept() to a separate
      * thread which handles all read and write operations protects against this DoS attack.
-     *
+     * <p>
      * Callers can check if the socket has been upgraded to TLS by calling {@link UnifiedSocket#isSecureSocket()},
      * and can get the underlying SSLSocket by calling {@link UnifiedSocket#getSslSocket()}.
      */
@@ -201,6 +201,7 @@ public class UnifiedServerSocket extends ServerSocket {
 
         /**
          * Returns true if the socket mode has been determined to be TLS.
+         *
          * @return true if the mode is TLS, false if it is UNKNOWN or PLAINTEXT.
          */
         public boolean isSecureSocket() {
@@ -209,6 +210,7 @@ public class UnifiedServerSocket extends ServerSocket {
 
         /**
          * Returns true if the socket mode has been determined to be PLAINTEXT.
+         *
          * @return true if the mode is PLAINTEXT, false if it is UNKNOWN or TLS.
          */
         public boolean isPlaintextSocket() {
@@ -217,6 +219,7 @@ public class UnifiedServerSocket extends ServerSocket {
 
         /**
          * Returns true if the socket mode is not yet known.
+         *
          * @return true if the mode is UNKNOWN, false if it is PLAINTEXT or TLS.
          */
         public boolean isModeKnown() {
@@ -227,6 +230,7 @@ public class UnifiedServerSocket extends ServerSocket {
          * Detects the socket mode, see comments at the top of the class for more details. This operation will block
          * for up to {@link X509Util#getSslHandshakeTimeoutMillis()} milliseconds and should not be called in the
          * accept() thread if possible.
+         *
          * @throws IOException
          */
         private void detectMode() throws IOException {
@@ -264,10 +268,10 @@ public class UnifiedServerSocket extends ServerSocket {
                 prependableSocket = null;
                 mode = Mode.TLS;
                 LOG.info(
-                    "Accepted TLS connection from {} - {} - {}",
-                    sslSocket.getRemoteSocketAddress(),
-                    sslSocket.getSession().getProtocol(),
-                    sslSocket.getSession().getCipherSuite());
+                        "Accepted TLS connection from {} - {} - {}",
+                        sslSocket.getRemoteSocketAddress(),
+                        sslSocket.getSession().getProtocol(),
+                        sslSocket.getSession().getCipherSuite());
             } else if (allowInsecureConnection) {
                 prependableSocket.prependToInputStream(litmus, 0, bytesRead);
                 mode = Mode.PLAINTEXT;
@@ -290,6 +294,7 @@ public class UnifiedServerSocket extends ServerSocket {
         /**
          * Returns the underlying socket, detecting the socket mode if it is not yet known. This is a potentially
          * blocking operation and should not be called in the accept() thread.
+         *
          * @return the underlying socket, after the socket mode has been determined.
          * @throws IOException
          */
@@ -309,8 +314,9 @@ public class UnifiedServerSocket extends ServerSocket {
          * potentially blocking operation. If the mode ends up being PLAINTEXT, this will throw a SocketException, so
          * callers are advised to only call this method after checking that {@link UnifiedSocket#isSecureSocket()}
          * returned true.
+         *
          * @return the underlying SSLSocket if the mode is known to be TLS.
-         * @throws IOException if detecting the socket mode fails
+         * @throws IOException     if detecting the socket mode fails
          * @throws SocketException if the mode is PLAINTEXT.
          */
         public SSLSocket getSslSocket() throws IOException {

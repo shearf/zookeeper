@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,15 +18,7 @@
 
 package org.apache.zookeeper.server.jersey;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.ws.rs.core.MediaType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.sun.jersey.api.client.ClientResponse;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.server.jersey.jaxb.ZChildren;
@@ -36,8 +28,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.client.ClientResponse;
+import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -63,34 +61,33 @@ public class GetChildrenTest extends Base {
         String baseZnode5 = Base.createBaseZNode();
         String baseZnode6 = Base.createBaseZNode();
 
-        return Arrays.asList(new Object[][] {
-          {MediaType.APPLICATION_JSON, baseZnode + "abddkdkd",
-              ClientResponse.Status.NOT_FOUND, null, null },
-          {MediaType.APPLICATION_XML, baseZnode + "abddkdkd",
-              ClientResponse.Status.NOT_FOUND, null, null },
-          {MediaType.APPLICATION_JSON, baseZnode, ClientResponse.Status.OK,
-              baseZnode, Arrays.asList(new String[] {}) },
-          {MediaType.APPLICATION_XML, baseZnode, ClientResponse.Status.OK,
-              baseZnode, Arrays.asList(new String[] {}) },
-          {MediaType.APPLICATION_JSON, baseZnode, ClientResponse.Status.OK,
-              baseZnode, Arrays.asList(new String[] {"c1"}) },
-          {MediaType.APPLICATION_XML, baseZnode4, ClientResponse.Status.OK,
-              baseZnode4, Arrays.asList(new String[] {"c1"}) },
-          {MediaType.APPLICATION_JSON, baseZnode2, ClientResponse.Status.OK,
-              baseZnode2, Arrays.asList(new String[] {"c1", "c2"}) },
-          {MediaType.APPLICATION_XML, baseZnode5, ClientResponse.Status.OK,
-              baseZnode5, Arrays.asList(new String[] {"c1", "c2"}) },
-          {MediaType.APPLICATION_JSON, baseZnode3, ClientResponse.Status.OK,
-              baseZnode3, Arrays.asList(new String[] {"c1", "c2", "c3", "c4"}) },
-          {MediaType.APPLICATION_XML, baseZnode6, ClientResponse.Status.OK,
-              baseZnode6, Arrays.asList(new String[] {"c1", "c2", "c3", "c4"}) }
+        return Arrays.asList(new Object[][]{
+                {MediaType.APPLICATION_JSON, baseZnode + "abddkdkd",
+                        ClientResponse.Status.NOT_FOUND, null, null},
+                {MediaType.APPLICATION_XML, baseZnode + "abddkdkd",
+                        ClientResponse.Status.NOT_FOUND, null, null},
+                {MediaType.APPLICATION_JSON, baseZnode, ClientResponse.Status.OK,
+                        baseZnode, Arrays.asList(new String[]{})},
+                {MediaType.APPLICATION_XML, baseZnode, ClientResponse.Status.OK,
+                        baseZnode, Arrays.asList(new String[]{})},
+                {MediaType.APPLICATION_JSON, baseZnode, ClientResponse.Status.OK,
+                        baseZnode, Arrays.asList(new String[]{"c1"})},
+                {MediaType.APPLICATION_XML, baseZnode4, ClientResponse.Status.OK,
+                        baseZnode4, Arrays.asList(new String[]{"c1"})},
+                {MediaType.APPLICATION_JSON, baseZnode2, ClientResponse.Status.OK,
+                        baseZnode2, Arrays.asList(new String[]{"c1", "c2"})},
+                {MediaType.APPLICATION_XML, baseZnode5, ClientResponse.Status.OK,
+                        baseZnode5, Arrays.asList(new String[]{"c1", "c2"})},
+                {MediaType.APPLICATION_JSON, baseZnode3, ClientResponse.Status.OK,
+                        baseZnode3, Arrays.asList(new String[]{"c1", "c2", "c3", "c4"})},
+                {MediaType.APPLICATION_XML, baseZnode6, ClientResponse.Status.OK,
+                        baseZnode6, Arrays.asList(new String[]{"c1", "c2", "c3", "c4"})}
 
-          });
+        });
     }
 
     public GetChildrenTest(String accept, String path, ClientResponse.Status status,
-            String expectedPath, List<String> expectedChildren)
-    {
+                           String expectedPath, List<String> expectedChildren) {
         this.accept = accept;
         this.path = path;
         this.expectedStatus = status;
@@ -101,14 +98,14 @@ public class GetChildrenTest extends Base {
     @Test
     public void testGetChildren() throws Exception {
         if (expectedChildren != null) {
-            for(String child : expectedChildren) {
+            for (String child : expectedChildren) {
                 zk.create(expectedPath + "/" + child, null,
                         Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
         }
 
         ClientResponse cr = znodesr.path(path).queryParam("view", "children")
-            .accept(accept).get(ClientResponse.class);
+                .accept(accept).get(ClientResponse.class);
         Assert.assertEquals(expectedStatus, cr.getClientResponseStatus());
 
         if (expectedChildren == null) {

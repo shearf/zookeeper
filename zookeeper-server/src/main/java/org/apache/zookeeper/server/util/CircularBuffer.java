@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Thread safe FIFO CircularBuffer implementation.
  * When the buffer is full write operation overwrites the oldest element.
- *
+ * <p>
  * Fun thing @todo, make this lock free as this is called on every quorum message
  */
 public class CircularBuffer<T> {
@@ -47,6 +47,7 @@ public class CircularBuffer<T> {
      * Puts elements in the next available index in the array.
      * If the array is full the oldest element is replaced with
      * the new value.
+     *
      * @param element
      */
     public synchronized void write(T element) {
@@ -65,6 +66,7 @@ public class CircularBuffer<T> {
      * Reads from the buffer in a FIFO manner.
      * Returns the oldest element in the buffer if the buffer ie not empty
      * Returns null if the buffer is empty
+     *
      * @return
      */
     public synchronized T take() {
@@ -97,7 +99,7 @@ public class CircularBuffer<T> {
         return numberOfElements.get() >= capacity;
     }
 
-    public synchronized void  reset() {
+    public synchronized void reset() {
         numberOfElements.set(0);
     }
 }

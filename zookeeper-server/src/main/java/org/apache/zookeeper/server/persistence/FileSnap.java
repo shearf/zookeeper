@@ -18,14 +18,6 @@
 
 package org.apache.zookeeper.server.persistence;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.CheckedInputStream;
-import java.util.zip.CheckedOutputStream;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.InputArchive;
@@ -34,6 +26,15 @@ import org.apache.zookeeper.server.DataTree;
 import org.apache.zookeeper.server.util.SerializeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.CheckedInputStream;
+import java.util.zip.CheckedOutputStream;
 
 /**
  * This class implements the snapshot interface.
@@ -59,6 +60,7 @@ public class FileSnap implements SnapShot {
 
     /**
      * get information of the last saved/restored snapshot
+     *
      * @return info of last snapshot
      */
     public SnapshotInfo getLastSnapshotInfo() {
@@ -67,6 +69,7 @@ public class FileSnap implements SnapShot {
 
     /**
      * deserialize a data tree from the most recent snapshot
+     *
      * @return the zxid of the snapshot
      */
     public long deserialize(DataTree dt, Map<Long, Integer> sessions) throws IOException {
@@ -121,9 +124,10 @@ public class FileSnap implements SnapShot {
 
     /**
      * deserialize the datatree from an inputarchive
-     * @param dt the datatree to be serialized into
+     *
+     * @param dt       the datatree to be serialized into
      * @param sessions the sessions to be filled up
-     * @param ia the input archive to restore from
+     * @param ia       the input archive to restore from
      * @throws IOException
      */
     public void deserialize(DataTree dt, Map<Long, Integer> sessions, InputArchive ia) throws IOException {
@@ -137,6 +141,7 @@ public class FileSnap implements SnapShot {
 
     /**
      * find the most recent snapshot in the database.
+     *
      * @return the file containing the most recent snapshot
      */
     public File findMostRecentSnapshot() throws IOException {
@@ -154,6 +159,7 @@ public class FileSnap implements SnapShot {
      * not mean that the snapshot is truly valid but is
      * valid with a high probability. also, the most recent
      * will be first on the list.
+     *
      * @param n the number of most recent snapshots
      * @return the last n snapshots (the number might be
      * less than n in case enough snapshots are not available).
@@ -185,6 +191,7 @@ public class FileSnap implements SnapShot {
     /**
      * find the last n snapshots. this does not have
      * any checks if the snapshot might be valid or not
+     *
      * @param n the number of most recent snapshots
      * @return the last n snapshots
      * @throws IOException
@@ -207,17 +214,18 @@ public class FileSnap implements SnapShot {
 
     /**
      * serialize the datatree and sessions
-     * @param dt the datatree to be serialized
+     *
+     * @param dt       the datatree to be serialized
      * @param sessions the sessions to be serialized
-     * @param oa the output archive to serialize into
-     * @param header the header of this snapshot
+     * @param oa       the output archive to serialize into
+     * @param header   the header of this snapshot
      * @throws IOException
      */
     protected void serialize(
-        DataTree dt,
-        Map<Long, Integer> sessions,
-        OutputArchive oa,
-        FileHeader header) throws IOException {
+            DataTree dt,
+            Map<Long, Integer> sessions,
+            OutputArchive oa,
+            FileHeader header) throws IOException {
         // this is really a programmatic error and not something that can
         // happen at runtime
         if (header == null) {
@@ -229,16 +237,17 @@ public class FileSnap implements SnapShot {
 
     /**
      * serialize the datatree and session into the file snapshot
-     * @param dt the datatree to be serialized
+     *
+     * @param dt       the datatree to be serialized
      * @param sessions the sessions to be serialized
      * @param snapShot the file to store snapshot into
-     * @param fsync sync the file immediately after write
+     * @param fsync    sync the file immediately after write
      */
     public synchronized void serialize(
-        DataTree dt,
-        Map<Long, Integer> sessions,
-        File snapShot,
-        boolean fsync) throws IOException {
+            DataTree dt,
+            Map<Long, Integer> sessions,
+            File snapShot,
+            boolean fsync) throws IOException {
         if (!close) {
             try (CheckedOutputStream snapOS = SnapStream.getOutputStream(snapShot, fsync)) {
                 OutputArchive oa = BinaryOutputArchive.getArchive(snapOS);
@@ -257,8 +266,8 @@ public class FileSnap implements SnapShot {
                 }
 
                 lastSnapshotInfo = new SnapshotInfo(
-                    Util.getZxidFromName(snapShot.getName(), SNAPSHOT_FILE_PREFIX),
-                    snapShot.lastModified() / 1000);
+                        Util.getZxidFromName(snapShot.getName(), SNAPSHOT_FILE_PREFIX),
+                        snapShot.lastModified() / 1000);
             }
         } else {
             throw new IOException("FileSnap has already been closed");

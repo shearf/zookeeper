@@ -40,6 +40,7 @@ abstract class FileKeyStoreLoader implements KeyStoreLoader {
 
     /**
      * Base class for builder pattern used by subclasses.
+     *
      * @param <T> the subtype of FileKeyStoreLoader created by the Builder.
      */
     abstract static class Builder<T extends FileKeyStoreLoader> {

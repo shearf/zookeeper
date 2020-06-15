@@ -17,12 +17,10 @@
 
 package org.apache.zookeeper.server.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import org.apache.zookeeper.ZKTestCase;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class BitMapTest extends ZKTestCase {
 

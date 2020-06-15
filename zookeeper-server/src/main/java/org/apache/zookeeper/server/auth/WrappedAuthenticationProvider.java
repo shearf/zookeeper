@@ -34,8 +34,8 @@ class WrappedAuthenticationProvider extends ServerAuthenticationProvider {
             return null;
         }
         return (provider instanceof ServerAuthenticationProvider)
-            ? (ServerAuthenticationProvider) provider
-            : new WrappedAuthenticationProvider(provider);
+                ? (ServerAuthenticationProvider) provider
+                : new WrappedAuthenticationProvider(provider);
     }
 
     private WrappedAuthenticationProvider(AuthenticationProvider implementation) {
@@ -44,7 +44,7 @@ class WrappedAuthenticationProvider extends ServerAuthenticationProvider {
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * forwards to older method {@link #handleAuthentication(ServerCnxn, byte[])}
      */
     @Override
@@ -54,7 +54,7 @@ class WrappedAuthenticationProvider extends ServerAuthenticationProvider {
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * forwards to older method {@link #matches(String, String)}
      */
     @Override

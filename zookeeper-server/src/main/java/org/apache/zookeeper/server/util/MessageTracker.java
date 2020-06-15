@@ -18,11 +18,12 @@
 
 package org.apache.zookeeper.server.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.apache.zookeeper.server.quorum.Leader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -42,6 +43,7 @@ public class MessageTracker {
     public static final String MESSAGE_TRACKER_ENABLED = "zookeeper.messageTracker.Enabled";
     public static final int BUFFERED_MESSAGE_SIZE;
     private static final boolean enabled;
+
     static {
         BUFFERED_MESSAGE_SIZE = Integer.getInteger(MESSAGE_TRACKER_BUFFER_SIZE, 10);
         enabled = Boolean.getBoolean(MESSAGE_TRACKER_ENABLED);
@@ -101,9 +103,9 @@ public class MessageTracker {
     }
 
     private static void logMessages(
-        String serverAddr,
-        CircularBuffer<BufferedMessage> messages,
-        Direction direction) {
+            String serverAddr,
+            CircularBuffer<BufferedMessage> messages,
+            Direction direction) {
         String sentOrReceivedText = direction == Direction.SENT ? "sentBuffer to" : "receivedBuffer from";
 
         if (messages.isEmpty()) {
@@ -151,10 +153,10 @@ public class MessageTracker {
         public String toString() {
             if (messageType == -1) {
                 return "TimeStamp: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS")
-                    .format(new Date(timestamp));
+                        .format(new Date(timestamp));
             } else {
                 return "TimeStamp: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS")
-                    .format(new Date(timestamp)) + " Type: " + Leader.getPacketType(messageType);
+                        .format(new Date(timestamp)) + " Type: " + Leader.getPacketType(messageType);
             }
         }
     }

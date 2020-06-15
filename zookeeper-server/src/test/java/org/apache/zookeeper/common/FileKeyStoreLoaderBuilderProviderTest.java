@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.common;
 
-import static org.junit.Assert.assertTrue;
 import org.apache.zookeeper.ZKTestCase;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class FileKeyStoreLoaderBuilderProviderTest extends ZKTestCase {
 

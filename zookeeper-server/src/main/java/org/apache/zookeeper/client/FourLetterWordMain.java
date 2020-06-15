@@ -18,6 +18,16 @@
 
 package org.apache.zookeeper.client;
 
+import org.apache.yetus.audience.InterfaceAudience;
+import org.apache.zookeeper.common.ClientX509Util;
+import org.apache.zookeeper.common.X509Exception.SSLContextException;
+import org.apache.zookeeper.common.X509Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,15 +36,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import org.apache.yetus.audience.InterfaceAudience;
-import org.apache.zookeeper.common.ClientX509Util;
-import org.apache.zookeeper.common.X509Exception.SSLContextException;
-import org.apache.zookeeper.common.X509Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @InterfaceAudience.Public
 public class FourLetterWordMain {
@@ -42,11 +43,13 @@ public class FourLetterWordMain {
     //in milliseconds, socket should connect/read within this period otherwise SocketTimeoutException
     private static final int DEFAULT_SOCKET_TIMEOUT = 5000;
     protected static final Logger LOG = LoggerFactory.getLogger(FourLetterWordMain.class);
+
     /**
      * Send the 4letterword
+     *
      * @param host the destination host
      * @param port the destination port
-     * @param cmd the 4letterword
+     * @param cmd  the 4letterword
      * @return server response
      * @throws java.io.IOException
      * @throws SSLContextException
@@ -57,44 +60,46 @@ public class FourLetterWordMain {
 
     /**
      * Send the 4letterword
-     * @param host the destination host
-     * @param port the destination port
-     * @param cmd the 4letterword
+     *
+     * @param host   the destination host
+     * @param port   the destination port
+     * @param cmd    the 4letterword
      * @param secure whether to use SSL
      * @return server response
      * @throws java.io.IOException
      * @throws SSLContextException
      */
     public static String send4LetterWord(
-        String host,
-        int port,
-        String cmd,
-        boolean secure) throws IOException, SSLContextException {
+            String host,
+            int port,
+            String cmd,
+            boolean secure) throws IOException, SSLContextException {
         return send4LetterWord(host, port, cmd, secure, DEFAULT_SOCKET_TIMEOUT);
     }
 
     /**
      * Send the 4letterword
-     * @param host the destination host
-     * @param port the destination port
-     * @param cmd the 4letterword
-     * @param secure whether to use SSL
+     *
+     * @param host    the destination host
+     * @param port    the destination port
+     * @param cmd     the 4letterword
+     * @param secure  whether to use SSL
      * @param timeout in milliseconds, maximum time to wait while connecting/reading data
      * @return server response
      * @throws java.io.IOException
      * @throws SSLContextException
      */
     public static String send4LetterWord(
-        String host,
-        int port,
-        String cmd,
-        boolean secure,
-        int timeout) throws IOException, SSLContextException {
+            String host,
+            int port,
+            String cmd,
+            boolean secure,
+            int timeout) throws IOException, SSLContextException {
         LOG.info("connecting to {} {}", host, port);
         Socket sock;
         InetSocketAddress hostaddress = host != null
-            ? new InetSocketAddress(host, port)
-            : new InetSocketAddress(InetAddress.getByName(null), port);
+                ? new InetSocketAddress(host, port)
+                : new InetSocketAddress(InetAddress.getByName(null), port);
         if (secure) {
             LOG.info("using secure socket");
             try (X509Util x509Util = new ClientX509Util()) {

@@ -18,11 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentMap;
 import org.apache.zookeeper.KeeperException.SessionExpiredException;
 import org.apache.zookeeper.KeeperException.SessionMovedException;
 import org.apache.zookeeper.KeeperException.UnknownSessionException;
@@ -30,6 +25,12 @@ import org.apache.zookeeper.server.SessionTrackerImpl;
 import org.apache.zookeeper.server.ZooKeeperServerListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * The leader session tracker tracks local and global sessions on the leader.
@@ -97,7 +98,7 @@ public class LeaderSessionTracker extends UpgradeableSessionTracker {
      * tracked on this server and leader.
      */
     public synchronized boolean commitSession(
-        long sessionId, int sessionTimeout) {
+            long sessionId, int sessionTimeout) {
         boolean added = globalSessionTracker.commitSession(sessionId, sessionTimeout);
 
         if (added) {

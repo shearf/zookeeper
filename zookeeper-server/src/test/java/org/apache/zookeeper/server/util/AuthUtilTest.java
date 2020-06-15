@@ -17,13 +17,14 @@
  */
 package org.apache.zookeeper.server.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.server.auth.ProviderRegistry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class AuthUtilTest {
 

@@ -18,11 +18,6 @@
 
 package org.apache.zookeeper.server.auth;
 
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import javax.net.ssl.X509KeyManager;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.x500.X500Principal;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.common.ClientX509Util;
 import org.apache.zookeeper.common.X509Exception;
@@ -34,6 +29,12 @@ import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.server.ServerCnxn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.X509KeyManager;
+import javax.net.ssl.X509TrustManager;
+import javax.security.auth.x500.X500Principal;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 /**
  * An AuthenticationProvider backed by an X509TrustManager and an X509KeyManager
@@ -95,13 +96,13 @@ public class X509AuthenticationProvider implements AuthenticationProvider {
             } else {
                 try {
                     tm = X509Util.createTrustManager(
-                        trustStoreLocation,
-                        trustStorePassword,
-                        trustStoreTypeProp,
-                        crlEnabled,
-                        ocspEnabled,
-                        hostnameVerificationEnabled,
-                        false);
+                            trustStoreLocation,
+                            trustStorePassword,
+                            trustStoreTypeProp,
+                            crlEnabled,
+                            ocspEnabled,
+                            hostnameVerificationEnabled,
+                            false);
                 } catch (TrustManagerException e) {
                     LOG.error("Failed to create trust manager", e);
                 }
@@ -185,7 +186,7 @@ public class X509AuthenticationProvider implements AuthenticationProvider {
     public boolean matches(String id, String aclExpr) {
         if (System.getProperty(ZOOKEEPER_X509AUTHENTICATIONPROVIDER_SUPERUSER) != null) {
             return id.equals(System.getProperty(ZOOKEEPER_X509AUTHENTICATIONPROVIDER_SUPERUSER))
-                   || id.equals(aclExpr);
+                    || id.equals(aclExpr);
         }
 
         return id.equals(aclExpr);

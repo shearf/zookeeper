@@ -18,36 +18,21 @@
 
 package org.apache.zookeeper.test;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.client.HostProvider;
 import org.apache.zookeeper.client.StaticHostProvider;
 import org.apache.zookeeper.common.Time;
 import org.junit.Test;
+
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class StaticHostProviderTest extends ZKTestCase {
 
@@ -872,10 +857,10 @@ public class StaticHostProviderTest extends ZKTestCase {
         InetSocketAddress next = hostProvider.next(0);
         next = hostProvider.next(0);
         assertTrue("Different number of addresses in the list: "
-                           + hostProvider.size()
-                           + " (after), "
-                           + sizeBefore
-                           + " (before)", hostProvider.size() == sizeBefore);
+                + hostProvider.size()
+                + " (after), "
+                + sizeBefore
+                + " (before)", hostProvider.size() == sizeBefore);
     }
 
     private StaticHostProvider getHostProviderUnresolved(byte size) {
@@ -899,7 +884,7 @@ public class StaticHostProviderTest extends ZKTestCase {
         ArrayList<InetSocketAddress> list = new ArrayList<>(size);
         while (size > 0) {
             list.add(InetSocketAddress.createUnresolved(String.format("testhost-%d.testdomain.com", size), 1234
-                                                                                                                   + size));
+                    + size));
             --size;
         }
         System.out.println(Arrays.toString(list.toArray()));

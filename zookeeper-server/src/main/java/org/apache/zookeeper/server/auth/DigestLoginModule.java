@@ -18,10 +18,10 @@
 
 package org.apache.zookeeper.server.auth;
 
-import java.util.Map;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.spi.LoginModule;
+import java.util.Map;
 
 public class DigestLoginModule implements LoginModule {
 
@@ -36,10 +36,10 @@ public class DigestLoginModule implements LoginModule {
     }
 
     public void initialize(
-        Subject subject,
-        CallbackHandler callbackHandler,
-        Map<String, ?> sharedState,
-        Map<String, ?> options) {
+            Subject subject,
+            CallbackHandler callbackHandler,
+            Map<String, ?> sharedState,
+            Map<String, ?> options) {
         if (options.containsKey("username")) {
             // Zookeeper client: get username and password from JAAS conf (only used if using DIGEST-MD5).
             this.subject = subject;

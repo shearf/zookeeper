@@ -18,20 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.TxnLogProposalIterator;
 import org.apache.zookeeper.server.ZKDatabase;
@@ -46,6 +32,16 @@ import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class LearnerHandlerTest extends ZKTestCase {
 
     protected static final Logger LOG = LoggerFactory.getLogger(LearnerHandlerTest.class);
@@ -58,6 +54,7 @@ public class LearnerHandlerTest extends ZKTestCase {
             super(sock, new BufferedInputStream(sock.getInputStream()), leader);
         }
 
+        @Override
         protected void startSendingPackets() {
             threadStarted = true;
         }
@@ -80,10 +77,12 @@ public class LearnerHandlerTest extends ZKTestCase {
             super(snapLog);
         }
 
+        @Override
         public long getDataTreeLastProcessedZxid() {
             return lastProcessedZxid;
         }
 
+        @Override
         public long getmaxCommittedLog() {
             if (!committedLog.isEmpty()) {
                 return committedLog.getLast().packet.getZxid();
@@ -91,6 +90,7 @@ public class LearnerHandlerTest extends ZKTestCase {
             return 0;
         }
 
+        @Override
         public long getminCommittedLog() {
             if (!committedLog.isEmpty()) {
                 return committedLog.getFirst().packet.getZxid();
@@ -98,14 +98,17 @@ public class LearnerHandlerTest extends ZKTestCase {
             return 0;
         }
 
+        @Override
         public List<Proposal> getCommittedLog() {
             return committedLog;
         }
 
+        @Override
         public ReentrantReadWriteLock getLogLock() {
             return lock;
         }
 
+        @Override
         public Iterator<Proposal> getProposalsFromTxnLog(long peerZxid, long limit) {
             if (peerZxid >= txnLog.peekFirst().packet.getZxid()) {
                 return txnLog.iterator();
@@ -115,6 +118,7 @@ public class LearnerHandlerTest extends ZKTestCase {
 
         }
 
+        @Override
         public long calculateTxnLogSizeLimit() {
             return 1;
         }
@@ -180,10 +184,11 @@ public class LearnerHandlerTest extends ZKTestCase {
 
     /**
      * Check if op packet (first packet in the queue) match the expected value
-     * @param type - type of packet
-     * @param zxid - zxid in the op packet
+     *
+     * @param type        - type of packet
+     * @param zxid        - zxid in the op packet
      * @param currentZxid - last packet queued by syncFollower,
-     *                      before invoking startForwarding()
+     *                    before invoking startForwarding()
      */
     public void assertOpType(int type, long zxid, long currentZxid) {
         Queue<QuorumPacket> packets = learnerHandler.getQueuedPackets();
@@ -195,9 +200,9 @@ public class LearnerHandlerTest extends ZKTestCase {
 
     void assertZxidEquals(long expected, long value) {
         assertEquals("Expected 0x"
-                             + Long.toHexString(expected)
-                             + " but was 0x"
-                             + Long.toHexString(value), expected, value);
+                + Long.toHexString(expected)
+                + " but was 0x"
+                + Long.toHexString(value), expected, value);
     }
 
     /**

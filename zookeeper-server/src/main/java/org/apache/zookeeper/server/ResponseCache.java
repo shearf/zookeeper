@@ -18,12 +18,13 @@
 
 package org.apache.zookeeper.server;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ResponseCache {
@@ -32,6 +33,7 @@ public class ResponseCache {
     // Magic number chosen to be "big enough but not too big"
     public static final int DEFAULT_RESPONSE_CACHE_SIZE = 400;
     private final int cacheSize;
+
     private static class Entry {
         public Stat stat;
         public byte[] data;

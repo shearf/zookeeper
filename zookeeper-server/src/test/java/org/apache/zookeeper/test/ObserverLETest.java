@@ -18,15 +18,17 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import java.util.Arrays;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.quorum.QuorumPeer;
 import org.apache.zookeeper.server.quorum.QuorumStats;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ObserverLETest extends ZKTestCase {
 

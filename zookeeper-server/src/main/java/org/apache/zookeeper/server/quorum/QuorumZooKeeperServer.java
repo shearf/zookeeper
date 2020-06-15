@@ -18,12 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.MultiOperationRecord;
@@ -31,12 +25,15 @@ import org.apache.zookeeper.Op;
 import org.apache.zookeeper.ZooDefs.OpCode;
 import org.apache.zookeeper.metrics.MetricsContext;
 import org.apache.zookeeper.proto.CreateRequest;
-import org.apache.zookeeper.server.ByteBufferInputStream;
-import org.apache.zookeeper.server.Request;
-import org.apache.zookeeper.server.ServerMetrics;
-import org.apache.zookeeper.server.ZKDatabase;
-import org.apache.zookeeper.server.ZooKeeperServer;
+import org.apache.zookeeper.server.*;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 /**
  * Abstract base class for all ZooKeeperServers that participate in
@@ -50,7 +47,7 @@ public abstract class QuorumZooKeeperServer extends ZooKeeperServer {
     protected QuorumZooKeeperServer(FileTxnSnapLog logFactory, int tickTime, int minSessionTimeout,
                                     int maxSessionTimeout, int listenBacklog, ZKDatabase zkDb, QuorumPeer self) {
         super(logFactory, tickTime, minSessionTimeout, maxSessionTimeout, listenBacklog, zkDb, self.getInitialConfig(),
-              self.isReconfigEnabled());
+                self.isReconfigEnabled());
         this.self = self;
     }
 
@@ -72,7 +69,7 @@ public abstract class QuorumZooKeeperServer extends ZooKeeperServer {
         // or observer request processor), which is unique to a learner.
         // So will not be called concurrently by two threads.
         if ((request.type != OpCode.create && request.type != OpCode.create2 && request.type != OpCode.multi)
-            || !upgradeableSessionTracker.isLocalSession(request.sessionId)) {
+                || !upgradeableSessionTracker.isLocalSession(request.sessionId)) {
             return null;
         }
 
@@ -148,22 +145,22 @@ public abstract class QuorumZooKeeperServer extends ZooKeeperServer {
         // We need to set isLocalSession to tree for these type of request
         // so that the request processor can process them correctly.
         switch (si.type) {
-        case OpCode.createSession:
-            if (self.areLocalSessionsEnabled()) {
-                // All new sessions local by default.
-                si.setLocalSession(true);
-            }
-            break;
-        case OpCode.closeSession:
-            String reqType = "global";
-            if (upgradeableSessionTracker.isLocalSession(si.sessionId)) {
-                si.setLocalSession(true);
-                reqType = "local";
-            }
-            LOG.info("Submitting {} closeSession request for session 0x{}", reqType, Long.toHexString(si.sessionId));
-            break;
-        default:
-            break;
+            case OpCode.createSession:
+                if (self.areLocalSessionsEnabled()) {
+                    // All new sessions local by default.
+                    si.setLocalSession(true);
+                }
+                break;
+            case OpCode.closeSession:
+                String reqType = "global";
+                if (upgradeableSessionTracker.isLocalSession(si.sessionId)) {
+                    si.setLocalSession(true);
+                    reqType = "local";
+                }
+                LOG.info("Submitting {} closeSession request for session 0x{}", reqType, Long.toHexString(si.sessionId));
+                break;
+            default:
+                break;
         }
     }
 
@@ -182,7 +179,7 @@ public abstract class QuorumZooKeeperServer extends ZooKeeperServer {
                 .stream().map(Objects::toString).collect(Collectors.joining("|")));
         pwriter.print("quorumPort=");
         pwriter.println(self.getQuorumAddress().getAllPorts()
-                        .stream().map(Objects::toString).collect(Collectors.joining("|")));
+                .stream().map(Objects::toString).collect(Collectors.joining("|")));
         pwriter.print("peerType=");
         pwriter.println(self.getLearnerType().ordinal());
         pwriter.println("membership: ");

@@ -18,15 +18,12 @@
 
 package org.apache.zookeeper;
 
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
-import javax.security.sasl.AuthorizeCallback;
-import javax.security.sasl.RealmCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.security.auth.callback.*;
+import javax.security.sasl.AuthorizeCallback;
+import javax.security.sasl.RealmCallback;
 
 /**
  * This is used by the SASL mechanisms to get further information to complete
@@ -41,6 +38,7 @@ public class SaslClientCallbackHandler implements CallbackHandler {
     private String password = null;
     private static final Logger LOG = LoggerFactory.getLogger(SaslClientCallbackHandler.class);
     private final String entity;
+
     public SaslClientCallbackHandler(String password, String client) {
         this.password = password;
         this.entity = client;
@@ -58,27 +56,27 @@ public class SaslClientCallbackHandler implements CallbackHandler {
                         pc.setPassword(this.password.toCharArray());
                     } else {
                         LOG.warn(
-                            "Could not login: the {} is being asked for a password, but the ZooKeeper {}"
-                                + " code does not currently support obtaining a password from the user."
-                                + " Make sure that the {} is configured to use a ticket cache (using"
-                                + " the JAAS configuration setting 'useTicketCache=true)' and restart the {}. If"
-                                + " you still get this message after that, the TGT in the ticket cache has expired and must"
-                                + " be manually refreshed. To do so, first determine if you are using a password or a"
-                                + " keytab. If the former, run kinit in a Unix shell in the environment of the user who"
-                                + " is running this Zookeeper {} using the command"
-                                + " 'kinit <princ>' (where <princ> is the name of the {}'s Kerberos principal)."
-                                + " If the latter, do"
-                                + " 'kinit -k -t <keytab> <princ>' (where <princ> is the name of the Kerberos principal, and"
-                                + " <keytab> is the location of the keytab file). After manually refreshing your cache,"
-                                + " restart this {}. If you continue to see this message after manually refreshing"
-                                + " your cache, ensure that your KDC host's clock is in sync with this host's clock.",
-                            entity,
-                            entity,
-                            entity,
-                            entity,
-                            entity,
-                            entity,
-                            entity);
+                                "Could not login: the {} is being asked for a password, but the ZooKeeper {}"
+                                        + " code does not currently support obtaining a password from the user."
+                                        + " Make sure that the {} is configured to use a ticket cache (using"
+                                        + " the JAAS configuration setting 'useTicketCache=true)' and restart the {}. If"
+                                        + " you still get this message after that, the TGT in the ticket cache has expired and must"
+                                        + " be manually refreshed. To do so, first determine if you are using a password or a"
+                                        + " keytab. If the former, run kinit in a Unix shell in the environment of the user who"
+                                        + " is running this Zookeeper {} using the command"
+                                        + " 'kinit <princ>' (where <princ> is the name of the {}'s Kerberos principal)."
+                                        + " If the latter, do"
+                                        + " 'kinit -k -t <keytab> <princ>' (where <princ> is the name of the Kerberos principal, and"
+                                        + " <keytab> is the location of the keytab file). After manually refreshing your cache,"
+                                        + " restart this {}. If you continue to see this message after manually refreshing"
+                                        + " your cache, ensure that your KDC host's clock is in sync with this host's clock.",
+                                entity,
+                                entity,
+                                entity,
+                                entity,
+                                entity,
+                                entity,
+                                entity);
                     }
                 } else {
                     if (callback instanceof RealmCallback) {
@@ -99,8 +97,8 @@ public class SaslClientCallbackHandler implements CallbackHandler {
                             }
                         } else {
                             throw new UnsupportedCallbackException(
-                                callback,
-                                "Unrecognized SASL " + entity + "Callback");
+                                    callback,
+                                    "Unrecognized SASL " + entity + "Callback");
                         }
                     }
                 }

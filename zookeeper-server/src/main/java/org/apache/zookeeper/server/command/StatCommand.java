@@ -18,7 +18,6 @@
 
 package org.apache.zookeeper.server.command;
 
-import java.io.PrintWriter;
 import org.apache.zookeeper.Version;
 import org.apache.zookeeper.server.ServerCnxn;
 import org.apache.zookeeper.server.ServerStats;
@@ -29,10 +28,13 @@ import org.apache.zookeeper.server.quorum.ReadOnlyZooKeeperServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintWriter;
+
 public class StatCommand extends AbstractFourLetterCommand {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractFourLetterCommand.class);
     private int len;
+
     public StatCommand(PrintWriter pw, ServerCnxn serverCnxn, int len) {
         super(pw, serverCnxn);
         this.len = len;

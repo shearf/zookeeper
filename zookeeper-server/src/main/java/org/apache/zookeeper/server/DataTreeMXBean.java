@@ -27,10 +27,12 @@ public interface DataTreeMXBean {
      * @return number of znodes in the data tree.
      */
     int getNodeCount();
+
     /**
      * @return the most recent zxid processed by the data tree.
      */
     String getLastZxid();
+
     /**
      * @return number of watches set.
      */
@@ -41,6 +43,7 @@ public interface DataTreeMXBean {
      * its value.
      */
     long approximateDataSize();
+
     /**
      * @return number of ephemeral nodes in the data tree
      */

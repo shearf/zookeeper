@@ -18,24 +18,7 @@
 
 package org.apache.zookeeper.server.persistence;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.DummyWatcher;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.ZKTestCase;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.proto.CreateRequest;
 import org.apache.zookeeper.server.ServerCnxnFactory;
@@ -49,6 +32,17 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
 public class FileTxnLogTest extends ZKTestCase {
 
     protected static final Logger LOG = LoggerFactory.getLogger(FileTxnLogTest.class);
@@ -58,37 +52,37 @@ public class FileTxnLogTest extends ZKTestCase {
     @Test
     public void testInvalidPreallocSize() {
         assertEquals(
-            "file should not be padded",
-            10 * KB,
-            FilePadding.calculateFileSizeWithPadding(7 * KB, 10 * KB, 0));
+                "file should not be padded",
+                10 * KB,
+                FilePadding.calculateFileSizeWithPadding(7 * KB, 10 * KB, 0));
         assertEquals(
-            "file should not be padded",
-            10 * KB,
-            FilePadding.calculateFileSizeWithPadding(7 * KB, 10 * KB, -1));
+                "file should not be padded",
+                10 * KB,
+                FilePadding.calculateFileSizeWithPadding(7 * KB, 10 * KB, -1));
     }
 
     @Test
     public void testCalculateFileSizeWithPaddingWhenNotToCurrentSize() {
         assertEquals(
-            "file should not be padded",
-            10 * KB,
-            FilePadding.calculateFileSizeWithPadding(5 * KB, 10 * KB, 10 * KB));
+                "file should not be padded",
+                10 * KB,
+                FilePadding.calculateFileSizeWithPadding(5 * KB, 10 * KB, 10 * KB));
     }
 
     @Test
     public void testCalculateFileSizeWithPaddingWhenCloseToCurrentSize() {
         assertEquals(
-            "file should be padded an additional 10 KB",
-            20 * KB,
-            FilePadding.calculateFileSizeWithPadding(7 * KB, 10 * KB, 10 * KB));
+                "file should be padded an additional 10 KB",
+                20 * KB,
+                FilePadding.calculateFileSizeWithPadding(7 * KB, 10 * KB, 10 * KB));
     }
 
     @Test
     public void testFileSizeGreaterThanPosition() {
         assertEquals(
-            "file should be padded to 40 KB",
-            40 * KB,
-            FilePadding.calculateFileSizeWithPadding(31 * KB, 10 * KB, 10 * KB));
+                "file should be padded to 40 KB",
+                40 * KB,
+                FilePadding.calculateFileSizeWithPadding(31 * KB, 10 * KB, 10 * KB));
     }
 
     @Test
@@ -108,12 +102,12 @@ public class FileTxnLogTest extends ZKTestCase {
         // Append and commit 2 transactions to the log
         // Prior to ZOOKEEPER-2249, attempting to pad in association with the second transaction will corrupt the first
         fileTxnLog.append(
-            new TxnHeader(1, 1, 1, 1, ZooDefs.OpCode.create),
-            new CreateTxn("/testPreAllocSizeSmallerThanTxnData1", data, ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 0));
+                new TxnHeader(1, 1, 1, 1, ZooDefs.OpCode.create),
+                new CreateTxn("/testPreAllocSizeSmallerThanTxnData1", data, ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 0));
         fileTxnLog.commit();
         fileTxnLog.append(
-            new TxnHeader(1, 1, 2, 2, ZooDefs.OpCode.create),
-            new CreateTxn("/testPreAllocSizeSmallerThanTxnData2", new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 0));
+                new TxnHeader(1, 1, 2, 2, ZooDefs.OpCode.create),
+                new CreateTxn("/testPreAllocSizeSmallerThanTxnData2", new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 0));
         fileTxnLog.commit();
         fileTxnLog.close();
 
@@ -155,8 +149,8 @@ public class FileTxnLogTest extends ZKTestCase {
         // When ...
         for (int i = 0; i < 50; i++) {
             fileTxnLog.append(
-                new TxnHeader(1, 1, 1, 1, ZooDefs.OpCode.create),
-                new CreateTxn("/testFsyncThresholdCountIncreased", new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 0));
+                    new TxnHeader(1, 1, 1, 1, ZooDefs.OpCode.create),
+                    new CreateTxn("/testFsyncThresholdCountIncreased", new byte[]{}, ZooDefs.Ids.OPEN_ACL_UNSAFE, false, 0));
             fileTxnLog.commit(); // only 1 commit, otherwise it will be flaky
             // Then ... verify serverStats is updated to the number of commits (as threshold is set to 0)
             assertEquals((long) i + 1, serverStats.getFsyncThresholdExceedCount());
@@ -246,8 +240,8 @@ public class FileTxnLogTest extends ZKTestCase {
         // shutdown
         f.shutdown();
         assertTrue(
-            "waiting for server to shutdown",
-            ClientBase.waitForServerDown(HOSTPORT, CONNECTION_TIMEOUT));
+                "waiting for server to shutdown",
+                ClientBase.waitForServerDown(HOSTPORT, CONNECTION_TIMEOUT));
 
         File logDir = new File(tmpDir, FileTxnSnapLog.version + FileTxnSnapLog.VERSION);
         File[] txnLogs = FileTxnLog.getLogFiles(logDir.listFiles(), 0);
@@ -258,12 +252,12 @@ public class FileTxnLogTest extends ZKTestCase {
         long threshold = LOG_SIZE_LIMIT + NODE_SIZE;
         LOG.info(txnLogs[0].getAbsolutePath());
         assertTrue(
-            "Exceed log size limit: " + txnLogs[0].length(),
-            threshold > txnLogs[0].length());
+                "Exceed log size limit: " + txnLogs[0].length(),
+                threshold > txnLogs[0].length());
         LOG.info(txnLogs[1].getAbsolutePath());
         assertTrue(
-            "Exceed log size limit " + txnLogs[1].length(),
-            threshold > txnLogs[1].length());
+                "Exceed log size limit " + txnLogs[1].length(),
+                threshold > txnLogs[1].length());
 
         // Start database only
         zks = new ZooKeeperServer(tmpDir, tmpDir, 3000);

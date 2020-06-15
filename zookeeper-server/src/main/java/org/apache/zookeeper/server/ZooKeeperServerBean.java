@@ -18,11 +18,12 @@
 
 package org.apache.zookeeper.server;
 
-import java.util.Date;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.zookeeper.Version;
 import org.apache.zookeeper.jmx.ZKMBeanInfo;
 import org.apache.zookeeper.server.quorum.CommitProcessor;
+
+import java.util.Date;
 
 /**
  * This class implements the ZooKeeper server MBean interface.
@@ -168,8 +169,8 @@ public class ZooKeeperServerBean implements ZooKeeperServerMXBean, ZKMBeanInfo {
     public String getSecureClientAddress() {
         if (zks.secureServerCnxnFactory != null) {
             return String.format("%s:%d",
-                                 zks.secureServerCnxnFactory.getLocalAddress().getHostString(),
-                                 zks.secureServerCnxnFactory.getLocalPort());
+                    zks.secureServerCnxnFactory.getLocalAddress().getHostString(),
+                    zks.secureServerCnxnFactory.getLocalPort());
         }
         return "";
     }

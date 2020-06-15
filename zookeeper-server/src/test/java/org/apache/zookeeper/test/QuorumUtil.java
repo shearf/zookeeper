@@ -18,21 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.server.quorum.Election;
 import org.apache.zookeeper.server.quorum.QuorumPeer;
@@ -41,6 +26,13 @@ import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
 import org.apache.zookeeper.server.util.OSMXBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Utility for quorum testing. Setups 2n+1 peers and allows to start/stop all
@@ -54,7 +46,7 @@ public class QuorumUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuorumUtil.class);
     private static final Set<QuorumPeer.ServerState> CONNECTED_STATES = new TreeSet<>(
-        Arrays.asList(QuorumPeer.ServerState.LEADING, QuorumPeer.ServerState.FOLLOWING, QuorumPeer.ServerState.OBSERVING));
+            Arrays.asList(QuorumPeer.ServerState.LEADING, QuorumPeer.ServerState.FOLLOWING, QuorumPeer.ServerState.OBSERVING));
 
     public static class PeerStruct {
 
@@ -90,8 +82,7 @@ public class QuorumUtil {
     /**
      * Initializes 2n+1 quorum peers which will form a ZooKeeper ensemble.
      *
-     * @param n
-     *            number of peers in the ensemble will be 2n+1
+     * @param n number of peers in the ensemble will be 2n+1
      */
     public QuorumUtil(int n, int syncLimit) throws RuntimeException {
         try {
@@ -280,8 +271,8 @@ public class QuorumUtil {
 
     public boolean allPeersAreConnected() {
         return peers.values().stream()
-          .map(ps -> ps.peer)
-          .allMatch(peer -> CONNECTED_STATES.contains(peer.getPeerState()));
+                .map(ps -> ps.peer)
+                .allMatch(peer -> CONNECTED_STATES.contains(peer.getPeerState()));
     }
 
     public QuorumPeer getLeaderQuorumPeer() {

@@ -22,7 +22,6 @@ import java.io.IOException;
 
 /**
  * Interface that all the Deserializers have to implement.
- *
  */
 public interface InputArchive {
 

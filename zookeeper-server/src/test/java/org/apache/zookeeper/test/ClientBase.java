@@ -18,39 +18,8 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.client.FourLetterWordMain.send4LetterWord;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.ProtocolException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import javax.management.MBeanServerConnection;
-import javax.management.ObjectName;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.TestableZooKeeper;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
-import org.apache.zookeeper.ZKTestCase;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.common.IOUtils;
 import org.apache.zookeeper.common.Time;
 import org.apache.zookeeper.common.X509Exception.SSLContextException;
@@ -64,6 +33,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
+import java.io.*;
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import static org.apache.zookeeper.client.FourLetterWordMain.send4LetterWord;
+import static org.junit.Assert.*;
 
 public abstract class ClientBase extends ZKTestCase {
 
@@ -97,12 +80,14 @@ public abstract class ClientBase extends ZKTestCase {
         public CountdownWatcher() {
             reset();
         }
+
         public synchronized void reset() {
             clientConnected = new CountDownLatch(1);
             connected = false;
             syncConnected = false;
             readOnlyConnected = false;
         }
+
         public synchronized void process(WatchedEvent event) {
             KeeperState state = event.getState();
             if (state == KeeperState.SyncConnected) {
@@ -124,9 +109,11 @@ public abstract class ClientBase extends ZKTestCase {
                 clientConnected.countDown();
             }
         }
+
         public synchronized boolean isConnected() {
             return connected;
         }
+
         public synchronized void waitForConnected(long timeout) throws InterruptedException, TimeoutException {
             long expire = Time.currentElapsedTime() + timeout;
             long left = timeout;
@@ -139,6 +126,7 @@ public abstract class ClientBase extends ZKTestCase {
 
             }
         }
+
         public synchronized void waitForSyncConnected(long timeout) throws InterruptedException, TimeoutException {
             long expire = Time.currentElapsedTime() + timeout;
             long left = timeout;
@@ -150,6 +138,7 @@ public abstract class ClientBase extends ZKTestCase {
                 throw new TimeoutException("Failed to connect to read-write ZooKeeper server.");
             }
         }
+
         public synchronized void waitForReadOnlyConnected(long timeout) throws InterruptedException, TimeoutException {
             long expire = System.currentTimeMillis() + timeout;
             long left = timeout;
@@ -161,6 +150,7 @@ public abstract class ClientBase extends ZKTestCase {
                 throw new TimeoutException("Failed to connect in read-only mode to ZooKeeper server.");
             }
         }
+
         public synchronized void waitForDisconnected(long timeout) throws InterruptedException, TimeoutException {
             long expire = Time.currentElapsedTime() + timeout;
             long left = timeout;
@@ -226,12 +216,14 @@ public abstract class ClientBase extends ZKTestCase {
 
         String host;
         int port;
+
         public HostPort(String host, int port) {
             this.host = host;
             this.port = port;
         }
 
     }
+
     public static List<HostPort> parseHostPortList(String hplist) {
         ArrayList<HostPort> alist = new ArrayList<HostPort>();
         for (String hp : hplist.split(",")) {
@@ -410,10 +402,9 @@ public abstract class ClientBase extends ZKTestCase {
      * may affect other test cases.
      *
      * @return newly created server instance
-     *
      * @see <a
-     *      href="https://issues.apache.org/jira/browse/ZOOKEEPER-1852">ZOOKEEPER-1852</a>
-     *      for more information.
+     * href="https://issues.apache.org/jira/browse/ZOOKEEPER-1852">ZOOKEEPER-1852</a>
+     * for more information.
      */
     public static ServerCnxnFactory createNewServerInstance(
             ServerCnxnFactory factory,
@@ -545,8 +536,7 @@ public abstract class ClientBase extends ZKTestCase {
     /**
      * Returns a string representation of the given long value session id
      *
-     * @param sessionId
-     *            long value of session id
+     * @param sessionId long value of session id
      * @return string representation of session id
      */
     protected static String getHexSessionId(long sessionId) {
@@ -728,11 +718,9 @@ public abstract class ClientBase extends ZKTestCase {
      * Returns ZooKeeper client after connecting to ZooKeeper Server. Session
      * timeout is {@link #CONNECTION_TIMEOUT}
      *
-     * @param cxnString
-     *            connection string in the form of host:port
+     * @param cxnString      connection string in the form of host:port
      * @param sessionTimeout
-     * @throws IOException
-     *             in cases of network failure
+     * @throws IOException in cases of network failure
      */
     public static ZooKeeper createZKClient(String cxnString, int sessionTimeout) throws IOException {
         CountdownWatcher watcher = new CountdownWatcher();

@@ -18,20 +18,20 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.zookeeper.PortAssignment;
+import org.apache.zookeeper.common.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import javax.net.ssl.HandshakeCompletedEvent;
+import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.SSLSocket;
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,22 +39,8 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.net.ssl.HandshakeCompletedEvent;
-import javax.net.ssl.HandshakeCompletedListener;
-import javax.net.ssl.SSLSocket;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.common.BaseX509ParameterizedTestCase;
-import org.apache.zookeeper.common.ClientX509Util;
-import org.apache.zookeeper.common.KeyStoreFileType;
-import org.apache.zookeeper.common.X509Exception;
-import org.apache.zookeeper.common.X509KeyType;
-import org.apache.zookeeper.common.X509TestContext;
-import org.apache.zookeeper.common.X509Util;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class UnifiedServerSocketTest extends BaseX509ParameterizedTestCase {
@@ -421,7 +407,7 @@ public class UnifiedServerSocketTest extends BaseX509ParameterizedTestCase {
      * accept() thread while doing mode detection if a misbehaving client
      * connects. A misbehaving client is one that either disconnects
      * immediately, or connects but does not send any data.
-     *
+     * <p>
      * This version of the test uses a non-strict server socket (i.e. it
      * accepts both TLS and plaintext connections).
      */

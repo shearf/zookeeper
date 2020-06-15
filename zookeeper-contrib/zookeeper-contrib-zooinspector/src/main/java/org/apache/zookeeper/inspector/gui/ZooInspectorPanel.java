@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,14 @@
  */
 package org.apache.zookeeper.inspector.gui;
 
-import java.awt.BorderLayout;
+import org.apache.zookeeper.inspector.gui.actions.AddNodeAction;
+import org.apache.zookeeper.inspector.gui.actions.DeleteNodeAction;
+import org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer;
+import org.apache.zookeeper.inspector.logger.LoggerFactory;
+import org.apache.zookeeper.inspector.manager.ZooInspectorManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -25,20 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
-
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingWorker;
-
-import org.apache.zookeeper.inspector.gui.actions.AddNodeAction;
-import org.apache.zookeeper.inspector.gui.actions.DeleteNodeAction;
-import org.apache.zookeeper.inspector.gui.nodeviewer.ZooInspectorNodeViewer;
-import org.apache.zookeeper.inspector.logger.LoggerFactory;
-import org.apache.zookeeper.inspector.manager.ZooInspectorManager;
 
 /**
  * The parent {@link JPanel} for the whole application
@@ -52,6 +45,7 @@ public class ZooInspectorPanel extends JPanel implements
     private final ZooInspectorManager zooInspectorManager;
 
     private final List<NodeViewersChangeListener> listeners = new ArrayList<NodeViewersChangeListener>();
+
     {
         listeners.add(this);
     }
@@ -84,7 +78,7 @@ public class ZooInspectorPanel extends JPanel implements
         treeViewer = new ZooInspectorTreeViewer(zooInspectorManager,
                 nodeViewersPanel, iconResource);
         this.setLayout(new BorderLayout());
-        
+
         toolbar.addActionListener(Toolbar.Button.connect, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ZooInspectorConnectionPropertiesDialog zicpd = new ZooInspectorConnectionPropertiesDialog(
@@ -106,9 +100,9 @@ public class ZooInspectorPanel extends JPanel implements
         });
 
         toolbar.addActionListener(Toolbar.Button.addNode,
-                    new AddNodeAction(this, treeViewer, zooInspectorManager));
+                new AddNodeAction(this, treeViewer, zooInspectorManager));
         toolbar.addActionListener(Toolbar.Button.deleteNode,
-                    new DeleteNodeAction(this, treeViewer, zooInspectorManager));
+                new DeleteNodeAction(this, treeViewer, zooInspectorManager));
 
         toolbar.addActionListener(Toolbar.Button.nodeViewers, new ActionListener() {
 
@@ -179,8 +173,8 @@ public class ZooInspectorPanel extends JPanel implements
     }
 
     /**
-	 * 
-	 */
+     *
+     */
     public void disconnect() {
         disconnect(false);
     }
@@ -239,7 +233,7 @@ public class ZooInspectorPanel extends JPanel implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeorg.apache.zookeeper.inspector.gui.NodeViewersChangeListener#
      * nodeViewersChanged(java.util.List)
      */

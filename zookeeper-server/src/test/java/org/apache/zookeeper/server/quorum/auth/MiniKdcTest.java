@@ -18,24 +18,21 @@
 
 package org.apache.zookeeper.server.quorum.auth;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import java.io.File;
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.apache.kerby.kerberos.kerb.keytab.Keytab;
+import org.apache.kerby.kerberos.kerb.type.base.PrincipalName;
+import org.junit.Test;
+
 import javax.security.auth.Subject;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
-import org.apache.kerby.kerberos.kerb.keytab.Keytab;
-import org.apache.kerby.kerberos.kerb.type.base.PrincipalName;
-import org.junit.Test;
+import java.io.File;
+import java.security.Principal;
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 /*
  * This code is originally from HDFS, see the file name TestMiniKdc there
@@ -68,8 +65,8 @@ public class MiniKdcTest extends KerberosSecurityTestcase {
         }
 
         assertEquals(
-            new HashSet<>(Arrays.asList("foo/bar@" + kdc.getRealm(), "bar/foo@" + kdc.getRealm())),
-            principals);
+                new HashSet<>(Arrays.asList("foo/bar@" + kdc.getRealm(), "bar/foo@" + kdc.getRealm())),
+                principals);
     }
 
     private static class KerberosConfiguration extends Configuration {
@@ -94,8 +91,8 @@ public class MiniKdcTest extends KerberosSecurityTestcase {
 
         private static String getKrb5LoginModuleName() {
             return System.getProperty("java.vendor").contains("IBM")
-                ? "com.ibm.security.auth.module.Krb5LoginModule"
-                : "com.sun.security.auth.module.Krb5LoginModule";
+                    ? "com.ibm.security.auth.module.Krb5LoginModule"
+                    : "com.sun.security.auth.module.Krb5LoginModule";
         }
 
         @Override
@@ -161,8 +158,8 @@ public class MiniKdcTest extends KerberosSecurityTestcase {
 
         } finally {
             if (loginContext != null
-                && loginContext.getSubject() != null
-                && !loginContext.getSubject().getPrincipals().isEmpty()) {
+                    && loginContext.getSubject() != null
+                    && !loginContext.getSubject().getPrincipals().isEmpty()) {
                 loginContext.logout();
             }
         }

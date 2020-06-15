@@ -32,19 +32,19 @@ provides: [Zkui]
 ...
 */
 ART.Sheet.define('window.art.browser.zkui', {
-	'min-width': 620
+    'min-width': 620
 });
 
 var Zkui = new Class({
 
-	Extends: CCS.JBrowser,
+    Extends: CCS.JBrowser,
 
-	options: {
-		className: 'art browser logo_header zkui'
-	},
+    options: {
+        className: 'art browser logo_header zkui'
+    },
 
-	initialize: function(path, options){
-		this.parent(path || '/zkui/', options);
-	}
+    initialize: function (path, options) {
+        this.parent(path || '/zkui/', options);
+    }
 
 });

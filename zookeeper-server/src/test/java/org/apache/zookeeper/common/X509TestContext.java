@@ -18,7 +18,12 @@
 
 package org.apache.zookeeper.common;
 
-import static java.util.Objects.requireNonNull;
+import org.apache.commons.io.FileUtils;
+import org.bouncycastle.asn1.x500.X500NameBuilder;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.OperatorCreationException;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,11 +34,8 @@ import java.security.KeyPair;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
-import org.apache.commons.io.FileUtils;
-import org.bouncycastle.asn1.x500.X500NameBuilder;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.OperatorCreationException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class simplifies the creation of certificates and private keys for SSL/TLS connections.
@@ -67,13 +69,14 @@ public class X509TestContext {
 
     /**
      * Constructor is intentionally private, use the Builder class instead.
-     * @param tempDir the directory in which key store and trust store temp files will be written.
-     * @param trustStoreKeyPair the key pair for the trust store.
+     *
+     * @param tempDir                        the directory in which key store and trust store temp files will be written.
+     * @param trustStoreKeyPair              the key pair for the trust store.
      * @param trustStoreCertExpirationMillis the expiration of the trust store cert, in milliseconds from now.
-     * @param trustStorePassword the password to protect a JKS trust store (ignored for PEM trust stores).
-     * @param keyStoreKeyPair the key pair for the key store.
-     * @param keyStoreCertExpirationMillis the expiration of the key store cert, in milliseconds from now.
-     * @param keyStorePassword the password to protect the key store private key.
+     * @param trustStorePassword             the password to protect a JKS trust store (ignored for PEM trust stores).
+     * @param keyStoreKeyPair                the key pair for the key store.
+     * @param keyStoreCertExpirationMillis   the expiration of the key store cert, in milliseconds from now.
+     * @param keyStorePassword               the password to protect the key store private key.
      * @throws IOException
      * @throws GeneralSecurityException
      * @throws OperatorCreationException
@@ -110,6 +113,7 @@ public class X509TestContext {
 
     /**
      * Returns the X509KeyType of the given key pair.
+     *
      * @param keyPair the key pair.
      * @return <code>X509KeyType.RSA</code> if given an RSA key pair, and <code>X509KeyType.EC</code> otherwise.
      */
@@ -148,23 +152,24 @@ public class X509TestContext {
     /**
      * Returns the path to the trust store file in the given format (JKS or PEM). Note that the file is created lazily,
      * the first time this method is called. The trust store file is temporary and will be deleted on exit.
+     *
      * @param storeFileType the store file type (JKS or PEM).
      * @return the path to the trust store file.
      * @throws IOException if there is an error creating the trust store file.
      */
     public File getTrustStoreFile(KeyStoreFileType storeFileType) throws IOException {
         switch (storeFileType) {
-        case JKS:
-            return getTrustStoreJksFile();
-        case PEM:
-            return getTrustStorePemFile();
-        case PKCS12:
-            return getTrustStorePkcs12File();
-        default:
-            throw new IllegalArgumentException("Invalid trust store type: "
-                                                       + storeFileType
-                                                       + ", must be one of: "
-                                                       + Arrays.toString(KeyStoreFileType.values()));
+            case JKS:
+                return getTrustStoreJksFile();
+            case PEM:
+                return getTrustStorePemFile();
+            case PKCS12:
+                return getTrustStorePkcs12File();
+            default:
+                throw new IllegalArgumentException("Invalid trust store type: "
+                        + storeFileType
+                        + ", must be one of: "
+                        + Arrays.toString(KeyStoreFileType.values()));
         }
     }
 
@@ -237,23 +242,24 @@ public class X509TestContext {
     /**
      * Returns the path to the key store file in the given format (JKS or PEM). Note that the file is created lazily,
      * the first time this method is called. The key store file is temporary and will be deleted on exit.
+     *
      * @param storeFileType the store file type (JKS or PEM).
      * @return the path to the key store file.
      * @throws IOException if there is an error creating the key store file.
      */
     public File getKeyStoreFile(KeyStoreFileType storeFileType) throws IOException {
         switch (storeFileType) {
-        case JKS:
-            return getKeyStoreJksFile();
-        case PEM:
-            return getKeyStorePemFile();
-        case PKCS12:
-            return getKeyStorePkcs12File();
-        default:
-            throw new IllegalArgumentException("Invalid key store type: "
-                                                       + storeFileType
-                                                       + ", must be one of: "
-                                                       + Arrays.toString(KeyStoreFileType.values()));
+            case JKS:
+                return getKeyStoreJksFile();
+            case PEM:
+                return getKeyStorePemFile();
+            case PKCS12:
+                return getKeyStorePkcs12File();
+            default:
+                throw new IllegalArgumentException("Invalid key store type: "
+                        + storeFileType
+                        + ", must be one of: "
+                        + Arrays.toString(KeyStoreFileType.values()));
         }
     }
 
@@ -313,8 +319,9 @@ public class X509TestContext {
      *     // The returned context will use the key store and trust store created by the test context.
      *     SSLContext ctx = x509Util.getDefaultSSLContext();
      * </pre>
-     * @param x509Util the X509Util.
-     * @param keyStoreFileType the store file type to use for the key store (JKS or PEM).
+     *
+     * @param x509Util           the X509Util.
+     * @param keyStoreFileType   the store file type to use for the key store (JKS or PEM).
      * @param trustStoreFileType the store file type to use for the trust store (JKS or PEM).
      * @throws IOException if there is an error creating the key store file or trust store file.
      */
@@ -335,6 +342,7 @@ public class X509TestContext {
     /**
      * Clears system properties set by
      * {@link #setSystemProperties(X509Util, KeyStoreFileType, KeyStoreFileType)}.
+     *
      * @param x509Util the X509Util to read property keys from.
      */
     public void clearSystemProperties(X509Util x509Util) {
@@ -377,6 +385,7 @@ public class X509TestContext {
 
         /**
          * Builds a new X509TestContext from this builder.
+         *
          * @return a new X509TestContext
          * @throws IOException
          * @throws GeneralSecurityException
@@ -390,6 +399,7 @@ public class X509TestContext {
 
         /**
          * Sets the temporary directory. Certificate and private key files will be created in this directory.
+         *
          * @param tempDir the temp directory.
          * @return this Builder.
          */
@@ -400,6 +410,7 @@ public class X509TestContext {
 
         /**
          * Sets the trust store key type. The CA key generated for the test context will be of this type.
+         *
          * @param keyType the key type.
          * @return this Builder.
          */
@@ -411,6 +422,7 @@ public class X509TestContext {
         /**
          * Sets the trust store password. Ignored for PEM trust stores, JKS trust stores will be encrypted with this
          * password.
+         *
          * @param password the password.
          * @return this Builder.
          */
@@ -421,6 +433,7 @@ public class X509TestContext {
 
         /**
          * Sets the trust store certificate's expiration, in milliseconds from when <code>build()</code> is called.
+         *
          * @param expirationMillis expiration in milliseconds.
          * @return this Builder.
          */
@@ -431,6 +444,7 @@ public class X509TestContext {
 
         /**
          * Sets the key store key type. The private key generated for the test context will be of this type.
+         *
          * @param keyType the key type.
          * @return this Builder.
          */
@@ -442,6 +456,7 @@ public class X509TestContext {
         /**
          * Sets the key store password. The private key (PEM, JKS) and certificate (JKS only) will be encrypted with
          * this password.
+         *
          * @param password the password.
          * @return this Builder.
          */
@@ -452,6 +467,7 @@ public class X509TestContext {
 
         /**
          * Sets the key store certificate's expiration, in milliseconds from when <code>build()</code> is called.
+         *
          * @param expirationMillis expiration in milliseconds.
          * @return this Builder.
          */
@@ -463,6 +479,7 @@ public class X509TestContext {
         /**
          * Sets the hostname verification behavior. If null is provided, reverts the behavior to the default, otherwise
          * explicitly sets hostname verification to true or false.
+         *
          * @param hostnameVerification new value for the hostname verification setting.
          * @return this Builder.
          */
@@ -475,6 +492,7 @@ public class X509TestContext {
 
     /**
      * Returns a new default-constructed Builder.
+     *
      * @return a new Builder.
      */
     public static Builder newBuilder() {

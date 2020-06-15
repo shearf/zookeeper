@@ -18,14 +18,17 @@
 
 package org.apache.zookeeper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/** Assign ports to tests */
+/**
+ * Assign ports to tests
+ */
 public final class PortAssignment {
 
     private static final Logger LOG = LoggerFactory.getLogger(PortAssignment.class);
@@ -65,8 +68,8 @@ public final class PortAssignment {
         if (portRange == null) {
             Integer threadId = Integer.getInteger("zookeeper.junit.threadid");
             portRange = setupPortRange(
-                System.getProperty("test.junit.threads"),
-                threadId != null ? "threadid=" + threadId : System.getProperty("sun.java.command"));
+                    System.getProperty("test.junit.threads"),
+                    threadId != null ? "threadid=" + threadId : System.getProperty("sun.java.command"));
             nextPort = portRange.getMinimum();
         }
         int candidatePort = nextPort;
@@ -77,8 +80,8 @@ public final class PortAssignment {
             }
             if (candidatePort == nextPort) {
                 throw new IllegalStateException(String.format(
-                    "Could not assign port from range %s.  The entire range has been exhausted.",
-                    portRange));
+                        "Could not assign port from range %s.  The entire range has been exhausted.",
+                        portRange));
             }
             try {
                 ServerSocket s = new ServerSocket(candidatePort);
@@ -88,10 +91,10 @@ public final class PortAssignment {
                 return nextPort;
             } catch (IOException e) {
                 LOG.debug(
-                    "Could not bind to port {} from range {}.  Attempting next port.",
-                    candidatePort,
-                    portRange,
-                    e);
+                        "Could not bind to port {} from range {}.  Attempting next port.",
+                        candidatePort,
+                        portRange,
+                        e);
             }
         }
     }
@@ -112,9 +115,9 @@ public final class PortAssignment {
      * expected when running tests outside of Ant.
      *
      * @param strProcessCount string representation of integer process count,
-     *         typically taken from system property test.junit.threads
-     * @param cmdLine command line containing threadid=N argument, typically
-     *         taken from system property sun.java.command
+     *                        typically taken from system property test.junit.threads
+     * @param cmdLine         command line containing threadid=N argument, typically
+     *                        taken from system property sun.java.command
      * @return port range to use
      */
     static PortRange setupPortRange(String strProcessCount, String cmdLine) {

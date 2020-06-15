@@ -28,6 +28,9 @@ import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -35,8 +38,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helper methods for netty code.
@@ -52,6 +53,7 @@ public class NettyUtils {
      * {@link EpollEventLoopGroup}, otherwise returns a new
      * {@link NioEventLoopGroup}. Creates the event loop group using the
      * default number of threads.
+     *
      * @return a new {@link EventLoopGroup}.
      */
     public static EventLoopGroup newNioOrEpollEventLoopGroup() {
@@ -67,6 +69,7 @@ public class NettyUtils {
      * {@link EpollEventLoopGroup}, otherwise returns a new
      * {@link NioEventLoopGroup}. Creates the event loop group using the
      * specified number of threads instead of the default.
+     *
      * @param nThreads see {@link NioEventLoopGroup#NioEventLoopGroup(int)}.
      * @return a new {@link EventLoopGroup}.
      */
@@ -81,6 +84,7 @@ public class NettyUtils {
     /**
      * If {@link Epoll#isAvailable()} <code>== true</code>, returns
      * {@link EpollSocketChannel}, otherwise returns {@link NioSocketChannel}.
+     *
      * @return a socket channel class.
      */
     public static Class<? extends SocketChannel> nioOrEpollSocketChannel() {
@@ -95,6 +99,7 @@ public class NettyUtils {
      * If {@link Epoll#isAvailable()} <code>== true</code>, returns
      * {@link EpollServerSocketChannel}, otherwise returns
      * {@link NioServerSocketChannel}.
+     *
      * @return a server socket channel class.
      */
     public static Class<? extends ServerSocketChannel> nioOrEpollServerSocketChannel() {

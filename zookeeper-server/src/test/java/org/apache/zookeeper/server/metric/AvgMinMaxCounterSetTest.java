@@ -18,11 +18,13 @@
 
 package org.apache.zookeeper.server.metric;
 
-import static org.junit.Assert.assertEquals;
-import java.util.Map;
 import org.apache.zookeeper.ZKTestCase;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 public class AvgMinMaxCounterSetTest extends ZKTestCase {
 

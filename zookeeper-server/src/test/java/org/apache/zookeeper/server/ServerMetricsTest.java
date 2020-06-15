@@ -18,14 +18,16 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertEquals;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.metric.AvgMinMaxCounter;
 import org.apache.zookeeper.server.metric.SimpleCounter;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static org.junit.Assert.assertEquals;
 
 public class ServerMetricsTest extends ZKTestCase {
 

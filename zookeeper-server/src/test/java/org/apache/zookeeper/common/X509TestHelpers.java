@@ -18,38 +18,11 @@
 
 package org.apache.zookeeper.common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.security.spec.ECGenParameterSpec;
-import java.security.spec.RSAKeyGenParameterSpec;
-import java.util.Date;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.KeyPurposeId;
-import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -59,16 +32,26 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.openssl.jcajce.JcaPKCS8Generator;
 import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8EncryptorBuilder;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
-import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.OutputEncryptor;
+import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.bc.BcContentSignerBuilder;
 import org.bouncycastle.operator.bc.BcECContentSignerBuilder;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.security.spec.ECGenParameterSpec;
+import java.security.spec.RSAKeyGenParameterSpec;
+import java.util.Date;
 
 /**
  * This class contains helper methods for creating X509 certificates and key pairs, and for serializing them
@@ -91,9 +74,10 @@ public class X509TestHelpers {
      * Returns the new certificate.
      * The returned certificate should be used as the trust store. The private key of the input key pair should be
      * used to sign certificates that are used by test peers to establish TLS connections to each other.
-     * @param subject the subject of the new certificate being created.
-     * @param keyPair the key pair to use. The public key will be embedded in the new certificate, and the private key
-     *                will be used to self-sign the certificate.
+     *
+     * @param subject          the subject of the new certificate being created.
+     * @param keyPair          the key pair to use. The public key will be embedded in the new certificate, and the private key
+     *                         will be used to self-sign the certificate.
      * @param expirationMillis expiration of the new certificate, in milliseconds from now.
      * @return a new self-signed CA certificate.
      * @throws IOException
@@ -104,12 +88,12 @@ public class X509TestHelpers {
             X500Name subject, KeyPair keyPair, long expirationMillis) throws IOException, OperatorCreationException, GeneralSecurityException {
         Date now = new Date();
         X509v3CertificateBuilder builder = initCertBuilder(subject, // for self-signed certs, issuer == subject
-                                                           now, new Date(now.getTime()
-                                                                                 + expirationMillis), subject, keyPair.getPublic());
+                now, new Date(now.getTime()
+                        + expirationMillis), subject, keyPair.getPublic());
         builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true)); // is a CA
         builder.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.digitalSignature
-                                                                            | KeyUsage.keyCertSign
-                                                                            | KeyUsage.cRLSign));
+                | KeyUsage.keyCertSign
+                | KeyUsage.cRLSign));
         return buildAndSignCertificate(keyPair.getPrivate(), builder);
     }
 
@@ -117,11 +101,12 @@ public class X509TestHelpers {
      * Using the private key of the given CA key pair and the Subject of the given CA cert as the Issuer, issues a
      * new cert with the given subject and public key. The returned certificate, combined with the private key half
      * of the <code>certPublicKey</code>, should be used as the key store.
-     * @param caCert the certificate of the CA that's doing the signing.
-     * @param caKeyPair the key pair of the CA. The private key will be used to sign. The public key must match the
-     *                  public key in the <code>caCert</code>.
-     * @param certSubject the subject field of the new cert being issued.
-     * @param certPublicKey the public key of the new cert being issued.
+     *
+     * @param caCert           the certificate of the CA that's doing the signing.
+     * @param caKeyPair        the key pair of the CA. The private key will be used to sign. The public key must match the
+     *                         public key in the <code>caCert</code>.
+     * @param certSubject      the subject field of the new cert being issued.
+     * @param certPublicKey    the public key of the new cert being issued.
      * @param expirationMillis the expiration of the cert being issued, in milliseconds from now.
      * @return a new certificate signed by the CA's private key.
      * @throws IOException
@@ -139,7 +124,7 @@ public class X509TestHelpers {
                         + expirationMillis), certSubject, certPublicKey);
         builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(false)); // not a CA
         builder.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.digitalSignature
-                                                                            | KeyUsage.keyEncipherment));
+                | KeyUsage.keyEncipherment));
         builder.addExtension(Extension.extendedKeyUsage, true, new ExtendedKeyUsage(new KeyPurposeId[]{KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth}));
 
         builder.addExtension(Extension.subjectAlternativeName, false, getLocalhostSubjectAltNames());
@@ -148,6 +133,7 @@ public class X509TestHelpers {
 
     /**
      * Returns subject alternative names for "localhost".
+     *
      * @return the subject alternative names for "localhost".
      */
     private static GeneralNames getLocalhostSubjectAltNames() throws UnknownHostException {
@@ -163,10 +149,11 @@ public class X509TestHelpers {
     /**
      * Helper method for newSelfSignedCACert() and newCert(). Initializes a X509v3CertificateBuilder with
      * logic that's common to both methods.
-     * @param issuer Issuer field of the new cert.
-     * @param notBefore date before which the new cert is not valid.
-     * @param notAfter date after which the new cert is not valid.
-     * @param subject Subject field of the new cert.
+     *
+     * @param issuer           Issuer field of the new cert.
+     * @param notBefore        date before which the new cert is not valid.
+     * @param notAfter         date after which the new cert is not valid.
+     * @param subject          Subject field of the new cert.
      * @param subjectPublicKey public key to store in the new cert.
      * @return a X509v3CertificateBuilder that can be further customized to finish creating the new cert.
      */
@@ -177,8 +164,9 @@ public class X509TestHelpers {
 
     /**
      * Signs the certificate being built by the given builder using the given private key and returns the certificate.
+     *
      * @param privateKey the private key to sign the certificate with.
-     * @param builder the cert builder that contains the certificate data.
+     * @param builder    the cert builder that contains the certificate data.
      * @return the signed certificate.
      * @throws IOException
      * @throws OperatorCreationException
@@ -203,23 +191,25 @@ public class X509TestHelpers {
 
     /**
      * Generates a new asymmetric key pair of the given type.
+     *
      * @param keyType the type of key pair to generate.
      * @return the new key pair.
      * @throws GeneralSecurityException if your java crypto providers are messed up.
      */
     public static KeyPair generateKeyPair(X509KeyType keyType) throws GeneralSecurityException {
         switch (keyType) {
-        case RSA:
-            return generateRSAKeyPair();
-        case EC:
-            return generateECKeyPair();
-        default:
-            throw new IllegalArgumentException("Invalid X509KeyType");
+            case RSA:
+                return generateRSAKeyPair();
+            case EC:
+                return generateECKeyPair();
+            default:
+                throw new IllegalArgumentException("Invalid X509KeyType");
         }
     }
 
     /**
      * Generates an RSA key pair with a 2048-bit private key and F4 (65537) as the public exponent.
+     *
      * @return the key pair.
      */
     public static KeyPair generateRSAKeyPair() throws GeneralSecurityException {
@@ -231,6 +221,7 @@ public class X509TestHelpers {
 
     /**
      * Generates an elliptic curve key pair using the "secp256r1" aka "prime256v1" aka "NIST P-256" curve.
+     *
      * @return the key pair.
      */
     public static KeyPair generateECKeyPair() throws GeneralSecurityException {
@@ -243,11 +234,12 @@ public class X509TestHelpers {
      * PEM-encodes the given X509 certificate and private key (compatible with OpenSSL), optionally protecting the
      * private key with a password. Concatenates them both and returns the result as a single string.
      * This creates the PEM encoding of a key store.
-     * @param cert the X509 certificate to PEM-encode.
-     * @param privateKey the private key to PEM-encode.
+     *
+     * @param cert        the X509 certificate to PEM-encode.
+     * @param privateKey  the private key to PEM-encode.
      * @param keyPassword an optional key password. If empty or null, the private key will not be encrypted.
      * @return a String containing the PEM encodings of the certificate and private key.
-     * @throws IOException if converting the certificate or private key to PEM format fails.
+     * @throws IOException               if converting the certificate or private key to PEM format fails.
      * @throws OperatorCreationException if constructing the encryptor from the given password fails.
      */
     public static String pemEncodeCertAndPrivateKey(
@@ -258,10 +250,11 @@ public class X509TestHelpers {
     /**
      * PEM-encodes the given private key (compatible with OpenSSL), optionally protecting it with a password, and
      * returns the result as a String.
-     * @param key the private key.
+     *
+     * @param key      the private key.
      * @param password an optional key password. If empty or null, the private key will not be encrypted.
      * @return a String containing the PEM encoding of the private key.
-     * @throws IOException if converting the key to PEM format fails.
+     * @throws IOException               if converting the key to PEM format fails.
      * @throws OperatorCreationException if constructing the encryptor from the given password fails.
      */
     public static String pemEncodePrivateKey(
@@ -279,6 +272,7 @@ public class X509TestHelpers {
 
     /**
      * PEM-encodes the given X509 certificate (compatible with OpenSSL) and returns the result as a String.
+     *
      * @param cert the certificate.
      * @return a String containing the PEM encoding of the certificate.
      * @throws IOException if converting the certificate to PEM format fails.
@@ -296,7 +290,8 @@ public class X509TestHelpers {
      * it's unclear why one would do this since certificates only contain public information and do not need to be
      * kept secret). Returns the byte array encoding of the trust store, which may be written to a file and loaded to
      * instantiate the trust store at a later point or in another process.
-     * @param cert the certificate to serialize.
+     *
+     * @param cert        the certificate to serialize.
      * @param keyPassword an optional password to encrypt the trust store. If empty or null, the cert will not be encrypted.
      * @return the serialized bytes of the JKS trust store.
      * @throws IOException
@@ -313,7 +308,8 @@ public class X509TestHelpers {
      * it's unclear why one would do this since certificates only contain public information and do not need to be
      * kept secret). Returns the byte array encoding of the trust store, which may be written to a file and loaded to
      * instantiate the trust store at a later point or in another process.
-     * @param cert the certificate to serialize.
+     *
+     * @param cert        the certificate to serialize.
      * @param keyPassword an optional password to encrypt the trust store. If empty or null, the cert will not be encrypted.
      * @return the serialized bytes of the PKCS12 trust store.
      * @throws IOException
@@ -341,8 +337,9 @@ public class X509TestHelpers {
      * Encodes the given X509Certificate and private key as a JKS KeyStore, optionally protecting the private key
      * (and possibly the cert?) with a password. Returns the byte array encoding of the key store, which may be written
      * to a file and loaded to instantiate the key store at a later point or in another process.
-     * @param cert the X509 certificate to serialize.
-     * @param privateKey the private key to serialize.
+     *
+     * @param cert        the X509 certificate to serialize.
+     * @param privateKey  the private key to serialize.
      * @param keyPassword an optional key password. If empty or null, the private key will not be encrypted.
      * @return the serialized bytes of the JKS key store.
      * @throws IOException
@@ -358,8 +355,9 @@ public class X509TestHelpers {
      * Encodes the given X509Certificate and private key as a PKCS12 KeyStore, optionally protecting the private key
      * (and possibly the cert?) with a password. Returns the byte array encoding of the key store, which may be written
      * to a file and loaded to instantiate the key store at a later point or in another process.
-     * @param cert the X509 certificate to serialize.
-     * @param privateKey the private key to serialize.
+     *
+     * @param cert        the X509 certificate to serialize.
+     * @param privateKey  the private key to serialize.
      * @param keyPassword an optional key password. If empty or null, the private key will not be encrypted.
      * @return the serialized bytes of the PKCS12 key store.
      * @throws IOException
@@ -386,6 +384,7 @@ public class X509TestHelpers {
 
     /**
      * Convenience method to convert a bouncycastle X509CertificateHolder to a java X509Certificate.
+     *
      * @param certHolder a bouncycastle X509CertificateHolder.
      * @return a java X509Certificate
      * @throws CertificateException if the conversion fails.

@@ -22,7 +22,7 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 
 /**
  * An AdminServer that does nothing.
- *
+ * <p>
  * We use this class when we wish to disable the AdminServer. (This way we only
  * have to consider whether the server is enabled when we create the
  * AdminServer, which is handled by AdminServerFactory.)

@@ -18,18 +18,6 @@
 
 package org.apache.zookeeper.server.persistence;
 
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Properties;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.InputArchive;
 import org.apache.jute.OutputArchive;
@@ -38,6 +26,10 @@ import org.apache.zookeeper.txn.TxnDigest;
 import org.apache.zookeeper.txn.TxnHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.URI;
+import java.util.*;
 
 /**
  * A collection of utility methods for dealing with file name parsing,
@@ -57,13 +49,14 @@ public class Util {
         }
         return uri.replace('\\', '/');
     }
+
     /**
      * Given two directory files the method returns a well-formed
      * logfile provider URI. This method is for backward compatibility with the
      * existing code that only supports logfile persistence and expects these two
      * parameters passed either on the command-line or in the configuration file.
      *
-     * @param dataDir snapshot directory
+     * @param dataDir    snapshot directory
      * @param dataLogDir transaction log directory
      * @return logfile provider URI
      */
@@ -93,8 +86,8 @@ public class Util {
      */
     public static String makeSnapshotName(long zxid) {
         return FileSnap.SNAPSHOT_FILE_PREFIX + "."
-               + Long.toHexString(zxid)
-               + SnapStream.getStreamMode().getFileExtension();
+                + Long.toHexString(zxid)
+                + SnapStream.getStreamMode().getFileExtension();
     }
 
     /**
@@ -131,7 +124,7 @@ public class Util {
      * Extracts zxid from the file name. The file name should have been created
      * using one of the {@link #makeLogName(long)} or {@link #makeSnapshotName(long)}.
      *
-     * @param name the file name to parse
+     * @param name   the file name to parse
      * @param prefix the file name prefix (snapshot or log)
      * @return zxid
      */
@@ -149,6 +142,7 @@ public class Util {
 
     /**
      * Reads a transaction entry from the input archive.
+     *
      * @param ia archive to read from
      * @return null if the entry is corrupted or EOF has been reached; a buffer
      * (possible empty) containing serialized transaction record.
@@ -202,7 +196,7 @@ public class Util {
     /**
      * Write the serialized transaction record to the output archive.
      *
-     * @param oa output archive
+     * @param oa    output archive
      * @param bytes serialized transaction record
      * @throws IOException
      */
@@ -221,6 +215,7 @@ public class Util {
 
         private String prefix;
         private boolean ascending;
+
         public DataDirFileComparator(String prefix, boolean ascending) {
             this.prefix = prefix;
             this.ascending = ascending;
@@ -239,11 +234,11 @@ public class Util {
      * Sort the list of files. Recency as determined by the version component
      * of the file name.
      *
-     * @param files array of files
-     * @param prefix files not matching this prefix are assumed to have a
-     * version = -1)
+     * @param files     array of files
+     * @param prefix    files not matching this prefix are assumed to have a
+     *                  version = -1)
      * @param ascending true sorted in ascending order, false results in
-     * descending order
+     *                  descending order
      * @return sorted input files
      */
     public static List<File> sortDataDir(File[] files, String prefix, boolean ascending) {

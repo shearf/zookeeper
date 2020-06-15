@@ -18,17 +18,19 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+
+import static org.junit.Assert.fail;
 
 public class SaslAuthFailTest extends ClientBase {
 
@@ -42,17 +44,17 @@ public class SaslAuthFailTest extends ClientBase {
             FileWriter fwriter = new FileWriter(saslConfFile);
 
             fwriter.write("Server {\n"
-                          + "          org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                          + "          user_super=\"test\";\n"
-                          + "};\n"
-                          + "Client {\n"
-                          + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
-                          + "       username=\"super\"\n"
-                          + "       password=\"test1\";\n"
-                          +
-                          // NOTE: wrong password ('test' != 'test1') : this is to test SASL authentication failure.
-                          "};"
-                          + "\n");
+                    + "          org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                    + "          user_super=\"test\";\n"
+                    + "};\n"
+                    + "Client {\n"
+                    + "       org.apache.zookeeper.server.auth.DigestLoginModule required\n"
+                    + "       username=\"super\"\n"
+                    + "       password=\"test1\";\n"
+                    +
+                    // NOTE: wrong password ('test' != 'test1') : this is to test SASL authentication failure.
+                    "};"
+                    + "\n");
             fwriter.close();
             System.setProperty("java.security.auth.login.config", saslConfFile.getAbsolutePath());
         } catch (IOException e) {

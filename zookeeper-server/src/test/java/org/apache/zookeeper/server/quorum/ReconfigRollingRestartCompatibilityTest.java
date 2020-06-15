@@ -18,25 +18,19 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.test.ClientBase;
 import org.apache.zookeeper.test.ReconfigTest;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.*;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.*;
 
 /**
  * ReconfigRollingRestartCompatibilityTest - we want to make sure that users
@@ -45,7 +39,7 @@ import org.junit.Test;
  * has its limitation: it requires a quorum of server to work. When no quorum can be formed,
  * rolling restart is the only approach to reconfigure the ensemble (e.g. removing bad nodes
  * such that a new quorum with smaller number of nodes can be formed.).
- *
+ * <p>
  * See ZOOKEEPER-2819 for more details.
  */
 public class ReconfigRollingRestartCompatibilityTest extends QuorumPeerTestBase {
@@ -61,7 +55,7 @@ public class ReconfigRollingRestartCompatibilityTest extends QuorumPeerTestBase 
         for (int i = 0; i < serverCount; i++) {
             clientPorts.put(i, PortAssignment.unique());
             server = "server." + i + "=localhost:" + PortAssignment.unique() + ":" + PortAssignment.unique()
-                     + ":participant;localhost:" + clientPorts.get(i);
+                    + ":participant;localhost:" + clientPorts.get(i);
             serverAddress.put(i, server);
             sb.append(server + "\n");
         }
@@ -73,7 +67,7 @@ public class ReconfigRollingRestartCompatibilityTest extends QuorumPeerTestBase 
         for (Integer sid : sidsToAdd) {
             clientPorts.put(sid, PortAssignment.unique());
             serverAddress.put(sid, "server." + sid + "=localhost:" + PortAssignment.unique() + ":" + PortAssignment.unique()
-                                   + ":participant;localhost:" + clientPorts.get(sid));
+                    + ":participant;localhost:" + clientPorts.get(sid));
         }
 
         for (Integer sid : sidsToRemove) {
@@ -251,7 +245,7 @@ public class ReconfigRollingRestartCompatibilityTest extends QuorumPeerTestBase 
             mt[i].shutdown();
 
             assertTrue(String.format("Timeout during waiting for server %d to go down", i),
-                       ClientBase.waitForServerDown("127.0.0.1:" + clientPorts.get(i), ClientBase.CONNECTION_TIMEOUT));
+                    ClientBase.waitForServerDown("127.0.0.1:" + clientPorts.get(i), ClientBase.CONNECTION_TIMEOUT));
 
             mt[i] = new QuorumPeerTestBase.MainThread(i, clientPorts.get(i), config, false);
             mt[i].start();
@@ -297,7 +291,7 @@ public class ReconfigRollingRestartCompatibilityTest extends QuorumPeerTestBase 
         // we are stopping the third server (myid=2)
         mt[2].shutdown();
         assertTrue(String.format("Timeout during waiting for server %d to go down", 2),
-                   ClientBase.waitForServerDown("127.0.0.1:" + clientPorts.get(2), ClientBase.CONNECTION_TIMEOUT));
+                ClientBase.waitForServerDown("127.0.0.1:" + clientPorts.get(2), ClientBase.CONNECTION_TIMEOUT));
         String leavingServer = originalServers.get(2);
 
         // Create updated config with the first 2 existing members, but we remove 3rd and add one with different myid
@@ -320,7 +314,7 @@ public class ReconfigRollingRestartCompatibilityTest extends QuorumPeerTestBase 
             mt[i].shutdown();
 
             assertTrue(String.format("Timeout during waiting for server %d to go down", i),
-                       ClientBase.waitForServerDown("127.0.0.1:" + clientPorts.get(i), ClientBase.CONNECTION_TIMEOUT));
+                    ClientBase.waitForServerDown("127.0.0.1:" + clientPorts.get(i), ClientBase.CONNECTION_TIMEOUT));
 
             mt[i] = new QuorumPeerTestBase.MainThread(i, clientPorts.get(i), config, false);
             mt[i].start();

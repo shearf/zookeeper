@@ -27,10 +27,8 @@ public interface ZooKeeperServerListener {
      * This will notify the server that some critical thread has stopped.
      * It usually takes place when fatal error occurred.
      *
-     * @param threadName
-     *            - name of the thread
-     * @param errorCode
-     *            - error code
+     * @param threadName - name of the thread
+     * @param errorCode  - error code
      */
     void notifyStopping(String threadName, int errorCode);
 

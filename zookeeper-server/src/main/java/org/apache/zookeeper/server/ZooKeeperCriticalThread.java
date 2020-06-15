@@ -39,10 +39,8 @@ public class ZooKeeperCriticalThread extends ZooKeeperThread {
      * This will be used by the uncaught exception handler and make the system
      * exit.
      *
-     * @param threadName
-     *            - thread name
-     * @param e
-     *            - exception object
+     * @param threadName - thread name
+     * @param e          - exception object
      */
     @Override
     protected void handleException(String threadName, Throwable e) {

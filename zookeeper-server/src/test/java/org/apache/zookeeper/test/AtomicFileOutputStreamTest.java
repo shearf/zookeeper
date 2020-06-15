@@ -18,20 +18,15 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.common.AtomicFileOutputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.*;
+
+import static org.junit.Assert.*;
 
 public class AtomicFileOutputStreamTest extends ZKTestCase {
 
@@ -46,6 +41,7 @@ public class AtomicFileOutputStreamTest extends ZKTestCase {
         testDir = ClientBase.createEmptyTestDir();
         dstFile = new File(testDir, "test.txt");
     }
+
     @After
     public void cleanupTestDir() throws IOException {
         ClientBase.recursiveDelete(testDir);

@@ -18,13 +18,15 @@
 
 package org.apache.zookeeper.common;
 
-import static org.junit.Assert.assertEquals;
-import java.io.IOException;
-import java.security.KeyStore;
-import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import java.io.IOException;
+import java.security.KeyStore;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class JKSFileLoaderTest extends BaseX509ParameterizedTestCase {
@@ -62,7 +64,7 @@ public class JKSFileLoaderTest extends BaseX509ParameterizedTestCase {
     public void testLoadKeyStoreWithWrongFilePath() throws Exception {
         String path = x509TestContext.getKeyStoreFile(KeyStoreFileType.JKS).getAbsolutePath();
         new JKSFileLoader.Builder().setKeyStorePath(path
-                                                            + ".does_not_exist").setKeyStorePassword(x509TestContext.getKeyStorePassword()).build().loadKeyStore();
+                + ".does_not_exist").setKeyStorePassword(x509TestContext.getKeyStorePassword()).build().loadKeyStore();
     }
 
     @Test(expected = NullPointerException.class)
@@ -94,7 +96,7 @@ public class JKSFileLoaderTest extends BaseX509ParameterizedTestCase {
     public void testLoadTrustStoreWithWrongFilePath() throws Exception {
         String path = x509TestContext.getTrustStoreFile(KeyStoreFileType.JKS).getAbsolutePath();
         new JKSFileLoader.Builder().setTrustStorePath(path
-                                                              + ".does_not_exist").setTrustStorePassword(x509TestContext.getTrustStorePassword()).build().loadTrustStore();
+                + ".does_not_exist").setTrustStorePassword(x509TestContext.getTrustStorePassword()).build().loadTrustStore();
     }
 
     @Test(expected = NullPointerException.class)

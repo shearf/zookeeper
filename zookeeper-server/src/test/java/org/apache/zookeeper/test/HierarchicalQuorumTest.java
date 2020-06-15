@@ -17,16 +17,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Properties;
-import java.util.Set;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.TestableZooKeeper;
 import org.apache.zookeeper.jmx.MBeanRegistry;
@@ -36,6 +26,19 @@ import org.apache.zookeeper.server.quorum.flexible.QuorumHierarchical;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Properties;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class HierarchicalQuorumTest extends ClientBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuorumBase.class);
@@ -88,10 +91,10 @@ public class HierarchicalQuorumTest extends ClientBase {
         clientport5 = PortAssignment.unique();
 
         hostPort = "127.0.0.1:" + clientport1
-                   + ",127.0.0.1:" + clientport2
-                   + ",127.0.0.1:" + clientport3
-                   + ",127.0.0.1:" + clientport4
-                   + ",127.0.0.1:" + clientport5;
+                + ",127.0.0.1:" + clientport2
+                + ",127.0.0.1:" + clientport3
+                + ",127.0.0.1:" + clientport4
+                + ",127.0.0.1:" + clientport5;
         LOG.info("Ports are: {}", hostPort);
 
         s1dir = ClientBase.createTmpDir();
@@ -101,18 +104,18 @@ public class HierarchicalQuorumTest extends ClientBase {
         s5dir = ClientBase.createTmpDir();
 
         String config = "group.1=1:2:3\n"
-                        + "group.2=4:5\n"
-                        + "weight.1=1\n"
-                        + "weight.2=1\n"
-                        + "weight.3=1\n"
-                        + "weight.4=0\n"
-                        + "weight.5=0\n"
-                        + "server.1=127.0.0.1:" + port1 + ":" + leport1 + ";" + clientport1
-                        + "\n" + "server.2=127.0.0.1:" + port2 + ":" + leport2 + ";" + clientport2
-                        + "\n" + "server.3=127.0.0.1:" + port3 + ":" + leport3 + ";" + clientport3
-                        + "\n" + "server.4=127.0.0.1:" + port4 + ":" + leport4 + ";" + clientport4
-                        + "\n" + "server.5=127.0.0.1:" + port5 + ":" + leport5 + ";" + clientport5
-                        + "\n";
+                + "group.2=4:5\n"
+                + "weight.1=1\n"
+                + "weight.2=1\n"
+                + "weight.3=1\n"
+                + "weight.4=0\n"
+                + "weight.5=0\n"
+                + "server.1=127.0.0.1:" + port1 + ":" + leport1 + ";" + clientport1
+                + "\n" + "server.2=127.0.0.1:" + port2 + ":" + leport2 + ";" + clientport2
+                + "\n" + "server.3=127.0.0.1:" + port3 + ":" + leport3 + ";" + clientport3
+                + "\n" + "server.4=127.0.0.1:" + port4 + ":" + leport4 + ";" + clientport4
+                + "\n" + "server.5=127.0.0.1:" + port5 + ":" + leport5 + ";" + clientport5
+                + "\n";
 
         ByteArrayInputStream is = new ByteArrayInputStream(config.getBytes());
         this.qp = new Properties();
@@ -129,6 +132,7 @@ public class HierarchicalQuorumTest extends ClientBase {
     /**
      * This method is here to keep backwards compatibility with the test code
      * written before observers.
+     *
      * @throws Exception
      */
     void startServers() throws Exception {
@@ -138,6 +142,7 @@ public class HierarchicalQuorumTest extends ClientBase {
     /**
      * Starts 5 Learners. When withObservers == false, all 5 are Followers.
      * When withObservers == true, 3 are Followers and 2 Observers.
+     *
      * @param withObservers
      * @throws Exception
      */

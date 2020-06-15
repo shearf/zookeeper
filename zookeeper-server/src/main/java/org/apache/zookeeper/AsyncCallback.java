@@ -18,10 +18,11 @@
 
 package org.apache.zookeeper;
 
-import java.util.List;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
+
+import java.util.List;
 
 /**
  * Interface definitions of asynchronous callbacks.
@@ -61,7 +62,6 @@ public interface AsyncCallback {
          * @param path The path that we passed to asynchronous calls.
          * @param ctx  Whatever context object that we passed to asynchronous calls.
          * @param stat {@link Stat} object of the node on given path.
-         *
          * @see ZooKeeper#exists(String, boolean, StatCallback, Object)
          * @see ZooKeeper#exists(String, Watcher, StatCallback, Object)
          * @see ZooKeeper#setData(String, byte[], int, StatCallback, Object)
@@ -80,10 +80,9 @@ public interface AsyncCallback {
     interface AllChildrenNumberCallback extends AsyncCallback {
 
         /**
-         * @param rc      The return code or the result of the call.
-         * @param ctx     Whatever context object that we passed to asynchronous calls.
-         * @param number  The number of children nodes under a specific path.
-         *
+         * @param rc     The return code or the result of the call.
+         * @param ctx    Whatever context object that we passed to asynchronous calls.
+         * @param number The number of children nodes under a specific path.
          * @see ZooKeeper#getAllChildrenNumber(String, AllChildrenNumberCallback, Object)
          */
         void processResult(int rc, String path, Object ctx, int number);
@@ -112,7 +111,6 @@ public interface AsyncCallback {
          * @param ctx  Whatever context object that we passed to asynchronous calls.
          * @param data The data of the node.
          * @param stat {@link Stat} object of the node on given path.
-         *
          * @see ZooKeeper#getData(String, boolean, DataCallback, Object)
          * @see ZooKeeper#getData(String, Watcher, DataCallback, Object)
          * @see ZooKeeper#getConfig(boolean, DataCallback, Object)
@@ -144,7 +142,6 @@ public interface AsyncCallback {
          * @param ctx  Whatever context object that we passed to asynchronous calls.
          * @param acl  ACL Id in {@link ZooDefs.Ids}.
          * @param stat {@link Stat} object of the node on given path.
-         *
          * @see ZooKeeper#getACL(String, Stat, ACLCallback, Object)
          */
         void processResult(int rc, String path, Object ctx, List<ACL> acl, Stat stat);
@@ -172,7 +169,6 @@ public interface AsyncCallback {
          * @param path     The path that we passed to asynchronous calls.
          * @param ctx      Whatever context object that we passed to asynchronous calls.
          * @param children An unordered array of children of the node on given path.
-         *
          * @see ZooKeeper#getChildren(String, boolean, ChildrenCallback, Object)
          * @see ZooKeeper#getChildren(String, Watcher, ChildrenCallback, Object)
          */
@@ -194,7 +190,6 @@ public interface AsyncCallback {
          * @param ctx      Whatever context object that we passed to asynchronous calls.
          * @param children An unordered array of children of the node on given path.
          * @param stat     {@link Stat} object of the node on given path.
-         *
          * @see ChildrenCallback
          * @see ZooKeeper#getChildren(String, boolean, Children2Callback, Object)
          * @see ZooKeeper#getChildren(String, Watcher, Children2Callback, Object)
@@ -219,7 +214,6 @@ public interface AsyncCallback {
          *             and <i>path</i> are usually equal, unless a sequential node has
          *             been created.
          * @param stat {@link Stat} object of the node on given path.
-         *
          * @see StringCallback
          * @see ZooKeeper#create(String, byte[], List, CreateMode, Create2Callback, Object)
          * @see ZooKeeper#create(String, byte[], List, CreateMode, Create2Callback, Object, long)
@@ -256,7 +250,6 @@ public interface AsyncCallback {
          * @param name The name of the znode that was created. On success, <i>name</i>
          *             and <i>path</i> are usually equal, unless a sequential node has
          *             been created.
-         *
          * @see ZooKeeper#create(String, byte[], List, CreateMode, StringCallback, Object)
          */
         void processResult(int rc, String path, Object ctx, String name);
@@ -289,12 +282,10 @@ public interface AsyncCallback {
          * @param rc   The return code or the result of the call.
          * @param path The path that we passed to asynchronous calls.
          * @param ctx  Whatever context object that we passed to asynchronous calls.
-         *
          * @see ZooKeeper#delete(String, int, VoidCallback, Object)
          * @see ZooKeeper#removeAllWatches(String, Watcher.WatcherType, boolean, VoidCallback, Object)
          * @see ZooKeeper#removeWatches(String, Watcher, Watcher.WatcherType, boolean, VoidCallback, Object)
          * @see ZooKeeper#sync(String, VoidCallback, Object)
-         *
          */
         void processResult(int rc, String path, Object ctx);
 
@@ -317,12 +308,11 @@ public interface AsyncCallback {
          * All operations will be rolled back even if operations before the failing one were
          * successful.
          *
-         * @param rc   The return code or the result of the call.
-         * @param path The path that we passed to asynchronous calls.
-         * @param ctx  Whatever context object that we passed to asynchronous calls.
+         * @param rc        The return code or the result of the call.
+         * @param path      The path that we passed to asynchronous calls.
+         * @param ctx       Whatever context object that we passed to asynchronous calls.
          * @param opResults The list of results. One result for each operation, and the order
          *                  matches that of input.
-         *
          * @see ZooKeeper#multi(Iterable, MultiCallback, Object)
          */
         void processResult(int rc, String path, Object ctx, List<OpResult> opResults);
@@ -334,15 +324,14 @@ public interface AsyncCallback {
      *
      * @see ZooKeeper#getEphemerals(EphemeralsCallback, Object)
      * @see ZooKeeper#getEphemerals(String, EphemeralsCallback, Object)
-     *
      * @since 3.6.0
      */
     interface EphemeralsCallback extends AsyncCallback {
 
         /**
-         * @param rc      The return code or the result of the call.
-         * @param ctx     Whatever context object that we passed to asynchronous calls.
-         * @param paths   The path that we passed to asynchronous calls.
+         * @param rc    The return code or the result of the call.
+         * @param ctx   Whatever context object that we passed to asynchronous calls.
+         * @param paths The path that we passed to asynchronous calls.
          */
         void processResult(int rc, Object ctx, List<String> paths);
 

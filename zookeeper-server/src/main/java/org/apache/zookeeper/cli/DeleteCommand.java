@@ -18,11 +18,7 @@
 
 package org.apache.zookeeper.cli;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.Parser;
-import org.apache.commons.cli.PosixParser;
+import org.apache.commons.cli.*;
 import org.apache.zookeeper.KeeperException;
 
 /**
@@ -63,7 +59,7 @@ public class DeleteCommand extends CliCommand {
     private void retainCompatibility(String[] cmdArgs) throws CliParseException {
         if (args.length > 2) {
             err.println("'delete path [version]' has been deprecated. "
-                        + "Please use 'delete [-v version] path' instead.");
+                    + "Please use 'delete [-v version] path' instead.");
             Parser parser = new PosixParser();
             try {
                 cl = parser.parse(options, cmdArgs);

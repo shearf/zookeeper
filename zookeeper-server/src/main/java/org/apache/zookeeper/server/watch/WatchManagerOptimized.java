@@ -18,15 +18,6 @@
 
 package org.apache.zookeeper.server.watch;
 
-import java.io.PrintWriter;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.EventType;
@@ -38,16 +29,22 @@ import org.apache.zookeeper.server.util.BitMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * Optimized in memory and time complexity, compared to WatchManager, both the
  * memory consumption and time complexity improved a lot, but it cannot
  * efficiently remove the watcher when the session or socket is closed, for
  * majority use case this is not a problem.
- *
+ * <p>
  * Changed made compared to WatchManager:
- *
+ * <p>
  * - Use HashSet and BitSet to store the watchers to find a balance between
- *   memory usage and time complexity
+ * memory usage and time complexity
  * - Use ReadWriteLock instead of synchronized to reduce lock retention
  * - Lazily clean up the closed watchers
  */
@@ -108,11 +105,11 @@ public class WatchManagerOptimized implements IWatchManager, IDeadWatcherListene
      * Used in the OpCode.checkWatches, which is a read operation, since read
      * and write requests are exclusively processed, we don't need to hold
      * lock here.
-     *
+     * <p>
      * Different from addWatch this method doesn't mutate any state, so we don't
      * need to hold read lock to avoid dead watcher (cnxn closed) being added
      * to the watcher manager.
-     *
+     * <p>
      * It's possible that before we lazily clean up the dead watcher, this will
      * return true, but since the cnxn is closed, the response will dropped as
      * well, so it doesn't matter.
@@ -268,24 +265,24 @@ public class WatchManagerOptimized implements IWatchManager, IDeadWatcherListene
 
     void updateMetrics(final EventType type, int size) {
         switch (type) {
-        case NodeCreated:
-            ServerMetrics.getMetrics().NODE_CREATED_WATCHER.add(size);
-            break;
+            case NodeCreated:
+                ServerMetrics.getMetrics().NODE_CREATED_WATCHER.add(size);
+                break;
 
-        case NodeDeleted:
-            ServerMetrics.getMetrics().NODE_DELETED_WATCHER.add(size);
-            break;
+            case NodeDeleted:
+                ServerMetrics.getMetrics().NODE_DELETED_WATCHER.add(size);
+                break;
 
-        case NodeDataChanged:
-            ServerMetrics.getMetrics().NODE_CHANGED_WATCHER.add(size);
-            break;
+            case NodeDataChanged:
+                ServerMetrics.getMetrics().NODE_CHANGED_WATCHER.add(size);
+                break;
 
-        case NodeChildrenChanged:
-            ServerMetrics.getMetrics().NODE_CHILDREN_WATCHER.add(size);
-            break;
-        default:
-            // Other types not logged.
-            break;
+            case NodeChildrenChanged:
+                ServerMetrics.getMetrics().NODE_CHILDREN_WATCHER.add(size);
+                break;
+            default:
+                // Other types not logged.
+                break;
         }
     }
 

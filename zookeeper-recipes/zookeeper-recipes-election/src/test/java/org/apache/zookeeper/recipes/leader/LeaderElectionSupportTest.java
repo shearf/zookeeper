@@ -17,11 +17,6 @@
 
 package org.apache.zookeeper.recipes.leader;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
@@ -33,6 +28,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Test for {@link LeaderElectionSupport}.
@@ -51,10 +52,10 @@ public class LeaderElectionSupportTest extends ClientBase {
         zooKeeper = createClient();
 
         zooKeeper.create(
-            TEST_ROOT_NODE + Thread.currentThread().getId(),
-            new byte[0],
-            ZooDefs.Ids.OPEN_ACL_UNSAFE,
-            CreateMode.PERSISTENT);
+                TEST_ROOT_NODE + Thread.currentThread().getId(),
+                new byte[0],
+                ZooDefs.Ids.OPEN_ACL_UNSAFE,
+                CreateMode.PERSISTENT);
     }
 
     @After
@@ -186,11 +187,12 @@ public class LeaderElectionSupportTest extends ClientBase {
         LeaderElectionSupport electionSupport2 = createLeaderElectionSupport();
         LeaderElectionAware listener = new LeaderElectionAware() {
             boolean stoppedElectedNode = false;
+
             @Override
             public void onElectionEvent(EventType eventType) {
                 events.add(eventType);
                 if (!stoppedElectedNode
-                    && eventType == EventType.DETERMINE_COMPLETE) {
+                        && eventType == EventType.DETERMINE_COMPLETE) {
                     stoppedElectedNode = true;
                     try {
                         // stopping the ELECTED node, so re-election will happen.
@@ -236,15 +238,15 @@ public class LeaderElectionSupportTest extends ClientBase {
     }
 
     private Thread runElectionSupportThread(
-        final CountDownLatch latch,
-        final AtomicInteger failureCounter) {
+            final CountDownLatch latch,
+            final AtomicInteger failureCounter) {
         return runElectionSupportThread(latch, failureCounter, 3000);
     }
 
     private Thread runElectionSupportThread(
-        final CountDownLatch latch,
-        final AtomicInteger failureCounter,
-        final long sleepDuration) {
+            final CountDownLatch latch,
+            final AtomicInteger failureCounter,
+            final long sleepDuration) {
         final LeaderElectionSupport electionSupport = createLeaderElectionSupport();
 
         Thread t = new Thread(() -> {

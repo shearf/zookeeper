@@ -43,10 +43,10 @@ public class LeaderOffer {
     @Override
     public String toString() {
         return "{"
-            + " id:" + id
-            + " nodePath:" + nodePath
-            + " hostName:" + hostName
-            + " }";
+                + " id:" + id
+                + " nodePath:" + nodePath
+                + " hostName:" + hostName
+                + " }";
     }
 
     public Integer getId() {
@@ -78,7 +78,7 @@ public class LeaderOffer {
      * member.
      */
     public static class IdComparator
-        implements Comparator<LeaderOffer>, Serializable {
+            implements Comparator<LeaderOffer>, Serializable {
 
         @Override
         public int compare(LeaderOffer o1, LeaderOffer o2) {

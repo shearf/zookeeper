@@ -27,12 +27,13 @@
 
 package org.apache.zookeeper.server.auth;
 
+import org.apache.zookeeper.server.util.KerberosUtil;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.zookeeper.server.util.KerberosUtil;
 
 /**
  * This class implements parsing and handling of Kerberos principal names. In
@@ -41,11 +42,17 @@ import org.apache.zookeeper.server.util.KerberosUtil;
  */
 public class KerberosName {
 
-    /** The first component of the name */
+    /**
+     * The first component of the name
+     */
     private final String serviceName;
-    /** The second component of the name. It may be null. */
+    /**
+     * The second component of the name. It may be null.
+     */
     private final String hostName;
-    /** The realm of the name. */
+    /**
+     * The realm of the name.
+     */
     private final String realm;
 
     /**
@@ -63,8 +70,8 @@ public class KerberosName {
      * A pattern for parsing a auth_to_local rule.
      */
     private static final Pattern ruleParser = Pattern.compile(
-        "\\s*((DEFAULT)|(RULE:\\[(\\d*):([^\\]]*)](\\(([^)]*)\\))?"
-        + "(s/([^/]*)/([^/]*)/(g)?)?))");
+            "\\s*((DEFAULT)|(RULE:\\[(\\d*):([^\\]]*)](\\(([^)]*)\\))?"
+                    + "(s/([^/]*)/([^/]*)/(g)?)?))");
 
     /**
      * A pattern that recognizes simple/non-simple names.
@@ -83,7 +90,7 @@ public class KerberosName {
             defaultRealm = KerberosUtil.getDefaultRealm();
         } catch (Exception ke) {
             if ((System.getProperty("zookeeper.requireKerberosConfig") != null)
-                && (System.getProperty("zookeeper.requireKerberosConfig").equals("true"))) {
+                    && (System.getProperty("zookeeper.requireKerberosConfig").equals("true"))) {
                 throw new IllegalArgumentException("Can't get Kerberos configuration", ke);
             } else {
                 defaultRealm = "";
@@ -102,6 +109,7 @@ public class KerberosName {
 
     /**
      * Create a name from the full Kerberos principal name.
+     *
      * @param name
      */
     public KerberosName(String name) {
@@ -123,6 +131,7 @@ public class KerberosName {
 
     /**
      * Get the configured default realm.
+     *
      * @return the default realm from the krb5.conf
      */
     public String getDefaultRealm() {
@@ -149,6 +158,7 @@ public class KerberosName {
 
     /**
      * Get the first component of the name.
+     *
      * @return the first section of the Kerberos principal name
      */
     public String getServiceName() {
@@ -157,6 +167,7 @@ public class KerberosName {
 
     /**
      * Get the second component of the name.
+     *
      * @return the second section of the Kerberos principal name, and may be null
      */
     public String getHostName() {
@@ -165,6 +176,7 @@ public class KerberosName {
 
     /**
      * Get the realm of the name.
+     *
      * @return the realm of the name, may be null
      */
     public String getRealm() {
@@ -238,6 +250,7 @@ public class KerberosName {
          * Replace the numbered parameters of the form $n where n is from 1 to
          * the length of params. Normal text is copied directly and $n is replaced
          * by the corresponding parameter.
+         *
          * @param format the string to replace parameters again
          * @param params the list of parameters
          * @return the generated string with the parameter references replaced.
@@ -255,10 +268,10 @@ public class KerberosName {
                         int num = Integer.parseInt(paramNum);
                         if (num < 0 || num > params.length) {
                             throw new BadFormatString(String.format(
-                                "index %d from %s is outside of the valid range 0 to %d",
-                                num,
-                                format,
-                                (params.length - 1)));
+                                    "index %d from %s is outside of the valid range 0 to %d",
+                                    num,
+                                    format,
+                                    (params.length - 1)));
                         }
                         result.append(params[num]);
                     } catch (NumberFormatException nfe) {
@@ -274,9 +287,10 @@ public class KerberosName {
         /**
          * Replace the matches of the from pattern in the base string with the value
          * of the to string.
-         * @param base the string to transform
-         * @param from the pattern to look for in the base string
-         * @param to the string to replace matches of the pattern with
+         *
+         * @param base   the string to transform
+         * @param from   the pattern to look for in the base string
+         * @param to     the string to replace matches of the pattern with
          * @param repeat whether the substitution should be repeated
          * @return
          */
@@ -292,8 +306,9 @@ public class KerberosName {
         /**
          * Try to apply this rule to the given name represented as a parameter
          * array.
+         *
          * @param params first element is the realm, second and later elements are
-         *        are the components of the name "a/b@FOO" -&gt; {"FOO", "a", "b"}
+         *               are the components of the name "a/b@FOO" -&gt; {"FOO", "a", "b"}
          * @return the short name if this rule applies or null
          * @throws IOException throws if something is wrong with the rules
          */
@@ -333,12 +348,12 @@ public class KerberosName {
                 result.add(new Rule());
             } else {
                 result.add(new Rule(
-                    Integer.parseInt(matcher.group(4)),
-                    matcher.group(5),
-                    matcher.group(7),
-                    matcher.group(9),
-                    matcher.group(10),
-                    "g".equals(matcher.group(11))));
+                        Integer.parseInt(matcher.group(4)),
+                        matcher.group(5),
+                        matcher.group(7),
+                        matcher.group(9),
+                        matcher.group(10),
+                        "g".equals(matcher.group(11))));
             }
             remaining = remaining.substring(matcher.end());
         }
@@ -347,6 +362,7 @@ public class KerberosName {
 
     /**
      * Set the static configuration to get the rules.
+     *
      * @throws IOException
      */
     public static void setConfiguration() throws IOException {
@@ -360,6 +376,7 @@ public class KerberosName {
         BadFormatString(String msg) {
             super(msg);
         }
+
         BadFormatString(String msg, Throwable err) {
             super(msg, err);
         }
@@ -378,6 +395,7 @@ public class KerberosName {
     /**
      * Get the translation of the principal name into an operating system
      * user name.
+     *
      * @return the short name
      * @throws IOException
      */

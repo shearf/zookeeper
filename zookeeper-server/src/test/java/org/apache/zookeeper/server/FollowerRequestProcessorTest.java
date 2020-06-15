@@ -18,9 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZooDefs.Ids;
@@ -32,6 +29,10 @@ import org.apache.zookeeper.test.ClientBase;
 import org.apache.zookeeper.test.ObserverMasterTestBase;
 import org.junit.After;
 import org.junit.Test;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FollowerRequestProcessorTest extends ObserverMasterTestBase {
 
@@ -66,8 +67,8 @@ public class FollowerRequestProcessorTest extends ObserverMasterTestBase {
 
         q3.start();
         assertTrue(
-            "waiting for server 3 being up",
-            ClientBase.waitForServerUp("127.0.0.1:" + CLIENT_PORT_OBS, CONNECTION_TIMEOUT));
+                "waiting for server 3 being up",
+                ClientBase.waitForServerUp("127.0.0.1:" + CLIENT_PORT_OBS, CONNECTION_TIMEOUT));
 
         // Connect with observer zookeeper
         zk = new ZooKeeper("127.0.0.1:" + CLIENT_PORT_OBS, ClientBase.CONNECTION_TIMEOUT, this);

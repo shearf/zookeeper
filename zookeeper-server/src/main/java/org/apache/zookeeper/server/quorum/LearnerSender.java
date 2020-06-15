@@ -18,11 +18,12 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.io.IOException;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.zookeeper.server.ZooKeeperCriticalThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class LearnerSender extends ZooKeeperCriticalThread {
     private static final Logger LOG = LoggerFactory.getLogger(LearnerSender.class);

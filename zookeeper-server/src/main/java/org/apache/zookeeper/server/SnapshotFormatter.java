@@ -18,15 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.apache.zookeeper.server.persistence.FileSnap.SNAPSHOT_FILE_PREFIX;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.jute.InputArchive;
 import org.apache.yetus.audience.InterfaceAudience;
@@ -38,9 +29,16 @@ import org.apache.zookeeper.server.persistence.Util;
 import org.apache.zookeeper.util.ServiceUtils;
 import org.json.simple.JSONValue;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+
+import static org.apache.zookeeper.server.persistence.FileSnap.SNAPSHOT_FILE_PREFIX;
+
 /**
  * Dump a snapshot file to stdout.
- *
+ * <p>
  * For JSON format, followed https://dev.yorhel.nl/ncdu/jsonfmt
  */
 @InterfaceAudience.Public
@@ -182,8 +180,8 @@ public class SnapshotFormatter {
 
     private void printSnapshotJson(final DataTree dataTree) {
         System.out.printf(
-            "[1,0,{\"progname\":\"SnapshotFormatter.java\",\"progver\":\"0.01\",\"timestamp\":%d}",
-            System.currentTimeMillis());
+                "[1,0,{\"progname\":\"SnapshotFormatter.java\",\"progver\":\"0.01\",\"timestamp\":%d}",
+                System.currentTimeMillis());
         printZnodeJson(dataTree, "/");
         System.out.print("]");
     }
@@ -198,8 +196,8 @@ public class SnapshotFormatter {
         }
 
         final String name = fullPath.equals("/")
-            ? fullPath
-            : fullPath.substring(fullPath.lastIndexOf("/") + 1);
+                ? fullPath
+                : fullPath.substring(fullPath.lastIndexOf("/") + 1);
 
         System.out.print(",");
 

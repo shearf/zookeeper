@@ -18,19 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.jute.Record;
 import org.apache.zookeeper.CreateMode;
@@ -50,6 +37,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import static org.junit.Assert.*;
 
 public class CommitProcessorConcurrencyTest extends ZKTestCase {
 
@@ -101,6 +97,7 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
 
         MockCommitProcessor() {
             super(new RequestProcessor() {
+                @Override
                 public void processRequest(Request request) throws RequestProcessorException {
                     processedRequests.offer(request);
                 }
@@ -153,12 +150,12 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         processor.run();
 
         assertTrue(
-            "Request was not processed " + readReq + " instead " + processedRequests.peek(),
-            processedRequests.peek() != null && processedRequests.peek().equals(readReq));
+                "Request was not processed " + readReq + " instead " + processedRequests.peek(),
+                processedRequests.peek() != null && processedRequests.peek().equals(readReq));
         processedRequests.poll();
         assertTrue(
-            "Request was not processed " + writeReq + " instead " + processedRequests.peek(),
-            processedRequests.peek() != null && processedRequests.peek().equals(writeReq));
+                "Request was not processed " + writeReq + " instead " + processedRequests.peek(),
+                processedRequests.peek() != null && processedRequests.peek().equals(writeReq));
     }
 
     /**
@@ -181,19 +178,19 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
                 processor.queuedRequests.add(readReq);
             }
             Request writeReq = newRequest(
-                new CreateRequest(
-                    path,
-                    new byte[0],
-                    Ids.OPEN_ACL_UNSAFE,
-                    CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-                OpCode.create,
-                sessionId,
-                sessionId + 1);
+                    new CreateRequest(
+                            path,
+                            new byte[0],
+                            Ids.OPEN_ACL_UNSAFE,
+                            CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                    OpCode.create,
+                    sessionId,
+                    sessionId + 1);
             Request readReq = newRequest(
-                new GetDataRequest(path, false),
-                OpCode.getData,
-                sessionId,
-                sessionId + 2);
+                    new GetDataRequest(path, false),
+                    OpCode.getData,
+                    sessionId,
+                    sessionId + 2);
             processor.queuedRequests.add(writeReq);
             processor.queuedWriteRequests.add(writeReq);
             processor.queuedRequests.add(readReq);
@@ -227,10 +224,10 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         Set<Request> shouldBeProcessedAfterPending = new HashSet<Request>();
 
         Request writeReq = newRequest(
-            new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            0x1,
-            1);
+                new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                0x1,
+                1);
         processor.queuedRequests.add(writeReq);
         processor.queuedWriteRequests.add(writeReq);
         shouldBeInPending.add(writeReq);
@@ -288,26 +285,26 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         HashSet<Request> shouldBeProcessedAfterPending = new HashSet<Request>();
 
         Request writeReq = newRequest(
-            new CreateRequest(
-                path + "_1",
-                new byte[0],
-                Ids.OPEN_ACL_UNSAFE,
-                CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            0x1,
-            1);
+                new CreateRequest(
+                        path + "_1",
+                        new byte[0],
+                        Ids.OPEN_ACL_UNSAFE,
+                        CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                0x1,
+                1);
         processor.queuedRequests.add(writeReq);
         processor.queuedWriteRequests.add(writeReq);
 
         Request writeReq2 = newRequest(
-            new CreateRequest(
-                path + "_2",
-                new byte[0],
-                Ids.OPEN_ACL_UNSAFE,
-                CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            0x2,
-            1);
+                new CreateRequest(
+                        path + "_2",
+                        new byte[0],
+                        Ids.OPEN_ACL_UNSAFE,
+                        CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                0x2,
+                1);
         processor.queuedRequests.add(writeReq2);
         processor.queuedWriteRequests.add(writeReq2);
 
@@ -321,14 +318,14 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         }
 
         Request writeReq3 = newRequest(
-            new CreateRequest(
-                path + "_3",
-                new byte[0],
-                Ids.OPEN_ACL_UNSAFE,
-                CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            0x2,
-            6);
+                new CreateRequest(
+                        path + "_3",
+                        new byte[0],
+                        Ids.OPEN_ACL_UNSAFE,
+                        CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                0x2,
+                6);
         processor.queuedRequests.add(writeReq3);
         processor.queuedWriteRequests.add(writeReq3);
 
@@ -359,27 +356,27 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         assertTrue("Processed committed request", !processor.pendingRequests.isEmpty());
         assertTrue("Missing session 2 in pending queue", processor.pendingRequests.containsKey(writeReq3.sessionId));
         assertTrue(
-            "Missing write 3 in pending queue",
-            processor.pendingRequests.get(writeReq3.sessionId).peek() == writeReq3);
+                "Missing write 3 in pending queue",
+                processor.pendingRequests.get(writeReq3.sessionId).peek() == writeReq3);
         assertTrue(
-            "Removed from blockedQueuedRequests",
-            !processor.queuedWriteRequests.isEmpty());
+                "Removed from blockedQueuedRequests",
+                !processor.queuedWriteRequests.isEmpty());
         assertTrue(
-            "Removed write req 3 from blockedQueuedRequests",
-            processor.queuedWriteRequests.peek() == writeReq3);
+                "Removed write req 3 from blockedQueuedRequests",
+                processor.queuedWriteRequests.peek() == writeReq3);
 
         Request readReq3 = newRequest(new GetDataRequest(path, false), OpCode.getData, 0x1, 7);
         processor.queuedRequests.add(readReq3);
         shouldBeProcessedAfterPending.add(readReq3);
         Request writeReq4 = newRequest(
-            new CreateRequest(
-                path + "_4",
-                new byte[0],
-                Ids.OPEN_ACL_UNSAFE,
-                CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            0x2,
-            7);
+                new CreateRequest(
+                        path + "_4",
+                        new byte[0],
+                        Ids.OPEN_ACL_UNSAFE,
+                        CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                0x2,
+                7);
 
         processor.queuedRequests.add(writeReq4);
         processor.queuedWriteRequests.add(writeReq4);
@@ -397,8 +394,8 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         assertTrue("Unexpected pending request", processor.pendingRequests.isEmpty());
         assertTrue("Removed from blockedQueuedRequests", !processor.queuedWriteRequests.isEmpty());
         assertTrue(
-            "Removed write req 4 from blockedQueuedRequests",
-            processor.queuedWriteRequests.peek() == writeReq4);
+                "Removed write req 4 from blockedQueuedRequests",
+                processor.queuedWriteRequests.peek() == writeReq4);
 
         processor.stoppedMainLoop = true;
         CommitProcessor.setMaxCommitBatchSize(3);
@@ -427,10 +424,10 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         Set<Request> nonLocalCommits = new HashSet<Request>();
         for (int i = 0; i < 10; i++) {
             Request nonLocalCommitReq = newRequest(
-                new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-                OpCode.create,
-                51,
-                i + 1);
+                    new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                    OpCode.create,
+                    51,
+                    i + 1);
             processor.committedRequests.add(nonLocalCommitReq);
             nonLocalCommits.add(nonLocalCommitReq);
         }
@@ -457,10 +454,10 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
 
         // +1 committed requests (also head of queuedRequests)
         Request firstCommittedReq = newRequest(
-            new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            0x3,
-            1);
+                new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                0x3,
+                1);
         processor.queuedRequests.add(firstCommittedReq);
         processor.queuedWriteRequests.add(firstCommittedReq);
         processor.committedRequests.add(firstCommittedReq);
@@ -473,20 +470,20 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
 
         // +1 non local commit
         Request secondCommittedReq = newRequest(
-            new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            0x99,
-            2);
+                new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                0x99,
+                2);
         processor.committedRequests.add(secondCommittedReq);
 
         Set<Request> waitingCommittedRequests = new HashSet<Request>();
         // +99 non local committed requests
         for (int writeReqId = 3; writeReqId < 102; ++writeReqId) {
             Request writeReq = newRequest(
-                new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-                OpCode.create,
-                0x8,
-                writeReqId);
+                    new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                    OpCode.create,
+                    0x8,
+                    writeReqId);
             processor.committedRequests.add(writeReq);
             waitingCommittedRequests.add(writeReq);
         }
@@ -494,10 +491,10 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         // +50 read requests to queuedRequests
         for (int readReqId = 1; readReqId <= 50; ++readReqId) {
             Request readReq = newRequest(
-                new GetDataRequest(path, false),
-                OpCode.getData,
-                0x5,
-                readReqId);
+                    new GetDataRequest(path, false),
+                    OpCode.getData,
+                    0x5,
+                    readReqId);
             allReads.add(readReq);
             processor.queuedRequests.add(readReq);
         }
@@ -535,10 +532,10 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         HashSet<Request> localRequests = new HashSet<Request>();
         // queue the blocking write request to queuedRequests
         Request firstCommittedReq = newRequest(
-            new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            sessionid,
-            readReqId++);
+                new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                sessionid,
+                readReqId++);
         processor.queuedRequests.add(firstCommittedReq);
         processor.queuedWriteRequests.add(firstCommittedReq);
         localRequests.add(firstCommittedReq);
@@ -562,10 +559,10 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         // We add a commit that belongs to the same session but with smaller cxid,
         // i.e., commit of an update from previous connection of this session.
         Request preSessionCommittedReq = newRequest(
-            new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            sessionid,
-            firstCXid - 2);
+                new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                sessionid,
+                firstCXid - 2);
         processor.committedRequests.add(preSessionCommittedReq);
         processor.committedRequests.add(firstCommittedReq);
         processor.run();
@@ -601,10 +598,10 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
 
         // queue the blocking write request to queuedRequests
         Request orphanCommittedReq = newRequest(
-            new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            sessionid,
-            lastCXid);
+                new CreateRequest(path, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                sessionid,
+                lastCXid);
         processor.queuedRequests.add(orphanCommittedReq);
         processor.queuedWriteRequests.add(orphanCommittedReq);
         localRequests.add(orphanCommittedReq);
@@ -627,14 +624,14 @@ public class CommitProcessorConcurrencyTest extends ZKTestCase {
         // We add a commit that belongs to the same session but with larger cxid,
         // i.e., commit of an update from the next connection of this session.
         Request otherSessionCommittedReq = newRequest(
-            new CreateRequest(
-                path,
-                new byte[0],
-                Ids.OPEN_ACL_UNSAFE,
-                CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
-            OpCode.create,
-            sessionid,
-            lastCXid + 10);
+                new CreateRequest(
+                        path,
+                        new byte[0],
+                        Ids.OPEN_ACL_UNSAFE,
+                        CreateMode.PERSISTENT_SEQUENTIAL.toFlag()),
+                OpCode.create,
+                sessionid,
+                lastCXid + 10);
         processor.committedRequests.add(otherSessionCommittedReq);
         processor.committedRequests.add(orphanCommittedReq);
         processor.run();

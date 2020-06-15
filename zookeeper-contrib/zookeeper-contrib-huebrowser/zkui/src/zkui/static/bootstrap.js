@@ -14,19 +14,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 CCS.Desktop.register({
-	Zkui : {
-		name : 'ZooKeeper Browser',
-		css : '/zkui/static/css/zkui.css',
-		require: [ 'Zkui' ],
-		launch: function(path, options){
-			return new Zkui(path || '/zkui/', options);
-		},
-		menu: {
-			id: 'ccs-zkui-menu',
-			img: {
-				src: '/zkui/static/art/zkui.png'
-			}
-		},
-		help: '/help/zkui/'
-	}
+    Zkui: {
+        name: 'ZooKeeper Browser',
+        css: '/zkui/static/css/zkui.css',
+        require: ['Zkui'],
+        launch: function (path, options) {
+            return new Zkui(path || '/zkui/', options);
+        },
+        menu: {
+            id: 'ccs-zkui-menu',
+            img: {
+                src: '/zkui/static/art/zkui.png'
+            }
+        },
+        help: '/help/zkui/'
+    }
 });

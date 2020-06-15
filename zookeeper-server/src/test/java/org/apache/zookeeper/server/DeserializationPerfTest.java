@@ -18,10 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertEquals;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import org.apache.jute.BinaryInputArchive;
 import org.apache.jute.BinaryOutputArchive;
 import org.apache.zookeeper.KeeperException;
@@ -29,6 +25,12 @@ import org.apache.zookeeper.ZKTestCase;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 public class DeserializationPerfTest extends ZKTestCase {
 
@@ -63,13 +65,13 @@ public class DeserializationPerfTest extends ZKTestCase {
         assertEquals(count, dserTree.getNodeCount());
 
         LOG.info(
-            "Deserialized {} nodes in {} ms ({}us/node), depth={} width={} datalen={}",
-            count,
-            durationms,
-            pernodeus,
-            depth,
-            width,
-            len);
+                "Deserialized {} nodes in {} ms ({}us/node), depth={} width={} datalen={}",
+                count,
+                durationms,
+                pernodeus,
+                depth,
+                width,
+                len);
     }
 
     @Test

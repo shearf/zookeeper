@@ -18,20 +18,9 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
-import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.SyncRequestProcessor;
@@ -39,6 +28,14 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RecoveryTest extends ZKTestCase implements Watcher {
 
@@ -52,7 +49,7 @@ public class RecoveryTest extends ZKTestCase implements Watcher {
      * Verify that if a server goes down that clients will reconnect
      * automatically after the server is restarted. Note that this requires the
      * server to restart within the connection timeout period.
-     *
+     * <p>
      * Also note that the client latches are used to eliminate any chance
      * of spurrious connectionloss exceptions on the read ops. Specifically
      * a sync operation will throw this exception if the server goes down
@@ -92,7 +89,7 @@ public class RecoveryTest extends ZKTestCase implements Watcher {
                     for (int k = 0; k < 20; k++) {
                         String subsubpath = subpath + "/" + k;
                         zk.create(subsubpath, (subsubpath
-                                                       + "!").getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                                + "!").getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                     }
                 }
             }

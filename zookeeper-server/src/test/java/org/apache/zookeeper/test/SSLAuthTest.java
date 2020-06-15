@@ -18,9 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertFalse;
-import java.net.InetSocketAddress;
-import java.util.concurrent.TimeUnit;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.TestableZooKeeper;
 import org.apache.zookeeper.client.ZKClientConfig;
@@ -29,6 +26,11 @@ import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertFalse;
 
 public class SSLAuthTest extends ClientBase {
 
@@ -89,7 +91,7 @@ public class SSLAuthTest extends ClientBase {
 
         // Replace trusted keys with a valid key that is not trusted by the server
         System.setProperty(clientX509Util.getSslKeystoreLocationProperty(), testDataPath
-                                                                                    + "/ssl/testUntrustedKeyStore.jks");
+                + "/ssl/testUntrustedKeyStore.jks");
         System.setProperty(clientX509Util.getSslKeystorePasswdProperty(), "testpass");
 
         CountdownWatcher watcher = new CountdownWatcher();

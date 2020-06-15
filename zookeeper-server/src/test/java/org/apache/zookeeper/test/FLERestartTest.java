@@ -18,15 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.server.quorum.QuorumPeer;
@@ -38,6 +29,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.util.*;
+import java.util.concurrent.Semaphore;
+
+import static org.junit.Assert.fail;
 
 public class FLERestartTest extends ZKTestCase {
 
@@ -99,6 +97,7 @@ public class FLERestartTest extends ZKTestCase {
             this.peer = peer;
             LOG.info("Constructor: {}", getName());
         }
+
         public void run() {
             try {
                 Vote v = null;
@@ -121,35 +120,35 @@ public class FLERestartTest extends ZKTestCase {
                     //votes[i] = v;
 
                     switch (i) {
-                    case 0:
-                        if (peerRound == 0) {
-                            LOG.info("First peer, shutting it down");
-                            QuorumBase.shutdown(peer);
-                            restartThreads.get(i).peer.getElectionAlg().shutdown();
+                        case 0:
+                            if (peerRound == 0) {
+                                LOG.info("First peer, shutting it down");
+                                QuorumBase.shutdown(peer);
+                                restartThreads.get(i).peer.getElectionAlg().shutdown();
 
-                            peer = new QuorumPeer(peers, tmpdir[i], tmpdir[i], port[i], 3, i, 1000, 2, 2, 2);
-                            peer.startLeaderElection();
-                            peerRound++;
-                        } else {
-                            finish.release(2);
+                                peer = new QuorumPeer(peers, tmpdir[i], tmpdir[i], port[i], 3, i, 1000, 2, 2, 2);
+                                peer.startLeaderElection();
+                                peerRound++;
+                            } else {
+                                finish.release(2);
+                                return;
+                            }
+
+                            break;
+                        case 1:
+                            LOG.info("Second entering case");
+                            finish.acquire();
+                            //if(threads.get(0).peer.getPeerState() == ServerState.LEADING ){
+                            LOG.info("Release");
+
                             return;
-                        }
+                        case 2:
+                            LOG.info("First peer, do nothing, just join");
+                            finish.acquire();
+                            //if(threads.get(0).peer.getPeerState() == ServerState.LEADING ){
+                            LOG.info("Release");
 
-                        break;
-                    case 1:
-                        LOG.info("Second entering case");
-                        finish.acquire();
-                        //if(threads.get(0).peer.getPeerState() == ServerState.LEADING ){
-                        LOG.info("Release");
-
-                        return;
-                    case 2:
-                        LOG.info("First peer, do nothing, just join");
-                        finish.acquire();
-                        //if(threads.get(0).peer.getPeerState() == ServerState.LEADING ){
-                        LOG.info("Release");
-
-                        return;
+                            return;
                     }
                 }
             } catch (Exception e) {

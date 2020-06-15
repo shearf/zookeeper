@@ -18,20 +18,8 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZKTestCase;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.server.ServerCnxnFactory;
 import org.apache.zookeeper.server.SyncRequestProcessor;
 import org.apache.zookeeper.server.ZooKeeperServer;
@@ -40,9 +28,17 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** If snapshots are corrupted to the empty file or deleted, Zookeeper should
- *  not proceed to read its transaction log files
- *  Test that zxid == -1 in the presence of emptied/deleted snapshots
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+/**
+ * If snapshots are corrupted to the empty file or deleted, Zookeeper should
+ * not proceed to read its transaction log files
+ * Test that zxid == -1 in the presence of emptied/deleted snapshots
  */
 public class EmptiedSnapshotRecoveryTest extends ZKTestCase implements Watcher {
 
@@ -122,6 +118,7 @@ public class EmptiedSnapshotRecoveryTest extends ZKTestCase implements Watcher {
 
     /**
      * Test resilience to empty Snapshots
+     *
      * @throws Exception an exception might be thrown here
      */
     @Test
@@ -131,6 +128,7 @@ public class EmptiedSnapshotRecoveryTest extends ZKTestCase implements Watcher {
 
     /**
      * Test resilience to deletion of Snapshots
+     *
      * @throws Exception an exception might be thrown here
      */
     @Test

@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.server;
 
-import java.io.IOException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.proto.ReplyHeader;
+
+import java.io.IOException;
 
 /**
  * Manages the unknown requests (i.e. unknown OpCode), by:
@@ -29,6 +30,7 @@ import org.apache.zookeeper.proto.ReplyHeader;
  */
 public class UnimplementedRequestProcessor implements RequestProcessor {
 
+    @Override
     public void processRequest(Request request) throws RequestProcessorException {
         KeeperException ke = new KeeperException.UnimplementedException();
         request.setException(ke);

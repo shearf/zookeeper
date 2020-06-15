@@ -18,16 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZooDefs;
@@ -39,15 +29,21 @@ import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.apache.zookeeper.server.quorum.flexible.QuorumMaj;
 import org.apache.zookeeper.test.ClientBase;
 import org.apache.zookeeper.test.ClientBase.CountdownWatcher;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class ReconfigDuringLeaderSyncTest extends QuorumPeerTestBase {
@@ -90,7 +86,7 @@ public class ReconfigDuringLeaderSyncTest extends QuorumPeerTestBase {
      * Test case for https://issues.apache.org/jira/browse/ZOOKEEPER-2172.
      * Cluster crashes when reconfig a new node as a participant.
      * </pre>
-     *
+     * <p>
      * This issue occurs when reconfig's PROPOSAL and COMMITANDACTIVATE come in
      * between the snapshot and the UPTODATE. In this case processReconfig was
      * not invoked on the newly added node, and zoo.cfg.dynamic.next wasn't
@@ -106,7 +102,7 @@ public class ReconfigDuringLeaderSyncTest extends QuorumPeerTestBase {
         for (int i = 0; i < SERVER_COUNT; i++) {
             clientPorts[i] = PortAssignment.unique();
             serverConfig[i] = "server." + i + "=127.0.0.1:" + PortAssignment.unique() + ":" + PortAssignment.unique()
-                              + ":participant;127.0.0.1:" + clientPorts[i];
+                    + ":participant;127.0.0.1:" + clientPorts[i];
             sb.append(serverConfig[i] + "\n");
         }
         String currentQuorumCfgSection = sb.toString();
@@ -121,14 +117,14 @@ public class ReconfigDuringLeaderSyncTest extends QuorumPeerTestBase {
         // ensure all servers started
         for (int i = 0; i < SERVER_COUNT; i++) {
             assertTrue(
-                "waiting for server " + i + " being up",
-                ClientBase.waitForServerUp("127.0.0.1:" + clientPorts[i], CONNECTION_TIMEOUT));
+                    "waiting for server " + i + " being up",
+                    ClientBase.waitForServerUp("127.0.0.1:" + clientPorts[i], CONNECTION_TIMEOUT));
         }
         CountdownWatcher watch = new CountdownWatcher();
         ZooKeeperAdmin preReconfigClient = new ZooKeeperAdmin(
-            "127.0.0.1:" + clientPorts[0],
-            ClientBase.CONNECTION_TIMEOUT,
-            watch);
+                "127.0.0.1:" + clientPorts[0],
+                ClientBase.CONNECTION_TIMEOUT,
+                watch);
         preReconfigClient.addAuthInfo("digest", "super:test".getBytes());
         watch.waitForConnected(ClientBase.CONNECTION_TIMEOUT);
 
@@ -136,7 +132,7 @@ public class ReconfigDuringLeaderSyncTest extends QuorumPeerTestBase {
         int joinerId = SERVER_COUNT;
         clientPorts[joinerId] = PortAssignment.unique();
         serverConfig[joinerId] = "server." + joinerId + "=127.0.0.1:" + PortAssignment.unique() + ":" + PortAssignment.unique()
-                                 + ":participant;127.0.0.1:" + clientPorts[joinerId];
+                + ":participant;127.0.0.1:" + clientPorts[joinerId];
 
         // Find leader id.
         int leaderId = -1;
@@ -201,8 +197,8 @@ public class ReconfigDuringLeaderSyncTest extends QuorumPeerTestBase {
         // verify that joiner has up-to-date config, including all four servers.
         for (long j = 0; j <= SERVER_COUNT; j++) {
             assertNotNull(
-                "server " + j + " is not present in the new quorum",
-                qp.getQuorumVerifier().getVotingMembers().get(j));
+                    "server " + j + " is not present in the new quorum",
+                    qp.getQuorumVerifier().getVotingMembers().get(j));
         }
 
         // close clients

@@ -18,13 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.Watcher;
@@ -40,6 +33,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.*;
 
 /**
  * Standalone server tests.
@@ -72,7 +72,7 @@ public class StandaloneTest extends QuorumPeerTestBase implements Watcher {
      * This test creates a dynamic config of new format.
      * The dynamic config is written in dynamic config file.
      * It checks that the client port will be read from the dynamic config.
-     *
+     * <p>
      * This handles the case of HBase, which adds a single server line to the config.
      * Maintain b/w compatibility.
      */

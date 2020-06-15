@@ -18,23 +18,14 @@
 
 package org.apache.zookeeper.metrics.impl;
 
+import org.apache.zookeeper.metrics.*;
+import org.apache.zookeeper.server.metric.*;
+
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiConsumer;
-import org.apache.zookeeper.metrics.Counter;
-import org.apache.zookeeper.metrics.Gauge;
-import org.apache.zookeeper.metrics.MetricsContext;
-import org.apache.zookeeper.metrics.MetricsProvider;
-import org.apache.zookeeper.metrics.MetricsProviderLifeCycleException;
-import org.apache.zookeeper.metrics.Summary;
-import org.apache.zookeeper.metrics.SummarySet;
-import org.apache.zookeeper.server.metric.AvgMinMaxCounter;
-import org.apache.zookeeper.server.metric.AvgMinMaxCounterSet;
-import org.apache.zookeeper.server.metric.AvgMinMaxPercentileCounter;
-import org.apache.zookeeper.server.metric.AvgMinMaxPercentileCounterSet;
-import org.apache.zookeeper.server.metric.SimpleCounter;
 
 /**
  * Default implementation of {@link MetricsProvider}.<br>

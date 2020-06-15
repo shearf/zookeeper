@@ -18,25 +18,20 @@
 
 package org.apache.zookeeper.server.util;
 
-import static org.apache.zookeeper.ZooDefs.OpCode.create;
-import static org.apache.zookeeper.ZooDefs.OpCode.create2;
-import static org.apache.zookeeper.ZooDefs.OpCode.delete;
-import static org.apache.zookeeper.ZooDefs.OpCode.exists;
-import static org.apache.zookeeper.ZooDefs.OpCode.getChildren;
-import static org.apache.zookeeper.ZooDefs.OpCode.getChildren2;
-import static org.apache.zookeeper.ZooDefs.OpCode.getData;
-import static org.apache.zookeeper.ZooDefs.OpCode.setData;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+
+import static org.apache.zookeeper.ZooDefs.OpCode.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RequestPathMetricsCollectorTest {
 
@@ -253,10 +248,10 @@ public class RequestPathMetricsCollectorTest {
                 }
                 for (int j = 0; j < 100000; j++) {
                     requestPathMetricsCollector.registerRequest(getData, "/path1/path2/path3/path4/path5/path6/path7"
-                                                                                 + "_"
-                                                                                 + i
-                                                                                 + "_"
-                                                                                 + j);
+                            + "_"
+                            + i
+                            + "_"
+                            + j);
                 }
             }
         });
@@ -271,10 +266,10 @@ public class RequestPathMetricsCollectorTest {
                 }
                 for (int j = 0; j < 10000; j++) {
                     requestPathMetricsCollector.registerRequest(getChildren, "/path1/path2/path3/path4/path5/path6"
-                                                                                     + "_"
-                                                                                     + i
-                                                                                     + "_"
-                                                                                     + j);
+                            + "_"
+                            + i
+                            + "_"
+                            + j);
                 }
             }
         });
@@ -347,10 +342,10 @@ public class RequestPathMetricsCollectorTest {
                 }
                 for (int j = 0; j < 100000; j++) {
                     requestPathMetricsCollector.registerRequest(getData, "/path1/path2/path3/path4/path5/path6/path7"
-                                                                                 + "_"
-                                                                                 + i
-                                                                                 + "_"
-                                                                                 + j);
+                            + "_"
+                            + i
+                            + "_"
+                            + j);
                 }
             }
         });
@@ -365,10 +360,10 @@ public class RequestPathMetricsCollectorTest {
                 }
                 for (int j = 0; j < 10000; j++) {
                     requestPathMetricsCollector.registerRequest(getChildren, "/path1/path2/path3/path4/path5/path6"
-                                                                                     + "_"
-                                                                                     + i
-                                                                                     + "_"
-                                                                                     + j);
+                            + "_"
+                            + i
+                            + "_"
+                            + j);
                 }
             }
         });
@@ -393,23 +388,23 @@ public class RequestPathMetricsCollectorTest {
         StringBuilder sb1 = new StringBuilder();
         Map<String, Integer> newSlot = requestPathMetricsCollector.aggregatePaths(3, queue -> queue.isWriteOperation());
         requestPathMetricsCollector.logTopPaths(newSlot, entry -> sb1.append(entry.getKey()
-                                                                                     + " : "
-                                                                                     + entry.getValue()
-                                                                                     + "\n"));
+                + " : "
+                + entry.getValue()
+                + "\n"));
         assertTrue(sb1.toString().startsWith("/path1/path2/path3 : 1000"));
         StringBuilder sb2 = new StringBuilder();
         newSlot = requestPathMetricsCollector.aggregatePaths(3, queue -> !queue.isWriteOperation());
         requestPathMetricsCollector.logTopPaths(newSlot, entry -> sb2.append(entry.getKey()
-                                                                                     + " : "
-                                                                                     + entry.getValue()
-                                                                                     + "\n"));
+                + " : "
+                + entry.getValue()
+                + "\n"));
         assertTrue(sb2.toString().startsWith("/path1/path2/path3 : 1110001"));
         StringBuilder sb3 = new StringBuilder();
         newSlot = requestPathMetricsCollector.aggregatePaths(4, queue -> true);
         requestPathMetricsCollector.logTopPaths(newSlot, entry -> sb3.append(entry.getKey()
-                                                                                     + " : "
-                                                                                     + entry.getValue()
-                                                                                     + "\n"));
+                + " : "
+                + entry.getValue()
+                + "\n"));
         assertTrue(sb3.toString().startsWith("/path1/path2/path3/path4 : 1110001"));
     }
 
@@ -422,22 +417,22 @@ public class RequestPathMetricsCollectorTest {
         //call 100k get Data
         for (int i = 0; i < 100000; i++) {
             executor.submit(new Thread(() -> requestPathMetricsCollector.registerRequest(getData, "/path1/path2/path"
-                                                                                                          + rand.nextInt(10))));
+                    + rand.nextInt(10))));
         }
         //5K create
         for (int i = 0; i < 5000; i++) {
             executor.submit(new Thread(() -> requestPathMetricsCollector.registerRequest(create2, "/path1/path2/path"
-                                                                                                          + rand.nextInt(10))));
+                    + rand.nextInt(10))));
         }
         //5K delete
         for (int i = 0; i < 5000; i++) {
             executor.submit(new Thread(() -> requestPathMetricsCollector.registerRequest(delete, "/path1/path2/path"
-                                                                                                         + rand.nextInt(10))));
+                    + rand.nextInt(10))));
         }
         //40K getChildren
         for (int i = 0; i < 40000; i++) {
             executor.submit(new Thread(() -> requestPathMetricsCollector.registerRequest(getChildren, "/path1/path2/path"
-                                                                                                              + rand.nextInt(10))));
+                    + rand.nextInt(10))));
         }
         executor.shutdown();
         //wait for at most 10 mill seconds

@@ -18,22 +18,7 @@
 
 package org.apache.zookeeper.metrics.prometheus;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import io.prometheus.client.CollectorRegistry;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Properties;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.zookeeper.metrics.Counter;
 import org.apache.zookeeper.metrics.Gauge;
 import org.apache.zookeeper.metrics.MetricsContext;
@@ -42,6 +27,19 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Properties;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests about Prometheus Metrics Provider. Please note that we are not testing
@@ -76,10 +74,10 @@ public class PrometheusMetricsProviderTest {
         counter.add(10);
         int[] count = {0};
         provider.dump((k, v) -> {
-            assertEquals("cc", k);
-            assertEquals(10, ((Number) v).intValue());
-            count[0]++;
-        }
+                    assertEquals("cc", k);
+                    assertEquals(10, ((Number) v).intValue());
+                    count[0]++;
+                }
         );
         assertEquals(1, count[0]);
         count[0] = 0;
@@ -88,10 +86,10 @@ public class PrometheusMetricsProviderTest {
         counter.add(-1);
 
         provider.dump((k, v) -> {
-            assertEquals("cc", k);
-            assertEquals(10, ((Number) v).intValue());
-            count[0]++;
-        }
+                    assertEquals("cc", k);
+                    assertEquals(10, ((Number) v).intValue());
+                    count[0]++;
+                }
         );
         assertEquals(1, count[0]);
 
@@ -119,10 +117,10 @@ public class PrometheusMetricsProviderTest {
 
         int[] count = {0};
         provider.dump((k, v) -> {
-            assertEquals("gg", k);
-            assertEquals(values[0], ((Number) v).intValue());
-            count[0]++;
-        }
+                    assertEquals("gg", k);
+                    assertEquals(values[0], ((Number) v).intValue());
+                    count[0]++;
+                }
         );
         assertEquals(1, callCounts[0]);
         assertEquals(0, callCounts[1]);
@@ -134,8 +132,8 @@ public class PrometheusMetricsProviderTest {
 
         provider.getRootContext().unregisterGauge("gg");
         provider.dump((k, v) -> {
-            count[0]++;
-        }
+                    count[0]++;
+                }
         );
         assertEquals(2, callCounts[0]);
         assertEquals(0, callCounts[1]);
@@ -146,10 +144,10 @@ public class PrometheusMetricsProviderTest {
         provider.getRootContext().registerGauge("gg", gauge1);
 
         provider.dump((k, v) -> {
-            assertEquals("gg", k);
-            assertEquals(values[1], ((Number) v).intValue());
-            count[0]++;
-        }
+                    assertEquals("gg", k);
+                    assertEquals(values[1], ((Number) v).intValue());
+                    count[0]++;
+                }
         );
         assertEquals(2, callCounts[0]);
         assertEquals(1, callCounts[1]);
@@ -167,8 +165,8 @@ public class PrometheusMetricsProviderTest {
         provider.getRootContext().registerGauge("gg", gauge0);
 
         provider.dump((k, v) -> {
-            count[0]++;
-        }
+                    count[0]++;
+                }
         );
         assertEquals(1, count[0]);
         assertEquals(3, callCounts[0]);
@@ -183,24 +181,24 @@ public class PrometheusMetricsProviderTest {
         summary.add(10);
         int[] count = {0};
         provider.dump((k, v) -> {
-            count[0]++;
-            int value = ((Number) v).intValue();
+                    count[0]++;
+                    int value = ((Number) v).intValue();
 
-            switch (k) {
-                case "cc{quantile=\"0.5\"}":
-                    assertEquals(10, value);
-                    break;
-                case "cc_count":
-                    assertEquals(2, value);
-                    break;
-                case "cc_sum":
-                    assertEquals(20, value);
-                    break;
-                default:
-                    fail("unespected key " + k);
-                    break;
-            }
-        }
+                    switch (k) {
+                        case "cc{quantile=\"0.5\"}":
+                            assertEquals(10, value);
+                            break;
+                        case "cc_count":
+                            assertEquals(2, value);
+                            break;
+                        case "cc_sum":
+                            assertEquals(20, value);
+                            break;
+                        default:
+                            fail("unespected key " + k);
+                            break;
+                    }
+                }
         );
         assertEquals(3, count[0]);
         count[0] = 0;
@@ -232,30 +230,30 @@ public class PrometheusMetricsProviderTest {
         summary.add(10);
         int[] count = {0};
         provider.dump((k, v) -> {
-            count[0]++;
-            int value = ((Number) v).intValue();
+                    count[0]++;
+                    int value = ((Number) v).intValue();
 
-            switch (k) {
-                case "cc{quantile=\"0.5\"}":
-                    assertEquals(10, value);
-                    break;
-                case "cc{quantile=\"0.9\"}":
-                    assertEquals(10, value);
-                    break;
-                case "cc{quantile=\"0.99\"}":
-                    assertEquals(10, value);
-                    break;
-                case "cc_count":
-                    assertEquals(2, value);
-                    break;
-                case "cc_sum":
-                    assertEquals(20, value);
-                    break;
-                default:
-                    fail("unespected key " + k);
-                    break;
-            }
-        }
+                    switch (k) {
+                        case "cc{quantile=\"0.5\"}":
+                            assertEquals(10, value);
+                            break;
+                        case "cc{quantile=\"0.9\"}":
+                            assertEquals(10, value);
+                            break;
+                        case "cc{quantile=\"0.99\"}":
+                            assertEquals(10, value);
+                            break;
+                        case "cc_count":
+                            assertEquals(2, value);
+                            break;
+                        case "cc_sum":
+                            assertEquals(20, value);
+                            break;
+                        default:
+                            fail("unespected key " + k);
+                            break;
+                    }
+                }
         );
         assertEquals(5, count[0]);
         count[0] = 0;

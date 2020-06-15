@@ -18,12 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
 import org.apache.jute.Record;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
@@ -33,6 +27,12 @@ import org.apache.zookeeper.txn.TxnHeader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+import static org.junit.Assert.*;
 
 public class ZooKeeperServerBeanTest {
 

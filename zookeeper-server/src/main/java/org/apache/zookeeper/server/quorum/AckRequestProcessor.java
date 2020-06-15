@@ -40,6 +40,7 @@ class AckRequestProcessor implements RequestProcessor {
     /**
      * Forward the request as an ACK to the leader
      */
+    @Override
     public void processRequest(Request request) {
         QuorumPeer self = leader.self;
         if (self != null) {
@@ -50,6 +51,7 @@ class AckRequestProcessor implements RequestProcessor {
         }
     }
 
+    @Override
     public void shutdown() {
         // TODO No need to do anything
     }

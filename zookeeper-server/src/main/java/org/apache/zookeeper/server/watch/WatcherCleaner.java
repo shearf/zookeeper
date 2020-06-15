@@ -18,10 +18,6 @@
 
 package org.apache.zookeeper.server.watch;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.zookeeper.common.Time;
 import org.apache.zookeeper.server.RateLogger;
 import org.apache.zookeeper.server.ServerMetrics;
@@ -30,17 +26,22 @@ import org.apache.zookeeper.server.WorkerService.WorkRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Thread used to lazily clean up the closed watcher, it will trigger the
  * clean up when the dead watchers get certain number or some number of
  * seconds has elapsed since last clean up.
- *
+ * <p>
  * Cost of running it:
- *
+ * <p>
  * - need to go through all the paths even if the watcher may only
- *   watching a single path
+ * watching a single path
  * - block in the path BitHashSet when we try to check the dead watcher
- *   which won't block other stuff
+ * which won't block other stuff
  */
 public class WatcherCleaner extends Thread {
 
@@ -62,11 +63,11 @@ public class WatcherCleaner extends Thread {
 
     public WatcherCleaner(IDeadWatcherListener listener) {
         this(
-            listener,
-            Integer.getInteger("zookeeper.watcherCleanThreshold", 1000),
-            Integer.getInteger("zookeeper.watcherCleanIntervalInSeconds", 600),
-            Integer.getInteger("zookeeper.watcherCleanThreadsNum", 2),
-            Integer.getInteger("zookeeper.maxInProcessingDeadWatchers", -1));
+                listener,
+                Integer.getInteger("zookeeper.watcherCleanThreshold", 1000),
+                Integer.getInteger("zookeeper.watcherCleanIntervalInSeconds", 600),
+                Integer.getInteger("zookeeper.watcherCleanThreadsNum", 2),
+                Integer.getInteger("zookeeper.maxInProcessingDeadWatchers", -1));
     }
 
     public WatcherCleaner(IDeadWatcherListener listener, int watcherCleanThreshold, int watcherCleanIntervalInSeconds, int watcherCleanThreadsNum, int maxInProcessingDeadWatchers) {
@@ -77,20 +78,20 @@ public class WatcherCleaner extends Thread {
         if (maxInProcessingDeadWatchers > 0 && maxInProcessingDeadWatchers < suggestedMaxInProcessingThreshold) {
             maxInProcessingDeadWatchers = suggestedMaxInProcessingThreshold;
             LOG.info(
-                "The maxInProcessingDeadWatchers config is smaller than the suggested one, change it to use {}",
-                maxInProcessingDeadWatchers);
+                    "The maxInProcessingDeadWatchers config is smaller than the suggested one, change it to use {}",
+                    maxInProcessingDeadWatchers);
         }
         this.maxInProcessingDeadWatchers = maxInProcessingDeadWatchers;
         this.deadWatchers = new HashSet<Integer>();
         this.cleaners = new WorkerService("DeadWatcherCleanner", watcherCleanThreadsNum, false);
 
         LOG.info(
-            "watcherCleanThreshold={}, watcherCleanIntervalInSeconds={}"
-                + ", watcherCleanThreadsNum={}, maxInProcessingDeadWatchers={}",
-            watcherCleanThreshold,
-            watcherCleanIntervalInSeconds,
-            watcherCleanThreadsNum,
-            maxInProcessingDeadWatchers);
+                "watcherCleanThreshold={}, watcherCleanIntervalInSeconds={}"
+                        + ", watcherCleanThreadsNum={}, maxInProcessingDeadWatchers={}",
+                watcherCleanThreshold,
+                watcherCleanIntervalInSeconds,
+                watcherCleanThreadsNum,
+                maxInProcessingDeadWatchers);
     }
 
     public void addDeadWatcher(int watcherBit) {
@@ -133,7 +134,7 @@ public class WatcherCleaner extends Thread {
                     // same time in the quorum
                     if (!stopped && deadWatchers.size() < watcherCleanThreshold) {
                         int maxWaitMs = (watcherCleanIntervalInSeconds
-                                         + r.nextInt(watcherCleanIntervalInSeconds / 2 + 1)) * 1000;
+                                + r.nextInt(watcherCleanIntervalInSeconds / 2 + 1)) * 1000;
                         cleanEvent.wait(maxWaitMs);
                     }
                 } catch (InterruptedException e) {

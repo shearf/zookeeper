@@ -18,14 +18,15 @@
 
 package org.apache.zookeeper.server;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.security.cert.Certificate;
 import org.apache.jute.Record;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.proto.ReplyHeader;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.security.cert.Certificate;
 
 /**
  * A empty watcher implementation used in bench and unit test.
@@ -62,7 +63,7 @@ public class DumbWatcher extends ServerCnxn {
 
     @Override
     public int sendResponse(ReplyHeader h, Record r, String tag,
-                             String cacheKey, Stat stat, int opCode) throws IOException {
+                            String cacheKey, Stat stat, int opCode) throws IOException {
         return 0;
     }
 

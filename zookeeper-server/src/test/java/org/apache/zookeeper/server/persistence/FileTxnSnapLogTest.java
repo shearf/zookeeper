@@ -18,24 +18,7 @@
 
 package org.apache.zookeeper.server.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.apache.jute.BinaryInputArchive;
-import org.apache.jute.BinaryOutputArchive;
-import org.apache.jute.InputArchive;
-import org.apache.jute.OutputArchive;
-import org.apache.jute.Record;
+import org.apache.jute.*;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.server.DataNode;
 import org.apache.zookeeper.server.DataTree;
@@ -50,6 +33,15 @@ import org.apache.zookeeper.txn.TxnHeader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.junit.Assert.*;
 
 public class FileTxnSnapLogTest {
 
@@ -126,9 +118,9 @@ public class FileTxnSnapLogTest {
     }
 
     private FileTxnSnapLog createFileTxnSnapLogWithAutoCreateDataDir(
-        File logDir,
-        File snapDir,
-        String autoCreateValue) throws IOException {
+            File logDir,
+            File snapDir,
+            String autoCreateValue) throws IOException {
         String priorAutocreateDirValue = System.getProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE);
         System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE, autoCreateValue);
         FileTxnSnapLog fileTxnSnapLog;
@@ -145,9 +137,9 @@ public class FileTxnSnapLogTest {
     }
 
     private FileTxnSnapLog createFileTxnSnapLogWithAutoCreateDB(
-        File logDir,
-        File snapDir,
-        String autoCreateValue) throws IOException {
+            File logDir,
+            File snapDir,
+            String autoCreateValue) throws IOException {
         String priorAutocreateDBValue = System.getProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTOCREATE);
         System.setProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTOCREATE, autoCreateValue);
         FileTxnSnapLog fileTxnSnapLog;
@@ -201,11 +193,11 @@ public class FileTxnSnapLogTest {
     }
 
     private void attemptAutoCreateDB(
-        File dataDir,
-        File snapDir,
-        Map<Long, Integer> sessions,
-        String autoCreateValue,
-        long expectedValue) throws IOException {
+            File dataDir,
+            File snapDir,
+            Map<Long, Integer> sessions,
+            String autoCreateValue,
+            long expectedValue) throws IOException {
         sessions.clear();
 
         FileTxnSnapLog fileTxnSnapLog = createFileTxnSnapLogWithAutoCreateDB(dataDir, snapDir, autoCreateValue);
@@ -299,29 +291,29 @@ public class FileTxnSnapLogTest {
 
     /**
      * Make sure the ACL is exist in the ACL map after SNAP syncing.
-     *
+     * <p>
      * ZooKeeper uses ACL reference id and count to save the space in snapshot.
      * During fuzzy snapshot sync, the reference count may not be updated
      * correctly in case like the znode is already exist.
-     *
+     * <p>
      * When ACL reference count reaches 0, it will be deleted from the cache,
      * but actually there might be other nodes still using it. When visiting
      * a node with the deleted ACL id, it will be rejected because it doesn't
      * exist anymore.
-     *
+     * <p>
      * Here is the detailed flow for one of the scenario here:
-     *   1. Server A starts to have snap sync with leader
-     *   2. After serializing the ACL map to Server A, there is a txn T1 to
-     *      create a node N1 with new ACL_1 which was not exist in ACL map
-     *   3. On leader, after this txn, the ACL map will be ID1 -&gt; (ACL_1, COUNT: 1),
-     *      and data tree N1 -&gt; ID1
-     *   4. On server A, it will be empty ACL map, and N1 -&gt; ID1 in fuzzy snapshot
-     *   5. When replaying the txn T1, it will skip at the beginning since the
-     *      node is already exist, which leaves an empty ACL map, and N1 is
-     *      referencing to a non-exist ACL ID1
-     *   6. Node N1 will be not accessible because the ACL not exist, and if it
-     *      became leader later then all the write requests will be rejected as
-     *      well with marshalling error.
+     * 1. Server A starts to have snap sync with leader
+     * 2. After serializing the ACL map to Server A, there is a txn T1 to
+     * create a node N1 with new ACL_1 which was not exist in ACL map
+     * 3. On leader, after this txn, the ACL map will be ID1 -&gt; (ACL_1, COUNT: 1),
+     * and data tree N1 -&gt; ID1
+     * 4. On server A, it will be empty ACL map, and N1 -&gt; ID1 in fuzzy snapshot
+     * 5. When replaying the txn T1, it will skip at the beginning since the
+     * node is already exist, which leaves an empty ACL map, and N1 is
+     * referencing to a non-exist ACL ID1
+     * 6. Node N1 will be not accessible because the ACL not exist, and if it
+     * became leader later then all the write requests will be rejected as
+     * well with marshalling error.
      */
     @Test
     public void testACLCreatedDuringFuzzySnapshotSync() throws IOException {
@@ -365,7 +357,8 @@ public class FileTxnSnapLogTest {
 
         ZooKeeperServer.setDigestEnabled(true);
         snaplog.save(dataTree, sessions, true);
-        snaplog.restore(dataTree, sessions, (hdr, rec, digest) -> {  });
+        snaplog.restore(dataTree, sessions, (hdr, rec, digest) -> {
+        });
 
         assertNull(dataTree.getDigestFromLoadedSnapshot());
     }
@@ -394,7 +387,8 @@ public class FileTxnSnapLogTest {
 
         int expectedNodeCount = dataTree.getNodeCount();
         ZooKeeperServer.setDigestEnabled(!digestEnabled);
-        snaplog.restore(dataTree, sessions, (hdr, rec, digest) -> {  });
+        snaplog.restore(dataTree, sessions, (hdr, rec, digest) -> {
+        });
         assertEquals(expectedNodeCount, dataTree.getNodeCount());
     }
 }

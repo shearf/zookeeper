@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.server.watch;
 
-import java.util.Set;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.server.util.BitHashSet;
+
+import java.util.Set;
 
 public class WatcherOrBitSet {
 

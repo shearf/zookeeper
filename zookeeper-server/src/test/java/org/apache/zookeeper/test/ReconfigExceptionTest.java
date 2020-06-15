@@ -18,13 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.PortAssignment;
 import org.apache.zookeeper.ZKTestCase;
@@ -39,6 +32,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ReconfigExceptionTest extends ZKTestCase {
 
@@ -208,11 +210,11 @@ public class ReconfigExceptionTest extends ZKTestCase {
         }
         int followerId = leaderId == 1 ? 2 : 1;
         joiningServers.add("server." + followerId + "=localhost:"
-                           + qu.getPeer(followerId).peer.getQuorumAddress().getAllPorts().get(0) /*quorum port*/
-                           + ":"
-                           + qu.getPeer(followerId).peer.getElectionAddress().getAllPorts().get(0) /*election port*/
-                           + ":participant;localhost:"
-                           + PortAssignment.unique()/* new client port */);
+                + qu.getPeer(followerId).peer.getQuorumAddress().getAllPorts().get(0) /*quorum port*/
+                + ":"
+                + qu.getPeer(followerId).peer.getElectionAddress().getAllPorts().get(0) /*election port*/
+                + ":participant;localhost:"
+                + PortAssignment.unique()/* new client port */);
         zkAdmin.reconfigure(joiningServers, null, null, -1, new Stat());
         return true;
     }

@@ -18,11 +18,6 @@
 
 package org.apache.zookeeper.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import java.io.File;
-import java.io.IOException;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.ZooDefs.Ids;
@@ -41,6 +36,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
+
 public class LoadFromLogTest extends ClientBase {
 
     private static final int NUM_MESSAGES = 300;
@@ -58,6 +58,7 @@ public class LoadFromLogTest extends ClientBase {
 
     /**
      * test that all transactions from the Log are loaded, and only once
+     *
      * @throws Exception an exception might be thrown here
      */
     @Test
@@ -91,7 +92,7 @@ public class LoadFromLogTest extends ClientBase {
             hdr = itr.getHeader();
             expectedZxid++;
             assertTrue("not the same transaction. lastZxid=" + lastZxid + ", zxid=" + hdr.getZxid(), lastZxid
-                                                                                                                    != hdr.getZxid());
+                    != hdr.getZxid());
             assertTrue("excepting next transaction. expected=" + expectedZxid + ", retrieved=" + hdr.getZxid(), (
                     hdr.getZxid()
                             == expectedZxid));
@@ -99,12 +100,13 @@ public class LoadFromLogTest extends ClientBase {
         } while (itr.next());
 
         assertTrue("processed all transactions. " + expectedZxid + " == " + TOTAL_TRANSACTIONS, (expectedZxid
-                                                                                                                == TOTAL_TRANSACTIONS));
+                == TOTAL_TRANSACTIONS));
     }
 
     /**
      * test that we fail to load txnlog of a request zxid that is older
      * than what exist on disk
+     *
      * @throws Exception an exception might be thrown here
      */
     @Test
@@ -209,14 +211,14 @@ public class LoadFromLogTest extends ClientBase {
         }
         LOG.info("Expected {} found {}", expectedPath, path);
         assertTrue("Error in sequential znode creation expected "
-                                  + expectedPath
-                                  + " found "
-                                  + path, path.equals(expectedPath));
+                + expectedPath
+                + " found "
+                + path, path.equals(expectedPath));
         assertTrue("Unexpected number of children "
-                                  + children.length
-                                  + " expected "
-                                  + NUM_MESSAGES, (children.length
-                                                           == NUM_MESSAGES));
+                + children.length
+                + " expected "
+                + NUM_MESSAGES, (children.length
+                == NUM_MESSAGES));
     }
 
     /**

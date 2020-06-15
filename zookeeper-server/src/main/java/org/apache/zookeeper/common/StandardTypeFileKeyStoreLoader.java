@@ -36,10 +36,10 @@ abstract class StandardTypeFileKeyStoreLoader extends FileKeyStoreLoader {
     private static final char[] EMPTY_CHAR_ARRAY = new char[0];
 
     StandardTypeFileKeyStoreLoader(
-        String keyStorePath,
-        String trustStorePath,
-        String keyStorePassword,
-        String trustStorePassword) {
+            String keyStorePath,
+            String trustStorePath,
+            String keyStorePassword,
+            String trustStorePassword) {
         super(keyStorePath, trustStorePath, keyStorePassword, trustStorePassword);
     }
 

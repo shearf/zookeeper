@@ -18,6 +18,8 @@
 
 package org.apache.zookeeper.server;
 
+import org.apache.zookeeper.common.Time;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import org.apache.zookeeper.common.Time;
 
 /**
  * ExpiryQueue tracks elements in time sorted fixed duration buckets.
@@ -56,9 +57,10 @@ public class ExpiryQueue<E> {
 
     /**
      * Removes element from the queue.
-     * @param elem  element to remove
+     *
+     * @param elem element to remove
      * @return time at which the element was set to expire, or null if
-     *              it wasn't present
+     * it wasn't present
      */
     public Long remove(E elem) {
         Long expiryTime = elemMap.remove(elem);
@@ -76,10 +78,11 @@ public class ExpiryQueue<E> {
     /**
      * Adds or updates expiration time for element in queue, rounding the
      * timeout to the expiry interval bucketed used by this queue.
-     * @param elem     element to add/update
-     * @param timeout  timout in milliseconds
+     *
+     * @param elem    element to add/update
+     * @param timeout timout in milliseconds
      * @return time at which the element is now set to expire if
-     *                 changed, or null if unchanged
+     * changed, or null if unchanged
      */
     public Long update(E elem, int timeout) {
         Long prevExpiryTime = elemMap.get(elem);
@@ -132,7 +135,7 @@ public class ExpiryQueue<E> {
      * will be a backlog of empty sets queued up in expiryMap.
      *
      * @return next set of expired elements, or an empty set if none are
-     *         ready
+     * ready
      */
     public Set<E> poll() {
         long now = Time.currentElapsedTime();

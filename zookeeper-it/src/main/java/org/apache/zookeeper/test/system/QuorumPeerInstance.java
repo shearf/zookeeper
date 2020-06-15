@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,13 @@
  */
 
 package org.apache.zookeeper.test.system;
+
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.server.quorum.QuorumPeer;
+import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
+import org.apache.zookeeper.test.TestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,17 +36,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.server.quorum.QuorumPeer;
-import org.apache.zookeeper.server.quorum.QuorumPeer.QuorumServer;
-import org.apache.zookeeper.test.TestUtils;
-
 class QuorumPeerInstance implements Instance {
     final private static Logger LOG = LoggerFactory.getLogger(QuorumPeerInstance.class);
     private static final File testData = new File(
-        System.getProperty("test.data.dir", "src/test/resources/data"));
+            System.getProperty("test.data.dir", "src/test/resources/data"));
 
     private static final int syncLimit = 3;
     private static final int initLimit = 3;
@@ -73,9 +73,9 @@ class QuorumPeerInstance implements Instance {
                 p = new Properties();
                 FileInputStream input = new FileInputStream(zkDirs);
                 try {
-                  p.load(input);
+                    p.load(input);
                 } finally {
-                  input.close();
+                    input.close();
                 }
             } else {
                 p = System.getProperties();
@@ -112,25 +112,25 @@ class QuorumPeerInstance implements Instance {
                 ServerSocket ss = new ServerSocket(0, 1, InetAddress.getLocalHost());
                 clientAddr = (InetSocketAddress) ss.getLocalSocketAddress();
                 ss.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
                 ServerSocket ss = new ServerSocket(0, 1, InetAddress.getLocalHost());
                 quorumLeaderAddr = (InetSocketAddress) ss.getLocalSocketAddress();
                 ss.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
                 ServerSocket ss = new ServerSocket(0, 1, InetAddress.getLocalHost());
                 quorumLeaderElectionAddr = (InetSocketAddress) ss.getLocalSocketAddress();
                 ss.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             String report = clientAddr.getHostString() + ':' + clientAddr.getPort() +
-            ',' + quorumLeaderAddr.getHostString() + ':' + quorumLeaderAddr.getPort() + ':' + quorumLeaderElectionAddr.getPort();
+                    ',' + quorumLeaderAddr.getHostString() + ':' + quorumLeaderAddr.getPort() + ':' + quorumLeaderElectionAddr.getPort();
             try {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Reporting " + report);
@@ -147,7 +147,7 @@ class QuorumPeerInstance implements Instance {
                 return;
             }
             String quorumSpecs = params.substring(0, spaceIndex);
-            String cmd = params.substring(spaceIndex+1);
+            String cmd = params.substring(spaceIndex + 1);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Running command: " + cmd);
             }
@@ -157,12 +157,14 @@ class QuorumPeerInstance implements Instance {
                 }
                 peer = null;
                 try {
-                    for(int i = 0; i < 5; i++) {
+                    for (int i = 0; i < 5; i++) {
                         Thread.sleep(500);
                         try {
                             // Wait until we can't connect
                             new Socket("127.0.0.1", clientAddr.getPort()).close();
-                        } catch(IOException e) { break; }
+                        } catch (IOException e) {
+                            break;
+                        }
                     }
                     r.report("stopped");
                 } catch (Exception e) {
@@ -171,13 +173,13 @@ class QuorumPeerInstance implements Instance {
                 return;
             }
             String parts[] = quorumSpecs.split(",");
-            peers = new HashMap<Long,QuorumServer>();
-            for(int i = 0; i < parts.length; i++) {
+            peers = new HashMap<Long, QuorumServer>();
+            for (int i = 0; i < parts.length; i++) {
                 // parts[i] == "host:leaderPort:leaderElectionPort;clientPort"
                 String subparts[] = ((parts[i].split(";"))[0]).split(":");
                 String clientPort = (parts[i].split(";"))[1];
                 peers.put(Long.valueOf(i),
-                          new QuorumServer(
+                        new QuorumServer(
                                 i,
                                 new InetSocketAddress(subparts[0], Integer.parseInt(subparts[1])),
                                 new InetSocketAddress(subparts[0], Integer.parseInt(subparts[2])),
@@ -194,13 +196,14 @@ class QuorumPeerInstance implements Instance {
                 System.err.println("SnapDir = " + snapDir + " LogDir = " + logDir);
                 peer = new QuorumPeer(peers, snapDir, logDir, clientAddr.getPort(), 3, serverId, tickTime, initLimit, syncLimit, connectToLearnerMasterLimit);
                 peer.start();
-                for(int i = 0; i < 5; i++) {
+                for (int i = 0; i < 5; i++) {
                     Thread.sleep(500);
                     try {
                         // Wait until we can connect
                         new Socket("127.0.0.1", clientAddr.getPort()).close();
                         break;
-                    } catch(IOException e) {}
+                    } catch (IOException e) {
+                    }
                 }
                 r.report("started");
             } catch (Exception e) {
@@ -211,7 +214,7 @@ class QuorumPeerInstance implements Instance {
 
     public void start() {
     }
-    
+
     public void stop() {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Stopping peer " + serverId);
@@ -229,7 +232,7 @@ class QuorumPeerInstance implements Instance {
 
     /**
      * This method is used to configure a QuorumPeerInstance
-     * 
+     *
      * @param im the InstanceManager that will be managing the new instance
      * @param i the server number to configure (should be zero based)
      * @throws NoAvailableContainers
@@ -240,10 +243,10 @@ class QuorumPeerInstance implements Instance {
     public static String[] createServer(InstanceManager im, int i) throws NoAvailableContainers, DuplicateNameException, InterruptedException, KeeperException {
         return createServer(im, i, true);
     }
-    
+
     /**
      * This method is used to configure a QuorumPeerInstance
-     * 
+     *
      * @param im the InstanceManager that will be managing the new instance
      * @param i the server number to configure (should be zero based)
      * @param leaderServes if false, the leader will not accept client connections
@@ -253,9 +256,9 @@ class QuorumPeerInstance implements Instance {
      * @throws KeeperException
      */
     public static String[] createServer(InstanceManager im, int i, boolean leaderServes) throws NoAvailableContainers, DuplicateNameException, InterruptedException, KeeperException {
-        im.assignInstance("server"+i, QuorumPeerInstance.class, Integer.toString(i) + " " + leaderServes, 50);
-        return im.getStatus("server"+i, 3000).split(",");
-        
+        im.assignInstance("server" + i, QuorumPeerInstance.class, Integer.toString(i) + " " + leaderServes, 50);
+        return im.getStatus("server" + i, 3000).split(",");
+
     }
 
     /**
@@ -269,7 +272,7 @@ class QuorumPeerInstance implements Instance {
      */
     public static void startInstance(InstanceManager im, String quorumHostPort, int index) throws InterruptedException, KeeperException, NoAssignmentException {
         im.resetStatus("server" + index);
-        im.reconfigureInstance("server"+index, quorumHostPort + " start");
+        im.reconfigureInstance("server" + index, quorumHostPort + " start");
         im.getStatus("server" + index, 5000);
     }
 
@@ -283,9 +286,9 @@ class QuorumPeerInstance implements Instance {
      */
     public static void stopInstance(InstanceManager im, int index) throws InterruptedException, KeeperException, NoAssignmentException {
         im.resetStatus("server" + index);
-        im.reconfigureInstance("server"+index, Integer.toString(index) + " stop");
+        im.reconfigureInstance("server" + index, Integer.toString(index) + " stop");
         im.getStatus("server" + index, 3000);
-   
+
     }
 
 }

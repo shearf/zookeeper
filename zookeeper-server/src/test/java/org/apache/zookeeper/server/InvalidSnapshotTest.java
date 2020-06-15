@@ -18,9 +18,6 @@
 
 package org.apache.zookeeper.server;
 
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.io.RandomAccessFile;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.ZooKeeper;
@@ -28,6 +25,11 @@ import org.apache.zookeeper.test.ClientBase;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.RandomAccessFile;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * This test checks that the server works even if the last snapshot is

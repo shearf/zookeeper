@@ -18,21 +18,18 @@
 
 package org.apache.zookeeper.server;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.apache.yetus.audience.InterfaceAudience;
 import org.apache.zookeeper.server.persistence.FileTxnSnapLog;
 import org.apache.zookeeper.server.persistence.Util;
 import org.apache.zookeeper.util.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.*;
 
 /**
  * this class is used to clean up the
@@ -55,7 +52,7 @@ public class PurgeTxnLog {
         System.out.println("\tdataLogDir -- path to the txn log directory");
         System.out.println("\tsnapDir -- path to the snapshot directory");
         System.out.println("\tcount -- the number of old snaps/logs you want "
-                           + "to keep, value should be greater than or equal to 3");
+                + "to keep, value should be greater than or equal to 3");
     }
 
     private static final String PREFIX_SNAPSHOT = "snapshot";
@@ -69,7 +66,7 @@ public class PurgeTxnLog {
      *
      * @param dataDir the dir that has the logs
      * @param snapDir the dir that has the snapshots
-     * @param num the number of snapshots to keep
+     * @param num     the number of snapshots to keep
      * @throws IOException
      */
     public static void purge(File dataDir, File snapDir, int num) throws IOException {
@@ -119,9 +116,11 @@ public class PurgeTxnLog {
         class MyFileFilter implements FileFilter {
 
             private final String prefix;
+
             MyFileFilter(String prefix) {
                 this.prefix = prefix;
             }
+
             public boolean accept(File f) {
                 if (!f.getName().startsWith(prefix + ".")) {
                     return false;
@@ -150,9 +149,9 @@ public class PurgeTxnLog {
         // remove the old files
         for (File f : files) {
             final String msg = String.format(
-                "Removing file: %s\t%s",
-                DateFormat.getDateTimeInstance().format(f.lastModified()),
-                f.getPath());
+                    "Removing file: %s\t%s",
+                    DateFormat.getDateTimeInstance().format(f.lastModified()),
+                    f.getPath());
 
             LOG.info(msg);
             System.out.println(msg);
@@ -166,9 +165,9 @@ public class PurgeTxnLog {
 
     /**
      * @param args dataLogDir [snapDir] -n count
-     * dataLogDir -- path to the txn log directory
-     * snapDir -- path to the snapshot directory
-     * count -- the number of old snaps/logs you want to keep, value should be greater than or equal to 3<br>
+     *             dataLogDir -- path to the txn log directory
+     *             snapDir -- path to the snapshot directory
+     *             count -- the number of old snaps/logs you want to keep, value should be greater than or equal to 3<br>
      */
     public static void main(String[] args) throws IOException {
         if (args.length < 3 || args.length > 4) {

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,43 +18,24 @@
 
 package org.apache.zookeeper.test.system;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import org.apache.zookeeper.AsyncCallback.DataCallback;
+import org.apache.zookeeper.AsyncCallback.StatCallback;
+import org.apache.zookeeper.*;
+import org.apache.zookeeper.Watcher.Event.EventType;
+import org.apache.zookeeper.Watcher.Event.KeeperState;
+import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.common.Time;
+import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.server.ExitCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-import org.apache.zookeeper.server.ExitCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.zookeeper.AsyncCallback.DataCallback;
-import org.apache.zookeeper.AsyncCallback.StatCallback;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.Watcher.Event.EventType;
-import org.apache.zookeeper.Watcher.Event.KeeperState;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.Stat;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.common.Time;
+import java.util.*;
 
 
 public class GenerateLoad {
@@ -73,6 +54,7 @@ public class GenerateLoad {
 
     static PrintStream sf;
     static PrintStream tf;
+
     static {
         try {
             tf = new PrintStream(new FileOutputStream("trace"));
@@ -87,8 +69,8 @@ public class GenerateLoad {
         long interval = time / INTERVAL;
         if (currentInterval == 0 || currentInterval > interval) {
             System.out.println(
-                "Dropping " + count + " for " + new Date(time)
-                    + " " + currentInterval + ">" + interval);
+                    "Dropping " + count + " for " + new Date(time)
+                            + " " + currentInterval + ">" + interval);
             return;
         }
         // We track totals by seconds
@@ -179,7 +161,7 @@ public class GenerateLoad {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                for (Iterator<SlaveThread> it = slaves.iterator(); it.hasNext();) {
+                for (Iterator<SlaveThread> it = slaves.iterator(); it.hasNext(); ) {
                     SlaveThread st = it.next();
                     it.remove();
                     st.close();
@@ -211,7 +193,7 @@ public class GenerateLoad {
                     currentInterval += 1;
                     long count = remove(lastInterval);
                     count = count * 1000 / INTERVAL; // Multiply by 1000 to get
-                                                     // reqs/sec
+                    // reqs/sec
                     if (lastChange != 0
                             && (lastChange + INTERVAL * 3) < now) {
                         // We only want to print anything if things have had a
@@ -380,7 +362,7 @@ public class GenerateLoad {
             }
 
             public void processResult(int rc, String path, Object ctx, byte[] data,
-                    Stat stat) {
+                                      Stat stat) {
                 decOutstanding();
                 synchronized (statSync) {
                     if (!alive) {
@@ -471,7 +453,7 @@ public class GenerateLoad {
                         if (parts.length == 3) {
                             try {
                                 bytesSize = Integer.parseInt(parts[2]);
-                            } catch(Exception e) {
+                            } catch (Exception e) {
                                 System.err.println("Not an integer: " + parts[2]);
                             }
                         }
@@ -558,9 +540,9 @@ public class GenerateLoad {
     private static boolean leaderOnly;
     private static boolean leaderServes;
 
-    private static String []processOptions(String args[]) {
+    private static String[] processOptions(String args[]) {
         ArrayList<String> newArgs = new ArrayList<String>();
-        for(String a: args) {
+        for (String a : args) {
             if (a.equals("--leaderOnly")) {
                 leaderOnly = true;
                 leaderServes = true;
@@ -609,7 +591,7 @@ public class GenerateLoad {
                     }
                     zkHostPort.append(r[0]);     // r[0] == "host:clientPort"
                     quorumHostPort.append(r[1]); // r[1] == "host:leaderPort:leaderElectionPort"
-                    quorumHostPort.append(";"+(r[0].split(":"))[1]); // Appending ";clientPort"
+                    quorumHostPort.append(";" + (r[0].split(":"))[1]); // Appending ";clientPort"
                 }
                 for (int i = 0; i < serverCount; i++) {
                     QuorumPeerInstance.startInstance(im, quorumHostPort
@@ -618,33 +600,33 @@ public class GenerateLoad {
                 if (leaderOnly) {
                     int tries = 0;
                     outer:
-                        while(true) {
-                            Thread.sleep(1000);
-                            IOException lastException = null;
-                            String parts[] = zkHostPort.toString().split(",");
-                            for(int i = 0; i < parts.length; i++) {
-                                try {
-                                    String mode = getMode(parts[i]);
-                                    if (mode.equals("leader")) {
-                                        zkHostPort = new StringBuilder(parts[i]);
-                                        System.out.println("Connecting exclusively to " + zkHostPort.toString());
-                                        break outer;
-                                    }
-                                } catch(IOException e) {
-                                    lastException = e;
+                    while (true) {
+                        Thread.sleep(1000);
+                        IOException lastException = null;
+                        String parts[] = zkHostPort.toString().split(",");
+                        for (int i = 0; i < parts.length; i++) {
+                            try {
+                                String mode = getMode(parts[i]);
+                                if (mode.equals("leader")) {
+                                    zkHostPort = new StringBuilder(parts[i]);
+                                    System.out.println("Connecting exclusively to " + zkHostPort.toString());
+                                    break outer;
                                 }
-                            }
-                            if (tries++ > 3) {
-                                throw lastException;
+                            } catch (IOException e) {
+                                lastException = e;
                             }
                         }
+                        if (tries++ > 3) {
+                            throw lastException;
+                        }
+                    }
                 }
                 for (int i = 0; i < clientCount; i++) {
                     im.assignInstance("client" + i, GeneratorInstance.class,
                             zkHostPort.toString()
                                     + ' '
                                     + InetAddress.getLocalHost()
-                                            .getCanonicalHostName() + ':'
+                                    .getCanonicalHostName() + ':'
                                     + port, 1);
                 }
                 new AcceptorThread();
@@ -701,14 +683,14 @@ public class GenerateLoad {
         BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
         String line;
         try {
-          while((line = br.readLine()) != null) {
-            if (line.startsWith("Mode: ")) {
-              return line.substring(6);
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("Mode: ")) {
+                    return line.substring(6);
+                }
             }
-          }
-          return "unknown";
+            return "unknown";
         } finally {
-          s.close();
+            s.close();
         }
     }
 

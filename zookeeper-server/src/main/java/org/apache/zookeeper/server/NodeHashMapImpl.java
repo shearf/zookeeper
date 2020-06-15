@@ -18,11 +18,12 @@
 
 package org.apache.zookeeper.server;
 
+import org.apache.zookeeper.ZooDefs;
+import org.apache.zookeeper.server.util.AdHash;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.server.util.AdHash;
 
 /**
  * a simple wrapper to ConcurrentHashMap that recalculates a digest after

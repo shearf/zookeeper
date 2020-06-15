@@ -23,12 +23,15 @@ public class ZxidUtils {
     public static long getEpochFromZxid(long zxid) {
         return zxid >> 32L;
     }
+
     public static long getCounterFromZxid(long zxid) {
         return zxid & 0xffffffffL;
     }
+
     public static long makeZxid(long epoch, long counter) {
         return (epoch << 32L) | (counter & 0xffffffffL);
     }
+
     public static String zxidToString(long zxid) {
         return Long.toHexString(zxid);
     }

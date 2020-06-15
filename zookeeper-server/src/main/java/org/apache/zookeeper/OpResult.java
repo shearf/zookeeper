@@ -17,9 +17,10 @@
 
 package org.apache.zookeeper;
 
+import org.apache.zookeeper.data.Stat;
+
 import java.util.Arrays;
 import java.util.List;
-import org.apache.zookeeper.data.Stat;
 
 /**
  * Encodes the result of a single part of a multiple operation commit.
@@ -36,8 +37,9 @@ public abstract class OpResult {
      * Encodes the return type as from ZooDefs.OpCode.  Can be used
      * to dispatch to the correct cast needed for getting the desired
      * additional result data.
-     * @see ZooDefs.OpCode
+     *
      * @return an integer identifying what kind of operation this result came from.
+     * @see ZooDefs.OpCode
      */
     public int getType() {
         return type;
@@ -87,10 +89,10 @@ public abstract class OpResult {
             CreateResult other = (CreateResult) o;
 
             boolean statsAreEqual = stat == null
-                                    && other.stat == null
-                                    || (stat != null
-                                        && other.stat != null
-                                        && stat.getMzxid() == other.stat.getMzxid());
+                    && other.stat == null
+                    || (stat != null
+                    && other.stat != null
+                    && stat.getMzxid() == other.stat.getMzxid());
             return getType() == other.getType() && path.equals(other.getPath()) && statsAreEqual;
         }
 
@@ -250,6 +252,7 @@ public abstract class OpResult {
         public byte[] getData() {
             return data == null ? null : Arrays.copyOf(data, data.length);
         }
+
         public Stat getStat() {
             return stat;
         }
@@ -277,8 +280,8 @@ public abstract class OpResult {
     /**
      * An error result from any kind of operation.  The point of error results
      * is that they contain an error code which helps understand what happened.
-     * @see KeeperException.Code
      *
+     * @see KeeperException.Code
      */
     public static class ErrorResult extends OpResult {
 

@@ -25,6 +25,7 @@ public final class AuthUtil {
     private AuthUtil() {
         //Utility classes should not have public constructors
     }
+
     /**
      * Gives user name
      *

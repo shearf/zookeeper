@@ -18,12 +18,13 @@
 
 package org.apache.zookeeper.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class manages the cleanup of snapshots and corresponding transaction
@@ -61,14 +62,10 @@ public class DatadirCleanupManager {
      * Constructor of DatadirCleanupManager. It takes the parameters to schedule
      * the purge task.
      *
-     * @param snapDir
-     *            snapshot directory
-     * @param dataLogDir
-     *            transaction log directory
-     * @param snapRetainCount
-     *            number of snapshots to be retained after purge
-     * @param purgeInterval
-     *            purge interval in hours
+     * @param snapDir         snapshot directory
+     * @param dataLogDir      transaction log directory
+     * @param snapRetainCount number of snapshots to be retained after purge
+     * @param purgeInterval   purge interval in hours
      */
     public DatadirCleanupManager(File snapDir, File dataLogDir, int snapRetainCount, int purgeInterval) {
         this.snapDir = snapDir;

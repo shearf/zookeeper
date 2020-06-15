@@ -18,19 +18,21 @@
 
 package org.apache.zookeeper.client;
 
-import static org.apache.zookeeper.common.StringUtils.split;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.zookeeper.common.PathUtils;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
 import org.apache.zookeeper.server.util.ConfigUtils;
 
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.apache.zookeeper.common.StringUtils.split;
+
 /**
  * A parser for ZooKeeper Client connect strings.
- *
+ * <p>
  * This class is not meant to be seen or used outside of ZooKeeper itself.
- *
+ * <p>
  * The chrootPath member should be replaced by a Path object in issue
  * ZOOKEEPER-849.
  *
@@ -47,8 +49,8 @@ public final class ConnectStringParser {
     /**
      * Parse host and port by spliting client connectString
      * with support for IPv6 literals
-     * @throws IllegalArgumentException
-     *             for an invalid chroot path.
+     *
+     * @throws IllegalArgumentException for an invalid chroot path.
      */
     public ConnectStringParser(String connectString) {
         // parse out chroot, if any

@@ -18,14 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import java.nio.ByteBuffer;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import org.apache.zookeeper.ZKTestCase;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.metrics.MetricsUtils;
@@ -38,6 +30,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class CommitProcessorMetricsTest extends ZKTestCase {
 
@@ -152,6 +154,7 @@ public class CommitProcessorMetricsTest extends ZKTestCase {
     private class DummyFinalProcessor implements RequestProcessor {
 
         int processTime;
+
         public DummyFinalProcessor(int processTime) {
             this.processTime = processTime;
         }

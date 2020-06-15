@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,11 +18,7 @@
 
 package org.apache.zookeeper.server.jersey.resources;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+import org.apache.zookeeper.server.jersey.jaxb.ZError;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -30,8 +26,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-
-import org.apache.zookeeper.server.jersey.jaxb.ZError;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 /**
  * Tell Jersey how to format an octet response error message.
@@ -41,21 +40,20 @@ import org.apache.zookeeper.server.jersey.jaxb.ZError;
 public class ZErrorWriter implements MessageBodyWriter<ZError> {
 
     public long getSize(ZError t, Class<?> type, Type genericType,
-            Annotation[] annotations, MediaType mediaType)  {
+                        Annotation[] annotations, MediaType mediaType) {
         return -1;
     }
 
     public boolean isWriteable(Class<?> type, Type genericType,
-            Annotation[] annotations, MediaType mediaType) {
+                               Annotation[] annotations, MediaType mediaType) {
         return ZError.class.isAssignableFrom(type);
     }
 
     public void writeTo(ZError t, Class<?> type, Type genericType,
-            Annotation[] annotations, MediaType mediaType,
-            MultivaluedMap<String, Object> httpHeaders,
-            OutputStream os)
-        throws IOException, WebApplicationException
-    {
+                        Annotation[] annotations, MediaType mediaType,
+                        MultivaluedMap<String, Object> httpHeaders,
+                        OutputStream os)
+            throws IOException, WebApplicationException {
         PrintStream p = new PrintStream(os);
         p.print("Request " + t.request + " failed due to " + t.message);
         p.flush();

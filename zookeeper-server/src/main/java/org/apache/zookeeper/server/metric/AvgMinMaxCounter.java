@@ -18,12 +18,13 @@
 
 package org.apache.zookeeper.server.metric;
 
+import org.apache.zookeeper.metrics.Summary;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import org.apache.zookeeper.metrics.Summary;
 
 /**
  * Generic long counter that keep track of min/max/avg. The counter is
@@ -104,6 +105,7 @@ public class AvgMinMaxCounter extends Metric implements Summary {
         max.set(Long.MIN_VALUE);
     }
 
+    @Override
     public void add(long value) {
         addDataPoint(value);
     }

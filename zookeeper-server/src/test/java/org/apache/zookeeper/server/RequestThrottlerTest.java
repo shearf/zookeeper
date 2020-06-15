@@ -18,21 +18,7 @@
 
 package org.apache.zookeeper.server;
 
-import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.apache.zookeeper.AsyncCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.PortAssignment;
-import org.apache.zookeeper.ZKTestCase;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.metrics.MetricsUtils;
 import org.apache.zookeeper.test.ClientBase;
 import org.junit.After;
@@ -41,6 +27,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.apache.zookeeper.test.ClientBase.CONNECTION_TIMEOUT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RequestThrottlerTest extends ZKTestCase {
 
@@ -135,7 +131,7 @@ public class RequestThrottlerTest extends ZKTestCase {
 
         @Override
         public void requestFinished(Request request) {
-            if (null != finished){
+            if (null != finished) {
                 finished.countDown();
             }
             super.requestFinished(request);
@@ -186,7 +182,7 @@ public class RequestThrottlerTest extends ZKTestCase {
         // send 5 requests asynchronously
         for (int i = 0; i < TOTAL_REQUESTS; i++) {
             zk.create("/request_throttle_test- " + i, ("/request_throttle_test- "
-                                                               + i).getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, (rc, path, ctx, name) -> {
+                    + i).getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, (rc, path, ctx, name) -> {
             }, null);
         }
 
@@ -225,7 +221,7 @@ public class RequestThrottlerTest extends ZKTestCase {
         // send 5 requests asynchronously
         for (int i = 0; i < TOTAL_REQUESTS; i++) {
             zk.create("/request_throttle_test- " + i, ("/request_throttle_test- "
-                                                               + i).getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, (rc, path, ctx, name) -> {
+                    + i).getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, (rc, path, ctx, name) -> {
             }, null);
         }
 
@@ -285,7 +281,7 @@ public class RequestThrottlerTest extends ZKTestCase {
 
         // send 5 requests asynchronously
         for (int i = 0; i < TOTAL_REQUESTS; i++) {
-            zk.create("/request_throttle_test- " + i , data,
+            zk.create("/request_throttle_test- " + i, data,
                     ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT, createCallback, null);
         }
 

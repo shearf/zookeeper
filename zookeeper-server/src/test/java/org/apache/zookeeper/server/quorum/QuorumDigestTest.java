@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,10 +18,6 @@
 
 package org.apache.zookeeper.server.quorum;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import mockit.Invocation;
 import mockit.Mock;
 import mockit.MockUp;
@@ -40,18 +36,19 @@ import org.apache.zookeeper.server.ZooKeeperServer;
 import org.apache.zookeeper.server.metric.SimpleCounter;
 import org.apache.zookeeper.txn.TxnDigest;
 import org.apache.zookeeper.txn.TxnHeader;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class QuorumDigestTest extends QuorumPeerTestBase {
 
     private static final Logger LOG =
-          LoggerFactory.getLogger(QuorumDigestTest.class);
+            LoggerFactory.getLogger(QuorumDigestTest.class);
 
     private Servers servers;
     private String forceSnapSyncValue;
@@ -111,7 +108,7 @@ public class QuorumDigestTest extends QuorumPeerTestBase {
         final String prefix = "/testDigestMatchesWithAsyncRequests";
 
         // start a thread to send requests asynchronously,
-        Thread createTrafficThread = new Thread () {
+        Thread createTrafficThread = new Thread() {
             @Override
             public void run() {
                 int i = 0;
@@ -119,12 +116,12 @@ public class QuorumDigestTest extends QuorumPeerTestBase {
                     String path = prefix + "-" + i;
                     client.create(path, path.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,
                             CreateMode.PERSISTENT, new StringCallback() {
-                        @Override
-                        public void processResult(int rc, String path,
-                                Object ctx, String name) {
-                            // ignore the result
-                        }
-                    }, null);
+                                @Override
+                                public void processResult(int rc, String path,
+                                                          Object ctx, String name) {
+                                    // ignore the result
+                                }
+                            }, null);
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) { /* ignore */ }
@@ -244,7 +241,7 @@ public class QuorumDigestTest extends QuorumPeerTestBase {
 
         @Mock
         public ProcessTxnResult processTxn(Invocation invocation,
-                TxnHeader header, Record txn, TxnDigest digest) {
+                                           TxnHeader header, Record txn, TxnDigest digest) {
             if (header != null && Long.toHexString(header.getZxid()).equals(skipTxnZxid)) {
                 LOG.info("skip process txn {}", header.getZxid());
                 ProcessTxnResult rc = new ProcessTxnResult();

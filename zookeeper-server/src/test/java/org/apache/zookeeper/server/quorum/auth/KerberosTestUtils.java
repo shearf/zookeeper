@@ -18,9 +18,10 @@
 
 package org.apache.zookeeper.server.quorum.auth;
 
+import org.apache.zookeeper.util.SecurityUtils;
+
 import java.io.File;
 import java.util.UUID;
-import org.apache.zookeeper.util.SecurityUtils;
 
 public class KerberosTestUtils {
 
@@ -65,8 +66,8 @@ public class KerberosTestUtils {
     public static String replaceHostPattern(String principal) {
         String[] components = principal.split("[/@]");
         if (components == null
-                    || components.length < 2
-                    || !components[1].equals(SecurityUtils.QUORUM_HOSTNAME_PATTERN)) {
+                || components.length < 2
+                || !components[1].equals(SecurityUtils.QUORUM_HOSTNAME_PATTERN)) {
             return principal;
         } else {
             return replacePattern(components, "localhost");

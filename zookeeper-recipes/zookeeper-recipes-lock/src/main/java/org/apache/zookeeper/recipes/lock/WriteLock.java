@@ -18,11 +18,7 @@
 
 package org.apache.zookeeper.recipes.lock;
 
-import static org.apache.zookeeper.CreateMode.EPHEMERAL_SEQUENTIAL;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -32,16 +28,21 @@ import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import static org.apache.zookeeper.CreateMode.EPHEMERAL_SEQUENTIAL;
+
 /**
  * A <a href="package.html">protocol to implement an exclusive
- *  write lock or to elect a leader</a>.
+ * write lock or to elect a leader</a>.
  *
- *  <p>You invoke {@link #lock()} to start the process of grabbing the lock;
- *  you may get the lock then or it may be some time later.
+ * <p>You invoke {@link #lock()} to start the process of grabbing the lock;
+ * you may get the lock then or it may be some time later.
  *
- *  <p>You can register a listener so that you are invoked when you get the lock;
- *  otherwise you can ask if you have the lock by calling {@link #isOwner()}.
- *
+ * <p>You can register a listener so that you are invoked when you get the lock;
+ * otherwise you can ask if you have the lock by calling {@link #isOwner()}.
  */
 public class WriteLock extends ProtocolSupport {
 
@@ -60,8 +61,8 @@ public class WriteLock extends ProtocolSupport {
      * zookeeper contructor for writelock.
      *
      * @param zookeeper zookeeper client instance
-     * @param dir the parent path you want to use for locking
-     * @param acl the acls that you want to use for all the paths, if null world read/write is used.
+     * @param dir       the parent path you want to use for locking
+     * @param acl       the acls that you want to use for all the paths, if null world read/write is used.
      */
     public WriteLock(ZooKeeper zookeeper, String dir, List<ACL> acl) {
         super(zookeeper);
@@ -76,15 +77,15 @@ public class WriteLock extends ProtocolSupport {
      * zookeeper contructor for writelock with callback.
      *
      * @param zookeeper the zookeeper client instance
-     * @param dir the parent path you want to use for locking
-     * @param acl the acls that you want to use for all the paths
-     * @param callback the call back instance
+     * @param dir       the parent path you want to use for locking
+     * @param acl       the acls that you want to use for all the paths
+     * @param callback  the call back instance
      */
     public WriteLock(
-        ZooKeeper zookeeper,
-        String dir,
-        List<ACL> acl,
-        LockListener callback) {
+            ZooKeeper zookeeper,
+            String dir,
+            List<ACL> acl,
+            LockListener callback) {
         this(zookeeper, dir, acl);
         this.callback = callback;
     }
@@ -114,7 +115,7 @@ public class WriteLock extends ProtocolSupport {
      * in case you do not already hold the lock.
      *
      * @throws RuntimeException throws a runtime exception
-     * if it cannot connect to zookeeper.
+     *                          if it cannot connect to zookeeper.
      */
     public synchronized void unlock() throws RuntimeException {
 
@@ -176,14 +177,14 @@ public class WriteLock extends ProtocolSupport {
         /**
          * find if we have been created earler if not create our node.
          *
-         * @param prefix the prefix node
+         * @param prefix    the prefix node
          * @param zookeeper teh zookeeper client
-         * @param dir the dir paretn
+         * @param dir       the dir paretn
          * @throws KeeperException
          * @throws InterruptedException
          */
         private void findPrefixInChildren(String prefix, ZooKeeper zookeeper, String dir)
-            throws KeeperException, InterruptedException {
+                throws KeeperException, InterruptedException {
             List<String> names = zookeeper.getChildren(dir, false);
             for (String name : names) {
                 if (name.startsWith(prefix)) {
@@ -207,8 +208,8 @@ public class WriteLock extends ProtocolSupport {
          * @return if the command was successful or not
          */
         @SuppressFBWarnings(
-            value = "NP_NULL_PARAM_DEREF_NONVIRTUAL",
-            justification = "findPrefixInChildren will assign a value to this.id")
+                value = "NP_NULL_PARAM_DEREF_NONVIRTUAL",
+                justification = "findPrefixInChildren will assign a value to this.id")
         public boolean execute() throws KeeperException, InterruptedException {
             do {
                 if (id == null) {
@@ -284,7 +285,7 @@ public class WriteLock extends ProtocolSupport {
 
     /**
      * Returns true if this node is the owner of the
-     *  lock (or the leader).
+     * lock (or the leader).
      */
     public boolean isOwner() {
         return id != null && id.equals(ownerId);

@@ -18,6 +18,12 @@
 
 package org.apache.zookeeper.common;
 
+import org.apache.zookeeper.Environment;
+import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
+import org.apache.zookeeper.server.util.VerifyingFileFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,17 +31,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import org.apache.zookeeper.Environment;
-import org.apache.zookeeper.server.quorum.QuorumPeerConfig.ConfigException;
-import org.apache.zookeeper.server.util.VerifyingFileFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is a base class for the configurations of both client and server.
  * It supports reading client configuration from both system properties and
  * configuration file. A user can override any system property by calling
  * {@link #setProperty(String, String)}.
+ *
  * @since 3.5.2
  */
 public class ZKConfig {
@@ -62,10 +64,8 @@ public class ZKConfig {
     }
 
     /**
-     * @param configPath
-     *            Configuration file path
-     * @throws ConfigException
-     *             if failed to load configuration properties
+     * @param configPath Configuration file path
+     * @throws ConfigException if failed to load configuration properties
      */
 
     public ZKConfig(String configPath) throws ConfigException {
@@ -73,11 +73,8 @@ public class ZKConfig {
     }
 
     /**
-     *
-     * @param configFile
-     *            Configuration file
-     * @throws ConfigException
-     *             if failed to load configuration properties
+     * @param configFile Configuration file
+     * @throws ConfigException if failed to load configuration properties
      */
     public ZKConfig(File configFile) throws ConfigException {
         this();
@@ -143,8 +140,7 @@ public class ZKConfig {
     /**
      * Get the property value, if it is null return default value
      *
-     * @param key
-     *            property key
+     * @param key          property key
      * @param defaultValue
      * @return property value or default value
      */
@@ -185,15 +181,14 @@ public class ZKConfig {
      * Add a configuration resource. The properties form this configuration will
      * overwrite corresponding already loaded property and system property
      *
-     * @param configFile
-     *            Configuration file.
+     * @param configFile Configuration file.
      */
     public void addConfiguration(File configFile) throws ConfigException {
         LOG.info("Reading configuration from: {}", configFile.getAbsolutePath());
         try {
             configFile = (new VerifyingFileFactory.Builder(LOG).warnForRelativePath()
-                                                               .failForNonExistingPath()
-                                                               .build()).validate(configFile);
+                    .failForNonExistingPath()
+                    .build()).validate(configFile);
             Properties cfg = new Properties();
             FileInputStream in = new FileInputStream(configFile);
             try {
@@ -212,8 +207,7 @@ public class ZKConfig {
      * Add a configuration resource. The properties form this configuration will
      * overwrite corresponding already loaded property and system property
      *
-     * @param configPath
-     *            Configuration file path.
+     * @param configPath Configuration file path.
      */
     public void addConfiguration(String configPath) throws ConfigException {
         addConfiguration(new File(configPath));
@@ -241,12 +235,10 @@ public class ZKConfig {
      * to the string {@code "true"}. If the property is not set, the provided
      * <code>defaultValue</code> is returned.
      *
-     * @param key
-     *            property key.
-     * @param defaultValue
-     *            default value.
+     * @param key          property key.
+     * @param defaultValue default value.
      * @return return property value as an <code>boolean</code>, or
-     *         <code>defaultValue</code>
+     * <code>defaultValue</code>
      */
     public boolean getBoolean(String key, boolean defaultValue) {
         String propertyValue = getProperty(key);
@@ -261,14 +253,11 @@ public class ZKConfig {
      * Get the value of the <code>key</code> property as an <code>int</code>. If
      * property is not set, the provided <code>defaultValue</code> is returned
      *
-     * @param key
-     *            property key.
-     * @param defaultValue
-     *            default value.
-     * @throws NumberFormatException
-     *             when the value is invalid
+     * @param key          property key.
+     * @param defaultValue default value.
      * @return return property value as an <code>int</code>, or
-     *         <code>defaultValue</code>
+     * <code>defaultValue</code>
+     * @throws NumberFormatException when the value is invalid
      */
     public int getInt(String key, int defaultValue) {
         String value = getProperty(key);

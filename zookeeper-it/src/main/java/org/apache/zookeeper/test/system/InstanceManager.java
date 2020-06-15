@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,28 +18,18 @@
 
 package org.apache.zookeeper.test.system;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.zookeeper.AsyncCallback;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.KeeperException.ConnectionLossException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.apache.zookeeper.ZooDefs.Ids;
-import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.common.Time;
+import org.apache.zookeeper.data.Stat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * This class doles out assignments to InstanceContainers that are registered to
@@ -62,15 +52,19 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
     private String assignmentsNode = "assignments";
     private String statusNode = "available";
     private static final int maxTries = 3;
+
     private static final class Assigned {
         String container;
         int weight;
+
         Assigned(String container, int weight) {
             this.container = container;
             this.weight = weight;
         }
     }
+
     private static List<String> preferredList = new ArrayList<String>();
+
     static {
         String list = System.getProperty("ic.preferredList");
         if (list != null) {
@@ -80,8 +74,10 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
             System.err.println("Preferred List is empty");
         }
     }
+
     private Map<String, HashSet<Assigned>> assignments = new HashMap<String, HashSet<Assigned>>();
     private Map<String, Assigned> instanceToAssignment = new HashMap<String, Assigned>();
+
     public InstanceManager(ZooKeeper zk, String prefix) throws KeeperException, InterruptedException {
         this.zk = zk;
         this.prefixNode = prefix;
@@ -89,20 +85,21 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
         this.assignmentsNode = prefix + '/' + this.assignmentsNode;
         this.reportsNode = prefix + '/' + this.reportsNode;
         this.statusNode = prefix + '/' + this.statusNode;
-        for(int i = 0; i < maxTries; i++) {
+        for (int i = 0; i < maxTries; i++) {
             try {
                 setupNodes(zk);
                 break;
-            } catch(ConnectionLossException e) {}
+            } catch (ConnectionLossException e) {
+            }
         }
         ConnectionLossException lastException = null;
-        for(int i = 0; i < maxTries; i++) {
+        for (int i = 0; i < maxTries; i++) {
             try {
                 List<String> children = zk.getChildren(statusNode, this);
                 processResult(0, statusNode, null, children);
                 lastException = null;
                 break;
-            } catch(ConnectionLossException e) {
+            } catch (ConnectionLossException e) {
                 lastException = e;
             }
         }
@@ -110,27 +107,28 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
             throw lastException;
         }
     }
+
     private void setupNodes(ZooKeeper zk) throws KeeperException,
             InterruptedException {
         try {
             zk.create(prefixNode, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        } catch(NodeExistsException e) { /* this is ok */ }
+        } catch (NodeExistsException e) { /* this is ok */ }
         try {
             zk.create(assignmentsNode, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        } catch(NodeExistsException e) { /* this is ok */ }
+        } catch (NodeExistsException e) { /* this is ok */ }
         try {
             zk.create(statusNode, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        } catch(NodeExistsException e) { /* this is ok */ }
+        } catch (NodeExistsException e) { /* this is ok */ }
         try {
             zk.create(reportsNode, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        } catch(NodeExistsException e) { /* this is ok */ }
+        } catch (NodeExistsException e) { /* this is ok */ }
         try {
             zk.create(readyNode, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        } catch(NodeExistsException e) { /* this is ok */ }
+        } catch (NodeExistsException e) { /* this is ok */ }
     }
 
     synchronized public void processResult(int rc, String path, Object ctx,
-            List<String> children) {
+                                           List<String> children) {
         if (rc != KeeperException.Code.OK.intValue()) {
             zk.getChildren(statusNode, this, this, null);
             return;
@@ -139,7 +137,7 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
             LOG.debug("Got " + children + " children from " + path);
         }
         Map<String, HashSet<Assigned>> newAssignments = new HashMap<String, HashSet<Assigned>>();
-        for(String c: children) {
+        for (String c : children) {
             HashSet<Assigned> a = assignments.remove(c);
             if (a != null) {
                 newAssignments.put(c, a);
@@ -148,7 +146,7 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
             }
         }
         // Clean up the dead machines
-        for(String dead: assignments.keySet()) {
+        for (String dead : assignments.keySet()) {
             try {
                 removeInstance(dead);
             } catch (KeeperException e) {
@@ -165,6 +163,7 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
             zk.getChildren(statusNode, this, this, null);
         }
     }
+
     synchronized public String assignInstance(String name, Class<? extends Instance> clazz, String params, int weight) throws NoAvailableContainers, DuplicateNameException, InterruptedException, KeeperException {
         if (weight < 1) {
             // if the weights are not above zero, things will get messed up
@@ -177,11 +176,11 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
         // find most idle node
         String mostIdle = null;
         int mostIdleWeight = Integer.MAX_VALUE;
-        for(String preferred: preferredList) {
+        for (String preferred : preferredList) {
             HashSet<Assigned> assignmentList = assignments.get(preferred);
             int w = 0;
             if (assignmentList != null) {
-                for(Assigned a: assignmentList) {
+                for (Assigned a : assignmentList) {
                     w += a.weight;
                 }
                 if (w < mostIdleWeight) {
@@ -190,9 +189,9 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
                 }
             }
         }
-        for(Entry<String, HashSet<Assigned>> e: assignments.entrySet()) {
+        for (Entry<String, HashSet<Assigned>> e : assignments.entrySet()) {
             int w = 0;
-            for(Assigned a: e.getValue()) {
+            for (Assigned a : e.getValue()) {
                 w += a.weight;
             }
             if (w < mostIdleWeight) {
@@ -212,11 +211,11 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
         }
         as.add(a);
         KeeperException lastException = null;
-        for(int i = 0; i < maxTries; i++) {
+        for (int i = 0; i < maxTries; i++) {
             try {
                 zk.create(assignmentsNode + '/' + mostIdle + '/' + name, instanceSpec.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
                 return mostIdle;
-            } catch(NodeExistsException e) {
+            } catch (NodeExistsException e) {
                 return mostIdle;
             } catch (KeeperException e) {
                 lastException = e;
@@ -234,7 +233,7 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
             throw new NoAssignmentException();
         }
         KeeperException lastException = null;
-        for(int i = 0; i < maxTries; i++) {
+        for (int i = 0; i < maxTries; i++) {
             try {
                 zk.setData(assignmentsNode + '/' + assigned.container + '/' + name, ("update " + params).getBytes(), -1);
                 break;
@@ -249,11 +248,11 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
 
     private void doDelete(String path) throws InterruptedException, KeeperException {
         KeeperException lastException = null;
-        for(int i = 0; i < maxTries; i++) {
+        for (int i = 0; i < maxTries; i++) {
             try {
                 zk.delete(path, -1);
                 return;
-            } catch(NoNodeException e) {
+            } catch (NoNodeException e) {
                 return;
             } catch (KeeperException e) {
                 lastException = e;
@@ -261,6 +260,7 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
         }
         throw lastException;
     }
+
     synchronized public void removeInstance(String name) throws InterruptedException, KeeperException {
         Assigned assigned = instanceToAssignment.remove(name);
         if (assigned == null) {
@@ -277,14 +277,14 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
 
     public void resetStatus(String name) throws InterruptedException, KeeperException {
         KeeperException lastException = null;
-        for(int i = 0; i < maxTries; i++) {
+        for (int i = 0; i < maxTries; i++) {
             try {
                 zk.delete(reportsNode + '/' + name, -1);
                 lastException = null;
                 break;
-            } catch(ConnectionLossException e) {
+            } catch (ConnectionLossException e) {
                 lastException = e;
-            } catch(NoNodeException e) {
+            } catch (NoNodeException e) {
                 // great this is what we want!
             }
         }
@@ -298,7 +298,7 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
         byte[] data = null;
         long endTime = Time.currentElapsedTime() + timeout;
         KeeperException lastException = null;
-        for(int i = 0; i < maxTries && endTime > Time.currentElapsedTime(); i++) {
+        for (int i = 0; i < maxTries && endTime > Time.currentElapsedTime(); i++) {
             try {
                 data = zk.getData(reportsNode + '/' + name, false, stat);
                 if (LOG.isDebugEnabled()) {
@@ -306,18 +306,19 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
                 }
                 lastException = null;
                 break;
-            } catch(ConnectionLossException e) {
+            } catch (ConnectionLossException e) {
                 lastException = e;
-            } catch(NoNodeException e) {
+            } catch (NoNodeException e) {
                 final Object eventObj = new Object();
-                synchronized(eventObj) {
+                synchronized (eventObj) {
                     // wait for the node to appear
                     Stat eStat = zk.exists(reportsNode + '/' + name, new Watcher() {
                         public void process(WatchedEvent event) {
-                            synchronized(eventObj) {
+                            synchronized (eventObj) {
                                 eventObj.notifyAll();
                             }
-                        }});
+                        }
+                    });
                     if (eStat == null) {
                         eventObj.wait(endTime - Time.currentElapsedTime());
                     }
@@ -330,11 +331,12 @@ public class InstanceManager implements AsyncCallback.ChildrenCallback, Watcher 
         }
         return new String(data);
     }
+
     synchronized public void close() throws InterruptedException {
-        for(String name: instanceToAssignment.keySet().toArray(new String[0])) {
+        for (String name : instanceToAssignment.keySet().toArray(new String[0])) {
             try {
                 removeInstance(name);
-            } catch(KeeperException e) {
+            } catch (KeeperException e) {
                 e.printStackTrace();
             }
         }

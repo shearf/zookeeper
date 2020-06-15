@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
 
 /**
  * A MetricsProvider is a system which collects Metrics and publishes current values to external facilities.
- *
+ * <p>
  * The system will create an instance of the configured class using the default constructor, which must be public.<br>
  * After the instantiation of the provider, the system will call {@link #configure(java.util.Properties) } in order to provide configuration,
  * and then when the system is ready to work it will call {@link #start() }.
@@ -36,7 +36,6 @@ public interface MetricsProvider {
      * Configure the provider.
      *
      * @param configuration the configuration.
-     *
      * @throws MetricsProviderLifeCycleException in case of invalid configuration.
      */
     void configure(Properties configuration) throws MetricsProviderLifeCycleException;
@@ -66,6 +65,7 @@ public interface MetricsProvider {
     /**
      * Dumps all metrics as a key-value pair.
      * This method will be used in legacy monitor command.
+     *
      * @param sink the receiver of all of the current values.
      */
     void dump(BiConsumer<String, Object> sink);

@@ -44,7 +44,8 @@ public class PrependableSocket extends Socket {
     /**
      * Prepend some bytes that have already been read back to the socket's input stream. Note that this method can be
      * called at most once with a non-0 length per socket instance.
-     * @param bytes the bytes to prepend.
+     *
+     * @param bytes  the bytes to prepend.
      * @param offset offset in the byte array to start at.
      * @param length number of bytes to prepend.
      * @throws IOException if this method was already called on the socket instance, or if super.getInputStream() throws.

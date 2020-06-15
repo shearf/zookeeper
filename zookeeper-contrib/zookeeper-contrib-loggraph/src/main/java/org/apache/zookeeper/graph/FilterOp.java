@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,60 +17,61 @@
  */
 package org.apache.zookeeper.graph;
 
+import org.apache.zookeeper.graph.filterops.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.zookeeper.graph.filterops.*;
 
 public abstract class FilterOp {
     protected List<FilterOp> subOps;
     protected List<Arg> args;
 
     public enum ArgType {
-	STRING, NUMBER, SYMBOL
+        STRING, NUMBER, SYMBOL
     }
 
     public FilterOp() {
-	subOps = new ArrayList<FilterOp>();
-	args = new ArrayList<Arg>();
+        subOps = new ArrayList<FilterOp>();
+        args = new ArrayList<Arg>();
     }
 
     public static FilterOp newOp(String op) throws FilterException {
-	if (op.equals("or")) 
-	    return new OrOp();
-	if (op.equals("and"))
-	    return new AndOp();
-	if (op.equals("not"))
-	    return new NotOp();
-	if (op.equals("xor"))
-	    return new XorOp();
-	if (op.equals("="))
-	    return new EqualsOp();
-	if (op.equals("<"))
-	    return new LessThanOp();
-	if (op.equals(">")) 
-	    return new GreaterThanOp();
+        if (op.equals("or"))
+            return new OrOp();
+        if (op.equals("and"))
+            return new AndOp();
+        if (op.equals("not"))
+            return new NotOp();
+        if (op.equals("xor"))
+            return new XorOp();
+        if (op.equals("="))
+            return new EqualsOp();
+        if (op.equals("<"))
+            return new LessThanOp();
+        if (op.equals(">"))
+            return new GreaterThanOp();
 
-	throw new FilterException("Invalid operation '"+op+"'");
+        throw new FilterException("Invalid operation '" + op + "'");
     }
 
     public void addSubOp(FilterOp op) {
-	subOps.add(op);
+        subOps.add(op);
     }
-    
+
     public void addArg(Arg arg) {
-	args.add(arg); 
+        args.add(arg);
     }
 
     public abstract boolean matches(LogEntry entry) throws FilterException;
-    
+
     public String toString() {
-	String op = "(" + getClass().getName();
-	for (FilterOp f :  subOps) {
-	    op += " " + f;
-	}
-	for (Arg a : args) {
-	    op += " " + a;
-	}
-	return op + ")";
+        String op = "(" + getClass().getName();
+        for (FilterOp f : subOps) {
+            op += " " + f;
+        }
+        for (Arg a : args) {
+            op += " " + a;
+        }
+        return op + ")";
     }
 }

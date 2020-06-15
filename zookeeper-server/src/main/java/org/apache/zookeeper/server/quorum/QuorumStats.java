@@ -29,7 +29,9 @@ public class QuorumStats {
         String LEADING_STATE = "leading";
         String FOLLOWING_STATE = "following";
         String OBSERVING_STATE = "observing";
+
         String[] getQuorumPeers();
+
         String getServerState();
 
     }
