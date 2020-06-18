@@ -28,6 +28,8 @@ import java.util.Map;
  * snapshot interface for the persistence layer.
  * implement this interface for implementing
  * snapshots.
+ *
+ * @author ZK
  */
 public interface SnapShot {
 

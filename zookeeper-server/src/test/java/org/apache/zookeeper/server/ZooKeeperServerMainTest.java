@@ -217,7 +217,7 @@ public class ZooKeeperServerMainTest extends ZKTestCase implements Watcher {
         main.shutdown();
 
         // Make the snapshot directory read only
-        File snapDir = new File(main.dataDir, FileTxnSnapLog.version + FileTxnSnapLog.VERSION);
+        File snapDir = new File(main.dataDir, FileTxnSnapLog.VERSION_PREFIX + FileTxnSnapLog.VERSION);
         snapDir.setWritable(false);
 
         // Restart ZK and observe a failure
@@ -257,7 +257,7 @@ public class ZooKeeperServerMainTest extends ZKTestCase implements Watcher {
         main.shutdown();
 
         // Make the transaction log directory read only
-        File logDir = new File(main.logDir, FileTxnSnapLog.version + FileTxnSnapLog.VERSION);
+        File logDir = new File(main.logDir, FileTxnSnapLog.VERSION_PREFIX + FileTxnSnapLog.VERSION);
         logDir.setWritable(false);
 
         // Restart ZK and observe a failure

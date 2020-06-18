@@ -46,6 +46,7 @@ import java.nio.channels.CancelledKeyException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.security.cert.Certificate;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -407,6 +408,7 @@ public class NIOServerCnxn extends ServerCnxn {
     // register an interest op update request with the selector.
     //
     // Don't support wait disable receive in NIO, ignore the parameter
+    @Override
     public void disableRecv(boolean waitDisableRecv) {
         if (throttled.compareAndSet(false, true)) {
             requestInterestOpsUpdate();
@@ -416,6 +418,7 @@ public class NIOServerCnxn extends ServerCnxn {
     // Disable throttling and resume acceptance of new requests. If this
     // entailed a state change, register an interest op update request with
     // the selector.
+    @Override
     public void enableRecv() {
         if (throttled.compareAndSet(true, false)) {
             requestInterestOpsUpdate();
@@ -428,6 +431,35 @@ public class NIOServerCnxn extends ServerCnxn {
         }
         zkServer.processConnectRequest(this, incomingBuffer);
         initialized = true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof NIOServerCnxn)) {
+            return false;
+        }
+        NIOServerCnxn that = (NIOServerCnxn) o;
+        return initialized == that.initialized &&
+                getSessionTimeout() == that.getSessionTimeout() &&
+                getSessionId() == that.getSessionId() &&
+                clientTcpKeepAlive == that.clientTcpKeepAlive &&
+                Objects.equals(factory, that.factory) &&
+                Objects.equals(sock, that.sock) &&
+                Objects.equals(selectorThread, that.selectorThread) &&
+                Objects.equals(sk, that.sk) &&
+                Objects.equals(lenBuffer, that.lenBuffer) &&
+                Objects.equals(incomingBuffer, that.incomingBuffer) &&
+                Objects.equals(outgoingBuffers, that.outgoingBuffers) &&
+                Objects.equals(isSelectable(), that.isSelectable()) &&
+                Objects.equals(throttled, that.throttled);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(factory, sock, selectorThread, sk, initialized, lenBuffer, incomingBuffer, outgoingBuffers, getSessionTimeout(), getSessionId(), clientTcpKeepAlive, isSelectable(), throttled);
     }
 
     /**
@@ -569,6 +601,7 @@ public class NIOServerCnxn extends ServerCnxn {
      *
      * @see org.apache.zookeeper.server.ServerCnxnIface#getSessionTimeout()
      */
+    @Override
     public int getSessionTimeout() {
         return sessionTimeout;
     }

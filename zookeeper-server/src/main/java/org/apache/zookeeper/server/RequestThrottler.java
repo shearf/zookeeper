@@ -57,19 +57,20 @@ import java.util.concurrent.LinkedBlockingQueue;
  * To ensure ordering guarantees, if a request is ever dropped from a connection
  * that connection is closed and flagged as invalid. All subsequent requests
  * inflight from that connection are then dropped as well.
+ * @author ZK
  */
 public class RequestThrottler extends ZooKeeperCriticalThread {
 
     private static final Logger LOG = LoggerFactory.getLogger(RequestThrottler.class);
 
-    private final LinkedBlockingQueue<Request> submittedRequests = new LinkedBlockingQueue<Request>();
+    private final LinkedBlockingQueue<Request> submittedRequests = new LinkedBlockingQueue<>();
 
     private final ZooKeeperServer zks;
     private volatile boolean stopping;
     private volatile boolean killed;
 
     private static final String SHUTDOWN_TIMEOUT = "zookeeper.request_throttler.shutdownTimeout";
-    private static int shutdownTimeout = 10000;
+    private static int shutdownTimeout;
 
     static {
         shutdownTimeout = Integer.getInteger(SHUTDOWN_TIMEOUT, 10000);

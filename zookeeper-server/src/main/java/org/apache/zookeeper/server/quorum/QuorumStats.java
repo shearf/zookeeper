@@ -30,8 +30,18 @@ public class QuorumStats {
         String FOLLOWING_STATE = "following";
         String OBSERVING_STATE = "observing";
 
+        /**
+         * peers of quorum
+         *
+         * @return
+         */
         String[] getQuorumPeers();
 
+        /**
+         * state of server
+         *
+         * @return
+         */
         String getServerState();
 
     }

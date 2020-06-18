@@ -75,7 +75,7 @@ public class LoadFromLogTest extends ClientBase {
         stopServer();
 
         // now verify that the FileTxnLog reads every transaction only once
-        File logDir = new File(tmpDir, FileTxnSnapLog.version + FileTxnSnapLog.VERSION);
+        File logDir = new File(tmpDir, FileTxnSnapLog.VERSION_PREFIX + FileTxnSnapLog.VERSION);
         FileTxnLog txnLog = new FileTxnLog(logDir);
         TxnIterator itr = txnLog.read(0);
 
@@ -122,7 +122,7 @@ public class LoadFromLogTest extends ClientBase {
         }
         stopServer();
 
-        File logDir = new File(tmpDir, FileTxnSnapLog.version + FileTxnSnapLog.VERSION);
+        File logDir = new File(tmpDir, FileTxnSnapLog.VERSION_PREFIX + FileTxnSnapLog.VERSION);
         File[] logFiles = FileTxnLog.getLogFiles(logDir.listFiles(), 0);
         // Verify that we have at least NUM_MESSAGES / SNAPCOUNT txnlog
         assertTrue(logFiles.length > NUM_MESSAGES / 100);
@@ -264,14 +264,14 @@ public class LoadFromLogTest extends ClientBase {
 
         try {
             // now verify autocreate off works
-            System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE, "false");
+            System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTO_CREATE, "false");
             tmpDir = createTmpDir();
             startServer();
             fail("Server should not have started without datadir");
         } catch (IOException e) {
             LOG.debug("Server failed to start - correct behavior", e);
         } finally {
-            System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE, FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE_DEFAULT);
+            System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTO_CREATE, FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTO_CREATE_DEFAULT);
         }
     }
 

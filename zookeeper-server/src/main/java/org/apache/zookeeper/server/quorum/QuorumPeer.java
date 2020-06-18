@@ -84,6 +84,8 @@ import static org.apache.zookeeper.common.NetUtils.formatInetAddr;
  * </pre>
  * <p>
  * The request for the current leader will consist solely of an xid: int xid;
+ *
+ * @author ZK
  */
 public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider {
 
@@ -241,7 +243,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
             }
         }
 
-        private static final String wrongFormat =
+        private static final String WRONG_FORMAT =
                 " does not have the form server_config or server_config;client_config"
                         + " where server_config is the pipe separated list of host:port:port or host:port:port:type"
                         + " and client_config is port or host:port";
@@ -255,7 +257,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
             if (serverClientParts.length == 2) {
                 String[] clientParts = ConfigUtils.getHostAndPort(serverClientParts[1]);
                 if (clientParts.length > 2) {
-                    throw new ConfigException(addressStr + wrongFormat);
+                    throw new ConfigException(addressStr + WRONG_FORMAT);
                 }
 
                 // is client_config a host:port or just a port
@@ -274,10 +276,10 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
             }
 
             for (String serverAddress : serverAddresses) {
-                String serverParts[] = ConfigUtils.getHostAndPort(serverAddress);
+                String[] serverParts = ConfigUtils.getHostAndPort(serverAddress);
                 if ((serverClientParts.length > 2) || (serverParts.length < 3)
                         || (serverParts.length > 4)) {
-                    throw new ConfigException(addressStr + wrongFormat);
+                    throw new ConfigException(addressStr + WRONG_FORMAT);
                 }
 
                 // server_config should be either host:port:port or host:port:port:type
@@ -442,10 +444,10 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
                 if (addr == null) {
                     continue;
                 }
-                InetAddress inetaddr = addr.getAddress();
+                InetAddress inetAddress = addr.getAddress();
 
-                if (inetaddr == null || inetaddr.isAnyLocalAddress() || // wildCard addresses (0.0.0.0 or [::])
-                        inetaddr.isLoopbackAddress()) { // loopback address(localhost/127.0.0.1)
+                if (inetAddress == null || inetAddress.isAnyLocalAddress() || // wildCard addresses (0.0.0.0 or [::])
+                        inetAddress.isLoopbackAddress()) { // loopback address(localhost/127.0.0.1)
                     continue;
                 }
                 included.add(addr);
@@ -1036,11 +1038,11 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     public void initialize() throws SaslException {
         // init quorum auth server & learner
         if (isQuorumSaslAuthEnabled()) {
-            Set<String> authzHosts = new HashSet<String>();
+            Set<String> authHosts = new HashSet<>();
             for (QuorumServer qs : getView().values()) {
-                authzHosts.add(qs.hostname);
+                authHosts.add(qs.hostname);
             }
-            authServer = new SaslQuorumAuthServer(isQuorumServerSaslAuthRequired(), quorumServerLoginContext, authzHosts);
+            authServer = new SaslQuorumAuthServer(isQuorumServerSaslAuthRequired(), quorumServerLoginContext, authHosts);
             authLearner = new SaslQuorumAuthLearner(isQuorumLearnerSaslAuthRequired(), quorumServicePrincipal, quorumLearnerLoginContext);
         } else {
             authServer = new NullQuorumAuthServer();
@@ -1370,21 +1372,19 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
                             // Thread is used here because otherwise it would require
                             // changes in each of election strategy classes which is
                             // unnecessary code coupling.
-                            Thread roZkMgr = new Thread() {
-                                public void run() {
-                                    try {
-                                        // lower-bound grace period to 2 secs
-                                        sleep(Math.max(2000, tickTime));
-                                        if (ServerState.LOOKING.equals(getPeerState())) {
-                                            roZk.startup();
-                                        }
-                                    } catch (InterruptedException e) {
-                                        LOG.info("Interrupted while attempting to start ReadOnlyZooKeeperServer, not started");
-                                    } catch (Exception e) {
-                                        LOG.error("FAILED to start ReadOnlyZooKeeperServer", e);
+                            Thread roZkMgr = new Thread(() -> {
+                                try {
+                                    // lower-bound grace period to 2 secs
+                                    sleep(Math.max(2000, tickTime));
+                                    if (ServerState.LOOKING.equals(getPeerState())) {
+                                        roZk.startup();
                                     }
+                                } catch (InterruptedException e) {
+                                    LOG.info("Interrupted while attempting to start ReadOnlyZooKeeperServer, not started");
+                                } catch (Exception e) {
+                                    LOG.error("FAILED to start ReadOnlyZooKeeperServer", e);
                                 }
-                            };
+                            });
                             try {
                                 roZkMgr.start();
                                 reconfigFlagClear();
@@ -1582,6 +1582,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     /**
      * Only used by QuorumStats at the moment
      */
+    @Override
     public String[] getQuorumPeers() {
         List<String> l = new ArrayList<String>();
         synchronized (this) {

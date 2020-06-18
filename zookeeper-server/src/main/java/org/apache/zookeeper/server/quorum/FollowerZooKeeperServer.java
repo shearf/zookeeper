@@ -40,6 +40,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * FinalRequestProcessor
  * <p>
  * A SyncRequestProcessor is also spawned off to log proposals from the leader.
+ * @author ZK
  */
 public class FollowerZooKeeperServer extends LearnerZooKeeperServer {
 
@@ -72,7 +73,7 @@ public class FollowerZooKeeperServer extends LearnerZooKeeperServer {
         syncProcessor.start();
     }
 
-    LinkedBlockingQueue<Request> pendingTxns = new LinkedBlockingQueue<Request>();
+    LinkedBlockingQueue<Request> pendingTxns = new LinkedBlockingQueue<>();
 
     public void logRequest(TxnHeader hdr, Record txn, TxnDigest digest) {
         Request request = new Request(hdr.getClientId(), hdr.getCxid(), hdr.getType(), hdr, txn, hdr.getZxid());
@@ -123,8 +124,7 @@ public class FollowerZooKeeperServer extends LearnerZooKeeperServer {
     @Override
     public int getGlobalOutstandingLimit() {
         int divisor = self.getQuorumSize() > 2 ? self.getQuorumSize() - 1 : 1;
-        int globalOutstandingLimit = super.getGlobalOutstandingLimit() / divisor;
-        return globalOutstandingLimit;
+        return super.getGlobalOutstandingLimit() / divisor;
     }
 
     @Override

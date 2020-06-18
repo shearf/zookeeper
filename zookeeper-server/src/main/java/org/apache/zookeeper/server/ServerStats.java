@@ -124,16 +124,16 @@ public class ServerStats {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Latency min/avg/max: " + getMinLatency() + "/" + getAvgLatency() + "/" + getMaxLatency() + "\n");
-        sb.append("Received: " + getPacketsReceived() + "\n");
-        sb.append("Sent: " + getPacketsSent() + "\n");
-        sb.append("Connections: " + getNumAliveClientConnections() + "\n");
+        sb.append("Latency min/avg/max: ").append(getMinLatency()).append("/").append(getAvgLatency()).append("/").append(getMaxLatency()).append("\n");
+        sb.append("Received: ").append(getPacketsReceived()).append("\n");
+        sb.append("Sent: ").append(getPacketsSent()).append("\n");
+        sb.append("Connections: ").append(getNumAliveClientConnections()).append("\n");
 
         if (provider != null) {
-            sb.append("Outstanding: " + getOutstandingRequests() + "\n");
-            sb.append("Zxid: 0x" + Long.toHexString(getLastProcessedZxid()) + "\n");
+            sb.append("Outstanding: ").append(getOutstandingRequests()).append("\n");
+            sb.append("Zxid: 0x").append(Long.toHexString(getLastProcessedZxid())).append("\n");
         }
-        sb.append("Mode: " + getServerState() + "\n");
+        sb.append("Mode: ").append(getServerState()).append("\n");
         return sb.toString();
     }
 

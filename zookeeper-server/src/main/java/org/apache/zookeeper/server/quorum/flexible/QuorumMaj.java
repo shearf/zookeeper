@@ -90,13 +90,13 @@ public class QuorumMaj implements QuorumVerifier {
                 int dot = key.indexOf('.');
                 long sid = Long.parseLong(key.substring(dot + 1));
                 QuorumServer qs = new QuorumServer(sid, value);
-                allMembers.put(Long.valueOf(sid), qs);
+                allMembers.put(sid, qs);
                 if (qs.type == LearnerType.PARTICIPANT) {
-                    votingMembers.put(Long.valueOf(sid), qs);
+                    votingMembers.put(sid, qs);
                 } else {
-                    observingMembers.put(Long.valueOf(sid), qs);
+                    observingMembers.put(sid, qs);
                 }
-            } else if (key.equals("version")) {
+            } else if ("version".equals(key)) {
                 version = Long.parseLong(value, 16);
             }
         }

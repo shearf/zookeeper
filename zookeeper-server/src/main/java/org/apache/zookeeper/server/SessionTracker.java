@@ -30,15 +30,28 @@ import java.util.Set;
  * standalone and leader ZooKeeperServer use the same SessionTracker. The
  * FollowerZooKeeperServer uses a SessionTracker which is basically a simple
  * shell to track information to be forwarded to the leader.
+ * @author ZK
  */
 public interface SessionTracker {
 
     interface Session {
 
+        /**
+         * session ID
+         * @return
+         */
         long getSessionId();
 
+        /**
+         * timeout
+         * @return
+         */
         int getTimeout();
 
+        /**
+         * is close
+         * @return
+         */
         boolean isClosing();
 
     }
@@ -130,12 +143,13 @@ public interface SessionTracker {
     /**
      * Text dump of session information, suitable for debugging.
      *
-     * @param pwriter the output writer
+     * @param printWriter the output writer
      */
-    void dumpSessions(PrintWriter pwriter);
+    void dumpSessions(PrintWriter printWriter);
 
     /**
      * Returns a mapping of time to session IDs that expire at that time.
+     * @return a mapping of time to session IDs that expire at that time.
      */
     Map<Long, Set<Long>> getSessionExpiryMap();
 

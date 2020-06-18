@@ -75,7 +75,7 @@ public class FileTxnSnapLogTest {
     }
 
     private File createVersionDir(File parentDir) {
-        File versionDir = new File(parentDir, FileTxnSnapLog.version + FileTxnSnapLog.VERSION);
+        File versionDir = new File(parentDir, FileTxnSnapLog.VERSION_PREFIX + FileTxnSnapLog.VERSION);
         versionDir.mkdirs();
         return versionDir;
     }
@@ -121,16 +121,16 @@ public class FileTxnSnapLogTest {
             File logDir,
             File snapDir,
             String autoCreateValue) throws IOException {
-        String priorAutocreateDirValue = System.getProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE);
-        System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE, autoCreateValue);
+        String priorAutocreateDirValue = System.getProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTO_CREATE);
+        System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTO_CREATE, autoCreateValue);
         FileTxnSnapLog fileTxnSnapLog;
         try {
             fileTxnSnapLog = new FileTxnSnapLog(logDir, snapDir);
         } finally {
             if (priorAutocreateDirValue == null) {
-                System.clearProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE);
+                System.clearProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTO_CREATE);
             } else {
-                System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTOCREATE, priorAutocreateDirValue);
+                System.setProperty(FileTxnSnapLog.ZOOKEEPER_DATADIR_AUTO_CREATE, priorAutocreateDirValue);
             }
         }
         return fileTxnSnapLog;
@@ -140,16 +140,16 @@ public class FileTxnSnapLogTest {
             File logDir,
             File snapDir,
             String autoCreateValue) throws IOException {
-        String priorAutocreateDBValue = System.getProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTOCREATE);
-        System.setProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTOCREATE, autoCreateValue);
+        String priorAutocreateDBValue = System.getProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTO_CREATE);
+        System.setProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTO_CREATE, autoCreateValue);
         FileTxnSnapLog fileTxnSnapLog;
         try {
             fileTxnSnapLog = new FileTxnSnapLog(logDir, snapDir);
         } finally {
             if (priorAutocreateDBValue == null) {
-                System.clearProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTOCREATE);
+                System.clearProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTO_CREATE);
             } else {
-                System.setProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTOCREATE, priorAutocreateDBValue);
+                System.setProperty(FileTxnSnapLog.ZOOKEEPER_DB_AUTO_CREATE, priorAutocreateDBValue);
             }
         }
         return fileTxnSnapLog;

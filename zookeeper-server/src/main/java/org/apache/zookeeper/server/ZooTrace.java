@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
  * Trace messages go to the log with TRACE level.
  * <p>
  * Log4j must be correctly configured to capture the TRACE messages.
+ * @author ZK
  */
 public class ZooTrace {
 

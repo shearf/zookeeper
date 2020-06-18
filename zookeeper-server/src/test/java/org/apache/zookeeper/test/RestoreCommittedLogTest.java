@@ -123,7 +123,7 @@ public class RestoreCommittedLogTest extends ZKTestCase {
 
         // start server again
         zks = new ZooKeeperServer(tmpDir, tmpDir, 3000);
-        zks.startdata();
+        zks.startData();
         Collection<Proposal> committedLog = zks.getZKDatabase().getCommittedLog();
         int logsize = committedLog.size();
         LOG.info("committedLog size = {}", logsize);

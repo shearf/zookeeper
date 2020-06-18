@@ -578,6 +578,7 @@ public class NettyServerCnxnFactory extends ServerCnxnFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getMaxClientCnxnsPerHost() {
         return maxClientCnxns;
     }
@@ -585,6 +586,7 @@ public class NettyServerCnxnFactory extends ServerCnxnFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMaxClientCnxnsPerHost(int max) {
         maxClientCnxns = max;
     }
@@ -592,6 +594,7 @@ public class NettyServerCnxnFactory extends ServerCnxnFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getSocketListenBacklog() {
         return listenBacklog;
     }
@@ -676,6 +679,7 @@ public class NettyServerCnxnFactory extends ServerCnxnFactory {
         LOG.info("bound to port {}", getLocalPort());
     }
 
+    @Override
     public void reconfigure(InetSocketAddress addr) {
         LOG.info("binding to port {}, {}", addr, localAddress);
         if (addr != null && localAddress != null) {
@@ -706,7 +710,7 @@ public class NettyServerCnxnFactory extends ServerCnxnFactory {
         start();
         setZooKeeperServer(zks);
         if (startServer) {
-            zks.startdata();
+            zks.startData();
             zks.startup();
         }
     }

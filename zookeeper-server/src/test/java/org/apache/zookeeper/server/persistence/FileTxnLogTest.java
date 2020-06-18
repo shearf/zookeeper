@@ -243,7 +243,7 @@ public class FileTxnLogTest extends ZKTestCase {
                 "waiting for server to shutdown",
                 ClientBase.waitForServerDown(HOSTPORT, CONNECTION_TIMEOUT));
 
-        File logDir = new File(tmpDir, FileTxnSnapLog.version + FileTxnSnapLog.VERSION);
+        File logDir = new File(tmpDir, FileTxnSnapLog.VERSION_PREFIX + FileTxnSnapLog.VERSION);
         File[] txnLogs = FileTxnLog.getLogFiles(logDir.listFiles(), 0);
 
         assertEquals("Unexpected number of logs", 3, txnLogs.length);
@@ -261,7 +261,7 @@ public class FileTxnLogTest extends ZKTestCase {
 
         // Start database only
         zks = new ZooKeeperServer(tmpDir, tmpDir, 3000);
-        zks.startdata();
+        zks.startData();
 
         ZKDatabase db = zks.getZKDatabase();
 

@@ -59,12 +59,13 @@ public class RaceConditionTest extends QuorumPeerTestBase {
         mt = startQuorum();
         // get leader
         QuorumPeer leader = getLeader(mt);
+        assert leader != null;
         long oldLeaderCurrentEpoch = leader.getCurrentEpoch();
         assertNotNull("Leader should not be null", leader);
         // shutdown 2 followers so that leader does not have majority and goes
         // into looking state or following/leading state.
         shutdownFollowers(mt);
-        /**
+        /*
          * <pre>
          * Verify that there is no deadlock in following ways:
          * 1) If leader is in LOOKING or FOLLOWING, we are sure there is no deadlock.
@@ -108,7 +109,7 @@ public class RaceConditionTest extends QuorumPeerTestBase {
             clientPorts[i] = PortAssignment.unique();
             server = "server." + i + "=127.0.0.1:" + PortAssignment.unique() + ":" + PortAssignment.unique()
                     + ":participant;127.0.0.1:" + clientPorts[i];
-            sb.append(server + "\n");
+            sb.append(server).append("\n");
         }
         String currentQuorumCfgSection = sb.toString();
         MainThread[] mt = new MainThread[SERVER_COUNT];
@@ -144,8 +145,8 @@ public class RaceConditionTest extends QuorumPeerTestBase {
     }
 
     private void shutdownFollowers(MainThread[] mt) {
-        for (int i = 0; i < mt.length; i++) {
-            CustomQuorumPeer quorumPeer = (CustomQuorumPeer) mt[i].getQuorumPeer();
+        for (MainThread mainThread : mt) {
+            CustomQuorumPeer quorumPeer = (CustomQuorumPeer) mainThread.getQuorumPeer();
             if (quorumPeer != null && ServerState.FOLLOWING == quorumPeer.getPeerState()) {
                 quorumPeer.setStopPing(true);
             }
@@ -184,7 +185,7 @@ public class RaceConditionTest extends QuorumPeerTestBase {
             LeaderZooKeeperServer zk = new LeaderZooKeeperServer(logFactory, this, this.getZkDb()) {
                 @Override
                 protected void setupRequestProcessors() {
-                    /**
+                    /*
                      * This method is overridden to make a place to inject
                      * MockSyncRequestProcessor
                      */
@@ -213,7 +214,7 @@ public class RaceConditionTest extends QuorumPeerTestBase {
 
         @Override
         public void shutdown() {
-            /**
+            /*
              * Add a request so that something is there for SyncRequestProcessor
              * to process, while we are in shutdown flow
              */
@@ -229,7 +230,7 @@ public class RaceConditionTest extends QuorumPeerTestBase {
         public MockProposalRequestProcessor(LeaderZooKeeperServer zks, RequestProcessor nextProcessor) {
             super(zks, nextProcessor);
 
-            /**
+            /*
              * The only purpose here is to inject the mocked
              * SyncRequestProcessor
              */

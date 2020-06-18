@@ -46,7 +46,10 @@ public abstract class ServerCnxnFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerCnxnFactory.class);
 
-    // Tells whether SSL is enabled on this ServerCnxnFactory
+    /**
+     *
+     * Tells whether SSL is enabled on this ServerCnxnFactory
+     */
     protected boolean secure;
 
     /**
@@ -54,10 +57,15 @@ public abstract class ServerCnxnFactory {
      */
     static final ByteBuffer closeConn = ByteBuffer.allocate(0);
 
-    // total number of connections accepted by the ZooKeeper server
+    /**
+     * total number of connections accepted by the ZooKeeper server
+     */
     protected int maxCnxns;
 
-    // sessionMap is used by closeSession()
+    /**
+     *
+     * sessionMap is used by closeSession()
+     */
     final ConcurrentHashMap<Long, ServerCnxn> sessionMap = new ConcurrentHashMap<Long, ServerCnxn>();
 
     private static String loginUser = Login.SYSTEM_USER;

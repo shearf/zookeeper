@@ -85,6 +85,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
 
     static {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
             public void uncaughtException(Thread t, Throwable e) {
                 LOG.error("Thread {} died", t, e);
             }
@@ -176,10 +177,11 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
             super("NIOServerCxnFactory.AcceptThread:" + addr);
             this.acceptSocket = ss;
             this.acceptKey = acceptSocket.register(selector, SelectionKey.OP_ACCEPT);
-            this.selectorThreads = Collections.unmodifiableList(new ArrayList<SelectorThread>(selectorThreads));
+            this.selectorThreads = Collections.unmodifiableList(new ArrayList<>(selectorThreads));
             selectorIterator = this.selectorThreads.iterator();
         }
 
+        @Override
         public void run() {
             try {
                 while (!stopped && !acceptSocket.socket().isClosed()) {
@@ -330,8 +332,8 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
         public SelectorThread(int id) throws IOException {
             super("NIOServerCxnFactory.SelectorThread-" + id);
             this.id = id;
-            acceptedQueue = new LinkedBlockingQueue<SocketChannel>();
-            updateQueue = new LinkedBlockingQueue<SelectionKey>();
+            acceptedQueue = new LinkedBlockingQueue<>();
+            updateQueue = new LinkedBlockingQueue<>();
         }
 
         /**
@@ -367,6 +369,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
          * newly accepted connections and updates any interest ops on the
          * queue.
          */
+        @Override
         public void run() {
             try {
                 while (!stopped) {
@@ -486,6 +489,24 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
             }
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof SelectorThread)) {
+                return false;
+            }
+            SelectorThread that = (SelectorThread) o;
+            return getId() == that.getId() &&
+                    Objects.equals(acceptedQueue, that.acceptedQueue) &&
+                    Objects.equals(updateQueue, that.updateQueue);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getId(), acceptedQueue, updateQueue);
+        }
     }
 
     /**
@@ -504,6 +525,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
             this.cnxn = (NIOServerCnxn) key.attachment();
         }
 
+        @Override
         public void doWork() throws InterruptedException {
             if (!key.isValid()) {
                 selectorThread.cleanupSelectionKey(key);
@@ -546,12 +568,13 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
      * This thread is responsible for closing stale connections so that
      * connections on which no session is established are properly expired.
      */
-    private class ConnectionExpirerThread extends ZooKeeperThread {
+    private class ConnectionExpireThread extends ZooKeeperThread {
 
-        ConnectionExpirerThread() {
+        ConnectionExpireThread() {
             super("ConnnectionExpirer");
         }
 
+        @Override
         public void run() {
             try {
                 while (!stopped) {
@@ -617,9 +640,9 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
     }
 
     private volatile boolean stopped = true;
-    private ConnectionExpirerThread expirerThread;
+    private ConnectionExpireThread expireThread;
     private AcceptThread acceptThread;
-    private final Set<SelectorThread> selectorThreads = new HashSet<SelectorThread>();
+    private final Set<SelectorThread> selectorThreads = new HashSet<>();
 
     @Override
     public void configure(InetSocketAddress addr, int maxcc, int backlog, boolean secure) throws IOException {
@@ -636,7 +659,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
         // interval passed into the ExpiryQueue() constructor below should be
         // less than or equal to the timeout.
         cnxnExpiryQueue = new ExpiryQueue<NIOServerCnxn>(sessionlessCnxnTimeout);
-        expirerThread = new ConnectionExpirerThread();
+        expireThread = new ConnectionExpireThread();
 
         int numCores = Runtime.getRuntime().availableProcessors();
         // 32 cores sweet spot seems to be 4 selector threads
@@ -710,6 +733,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getMaxClientCnxnsPerHost() {
         return maxClientCnxns;
     }
@@ -717,6 +741,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setMaxClientCnxnsPerHost(int max) {
         maxClientCnxns = max;
     }
@@ -724,6 +749,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getSocketListenBacklog() {
         return listenBacklog;
     }
@@ -743,8 +769,8 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
         if (acceptThread.getState() == Thread.State.NEW) {
             acceptThread.start();
         }
-        if (expirerThread.getState() == Thread.State.NEW) {
-            expirerThread.start();
+        if (expireThread.getState() == Thread.State.NEW) {
+            expireThread.start();
         }
     }
 
@@ -753,7 +779,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
         start();
         setZooKeeperServer(zks);
         if (startServer) {
-            zks.startdata();
+            zks.startData();
             zks.startup();
         }
     }
@@ -881,8 +907,8 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
                 acceptThread.closeSelector();
             }
         }
-        if (expirerThread != null) {
-            expirerThread.interrupt();
+        if (expireThread != null) {
+            expireThread.interrupt();
         }
         for (SelectorThread thread : selectorThreads) {
             if (thread.isAlive()) {
@@ -896,6 +922,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
         }
     }
 
+    @Override
     public void shutdown() {
         try {
             // close listen socket and signal selector threads to stop

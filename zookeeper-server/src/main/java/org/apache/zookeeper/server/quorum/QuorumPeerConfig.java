@@ -48,6 +48,9 @@ import java.util.Map.Entry;
 
 import static org.apache.zookeeper.common.NetUtils.formatInetAddr;
 
+/**
+ * @author ZK
+ */
 @InterfaceAudience.Public
 public class QuorumPeerConfig {
 
@@ -285,72 +288,72 @@ public class QuorumPeerConfig {
         for (Entry<Object, Object> entry : zkProp.entrySet()) {
             String key = entry.getKey().toString().trim();
             String value = entry.getValue().toString().trim();
-            if (key.equals("dataDir")) {
+            if ("dataDir".equals(key)) {
                 dataDir = vff.create(value);
-            } else if (key.equals("dataLogDir")) {
+            } else if ("dataLogDir".equals(key)) {
                 dataLogDir = vff.create(value);
-            } else if (key.equals("clientPort")) {
+            } else if ("clientPort".equals(key)) {
                 clientPort = Integer.parseInt(value);
-            } else if (key.equals("localSessionsEnabled")) {
+            } else if ("localSessionsEnabled".equals(key)) {
                 localSessionsEnabled = parseBoolean(key, value);
-            } else if (key.equals("localSessionsUpgradingEnabled")) {
+            } else if ("localSessionsUpgradingEnabled".equals(key)) {
                 localSessionsUpgradingEnabled = parseBoolean(key, value);
-            } else if (key.equals("clientPortAddress")) {
+            } else if ("clientPortAddress".equals(key)) {
                 clientPortAddress = value.trim();
-            } else if (key.equals("secureClientPort")) {
+            } else if ("secureClientPort".equals(key)) {
                 secureClientPort = Integer.parseInt(value);
-            } else if (key.equals("secureClientPortAddress")) {
+            } else if ("secureClientPortAddress".equals(key)) {
                 secureClientPortAddress = value.trim();
-            } else if (key.equals("observerMasterPort")) {
+            } else if ("observerMasterPort".equals(key)) {
                 observerMasterPort = Integer.parseInt(value);
-            } else if (key.equals("clientPortListenBacklog")) {
+            } else if ("clientPortListenBacklog".equals(key)) {
                 clientPortListenBacklog = Integer.parseInt(value);
-            } else if (key.equals("tickTime")) {
+            } else if ("tickTime".equals(key)) {
                 tickTime = Integer.parseInt(value);
-            } else if (key.equals("maxClientCnxns")) {
+            } else if ("maxClientCnxns".equals(key)) {
                 maxClientCnxns = Integer.parseInt(value);
-            } else if (key.equals("minSessionTimeout")) {
+            } else if ("minSessionTimeout".equals(key)) {
                 minSessionTimeout = Integer.parseInt(value);
-            } else if (key.equals("maxSessionTimeout")) {
+            } else if ("maxSessionTimeout".equals(key)) {
                 maxSessionTimeout = Integer.parseInt(value);
-            } else if (key.equals("initLimit")) {
+            } else if ("initLimit".equals(key)) {
                 initLimit = Integer.parseInt(value);
-            } else if (key.equals("syncLimit")) {
+            } else if ("syncLimit".equals(key)) {
                 syncLimit = Integer.parseInt(value);
-            } else if (key.equals("connectToLearnerMasterLimit")) {
+            } else if ("connectToLearnerMasterLimit".equals(key)) {
                 connectToLearnerMasterLimit = Integer.parseInt(value);
-            } else if (key.equals("electionAlg")) {
+            } else if ("electionAlg".equals(key)) {
                 electionAlg = Integer.parseInt(value);
                 if (electionAlg != 3) {
                     throw new ConfigException("Invalid electionAlg value. Only 3 is supported.");
                 }
-            } else if (key.equals("quorumListenOnAllIPs")) {
+            } else if ("quorumListenOnAllIPs".equals(key)) {
                 quorumListenOnAllIPs = parseBoolean(key, value);
-            } else if (key.equals("peerType")) {
-                if (value.toLowerCase().equals("observer")) {
+            } else if ("peerType".equals(key)) {
+                if ("observer".equals(value.toLowerCase())) {
                     peerType = LearnerType.OBSERVER;
-                } else if (value.toLowerCase().equals("participant")) {
+                } else if ("participant".equals(value.toLowerCase())) {
                     peerType = LearnerType.PARTICIPANT;
                 } else {
                     throw new ConfigException("Unrecognised peertype: " + value);
                 }
-            } else if (key.equals("syncEnabled")) {
+            } else if ("syncEnabled".equals(key)) {
                 syncEnabled = parseBoolean(key, value);
-            } else if (key.equals("dynamicConfigFile")) {
+            } else if ("dynamicConfigFile".equals(key)) {
                 dynamicConfigFileStr = value;
-            } else if (key.equals("autopurge.snapRetainCount")) {
+            } else if ("autopurge.snapRetainCount".equals(key)) {
                 snapRetainCount = Integer.parseInt(value);
-            } else if (key.equals("autopurge.purgeInterval")) {
+            } else if ("autopurge.purgeInterval".equals(key)) {
                 purgeInterval = Integer.parseInt(value);
-            } else if (key.equals("standaloneEnabled")) {
+            } else if ("standaloneEnabled".equals(key)) {
                 setStandaloneEnabled(parseBoolean(key, value));
-            } else if (key.equals("reconfigEnabled")) {
+            } else if ("reconfigEnabled".equals(key)) {
                 setReconfigEnabled(parseBoolean(key, value));
-            } else if (key.equals("sslQuorum")) {
+            } else if ("sslQuorum".equals(key)) {
                 sslQuorum = parseBoolean(key, value);
-            } else if (key.equals("portUnification")) {
+            } else if ("portUnification".equals(key)) {
                 shouldUsePortUnification = parseBoolean(key, value);
-            } else if (key.equals("sslQuorumReloadCertFiles")) {
+            } else if ("sslQuorumReloadCertFiles".equals(key)) {
                 sslQuorumReloadCertFiles = parseBoolean(key, value);
             } else if ((key.startsWith("server.") || key.startsWith("group") || key.startsWith("weight"))
                     && zkProp.containsKey("dynamicConfigFile")) {
@@ -367,7 +370,7 @@ public class QuorumPeerConfig {
                 quorumServerLoginContext = value;
             } else if (key.equals(QuorumAuth.QUORUM_KERBEROS_SERVICE_PRINCIPAL)) {
                 quorumServicePrincipal = value;
-            } else if (key.equals("quorum.cnxn.threads.size")) {
+            } else if ("quorum.cnxn.threads.size".equals(key)) {
                 quorumCnxnThreadsSize = Integer.parseInt(value);
             } else if (key.equals(JvmPauseMonitor.INFO_THRESHOLD_KEY)) {
                 jvmPauseInfoThresholdMs = Long.parseLong(value);
@@ -377,16 +380,16 @@ public class QuorumPeerConfig {
                 jvmPauseSleepTimeMs = Long.parseLong(value);
             } else if (key.equals(JvmPauseMonitor.JVM_PAUSE_MONITOR_FEATURE_SWITCH_KEY)) {
                 jvmPauseMonitorToRun = parseBoolean(key, value);
-            } else if (key.equals("metricsProvider.className")) {
+            } else if ("metricsProvider.className".equals(key)) {
                 metricsProviderClassName = value;
             } else if (key.startsWith("metricsProvider.")) {
                 String keyForMetricsProvider = key.substring(16);
                 metricsProviderConfiguration.put(keyForMetricsProvider, value);
-            } else if (key.equals("multiAddress.enabled")) {
+            } else if ("multiAddress.enabled".equals(key)) {
                 multiAddressEnabled = parseBoolean(key, value);
-            } else if (key.equals("multiAddress.reachabilityCheckTimeoutMs")) {
+            } else if ("multiAddress.reachabilityCheckTimeoutMs".equals(key)) {
                 multiAddressReachabilityCheckTimeoutMs = Integer.parseInt(value);
-            } else if (key.equals("multiAddress.reachabilityCheckEnabled")) {
+            } else if ("multiAddress.reachabilityCheckEnabled".equals(key)) {
                 multiAddressReachabilityCheckEnabled = parseBoolean(key, value);
             } else {
                 System.setProperty("zookeeper." + key, value);

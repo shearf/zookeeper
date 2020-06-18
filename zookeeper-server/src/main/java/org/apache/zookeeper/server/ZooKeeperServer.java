@@ -367,32 +367,32 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         return connThrottle;
     }
 
-    public void dumpConf(PrintWriter pwriter) {
-        pwriter.print("clientPort=");
-        pwriter.println(getClientPort());
-        pwriter.print("secureClientPort=");
-        pwriter.println(getSecureClientPort());
-        pwriter.print("dataDir=");
-        pwriter.println(zkDb.snapLog.getSnapDir().getAbsolutePath());
-        pwriter.print("dataDirSize=");
-        pwriter.println(getDataDirSize());
-        pwriter.print("dataLogDir=");
-        pwriter.println(zkDb.snapLog.getDataDir().getAbsolutePath());
-        pwriter.print("dataLogSize=");
-        pwriter.println(getLogDirSize());
-        pwriter.print("tickTime=");
-        pwriter.println(getTickTime());
-        pwriter.print("maxClientCnxns=");
-        pwriter.println(getMaxClientCnxnsPerHost());
-        pwriter.print("minSessionTimeout=");
-        pwriter.println(getMinSessionTimeout());
-        pwriter.print("maxSessionTimeout=");
-        pwriter.println(getMaxSessionTimeout());
-        pwriter.print("clientPortListenBacklog=");
-        pwriter.println(getClientPortListenBacklog());
+    public void dumpConf(PrintWriter printWriter) {
+        printWriter.print("clientPort=");
+        printWriter.println(getClientPort());
+        printWriter.print("secureClientPort=");
+        printWriter.println(getSecureClientPort());
+        printWriter.print("dataDir=");
+        printWriter.println(zkDb.snapLog.getSnapDir().getAbsolutePath());
+        printWriter.print("dataDirSize=");
+        printWriter.println(getDataDirSize());
+        printWriter.print("dataLogDir=");
+        printWriter.println(zkDb.snapLog.getDataDir().getAbsolutePath());
+        printWriter.print("dataLogSize=");
+        printWriter.println(getLogDirSize());
+        printWriter.print("tickTime=");
+        printWriter.println(getTickTime());
+        printWriter.print("maxClientCnxns=");
+        printWriter.println(getMaxClientCnxnsPerHost());
+        printWriter.print("minSessionTimeout=");
+        printWriter.println(getMinSessionTimeout());
+        printWriter.print("maxSessionTimeout=");
+        printWriter.println(getMaxSessionTimeout());
+        printWriter.print("clientPortListenBacklog=");
+        printWriter.println(getClientPortListenBacklog());
 
-        pwriter.print("serverId=");
-        pwriter.println(getServerId());
+        printWriter.print("serverId=");
+        printWriter.println(getServerId());
     }
 
     public ZooKeeperServerConf getConf() {
@@ -635,7 +635,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         }
     }
 
-    public void startdata() throws IOException, InterruptedException {
+    public void startData() throws IOException, InterruptedException {
         //check to see if zkDb is not null
         if (zkDb == null) {
             zkDb = new ZKDatabase(this.txnLogFactory);
@@ -1099,8 +1099,8 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
         }
         try {
             touch(si.cnxn);
-            boolean validpacket = Request.isValid(si.type);
-            if (validpacket) {
+            boolean valid = Request.isValid(si.type);
+            if (valid) {
                 setLocalSessionFlag(si);
                 firstProcessor.processRequest(si);
                 if (si.cnxn != null) {

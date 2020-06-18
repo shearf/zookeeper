@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 /**
  * Abstract base class for all ZooKeeperServers that participate in
  * a quorum.
+ * @author ZK
  */
 public abstract class QuorumZooKeeperServer extends ZooKeeperServer {
 
@@ -165,25 +166,25 @@ public abstract class QuorumZooKeeperServer extends ZooKeeperServer {
     }
 
     @Override
-    public void dumpConf(PrintWriter pwriter) {
-        super.dumpConf(pwriter);
+    public void dumpConf(PrintWriter printWriter) {
+        super.dumpConf(printWriter);
 
-        pwriter.print("initLimit=");
-        pwriter.println(self.getInitLimit());
-        pwriter.print("syncLimit=");
-        pwriter.println(self.getSyncLimit());
-        pwriter.print("electionAlg=");
-        pwriter.println(self.getElectionType());
-        pwriter.print("electionPort=");
-        pwriter.println(self.getElectionAddress().getAllPorts()
+        printWriter.print("initLimit=");
+        printWriter.println(self.getInitLimit());
+        printWriter.print("syncLimit=");
+        printWriter.println(self.getSyncLimit());
+        printWriter.print("electionAlg=");
+        printWriter.println(self.getElectionType());
+        printWriter.print("electionPort=");
+        printWriter.println(self.getElectionAddress().getAllPorts()
                 .stream().map(Objects::toString).collect(Collectors.joining("|")));
-        pwriter.print("quorumPort=");
-        pwriter.println(self.getQuorumAddress().getAllPorts()
+        printWriter.print("quorumPort=");
+        printWriter.println(self.getQuorumAddress().getAllPorts()
                 .stream().map(Objects::toString).collect(Collectors.joining("|")));
-        pwriter.print("peerType=");
-        pwriter.println(self.getLearnerType().ordinal());
-        pwriter.println("membership: ");
-        pwriter.print(new String(self.getQuorumVerifier().toString().getBytes()));
+        printWriter.print("peerType=");
+        printWriter.println(self.getLearnerType().ordinal());
+        printWriter.println("membership: ");
+        printWriter.print(new String(self.getQuorumVerifier().toString().getBytes()));
     }
 
     @Override

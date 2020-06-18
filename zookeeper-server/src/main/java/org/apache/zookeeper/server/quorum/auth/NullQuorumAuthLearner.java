@@ -23,6 +23,7 @@ import java.net.Socket;
 /**
  * This class represents no authentication learner, it just return
  * without performing any authentication.
+ * @author ZK
  */
 public class NullQuorumAuthLearner implements QuorumAuthLearner {
 

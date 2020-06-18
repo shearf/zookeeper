@@ -67,18 +67,22 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
 
         Object owner;
 
+        @Override
         public long getSessionId() {
             return sessionId;
         }
 
+        @Override
         public int getTimeout() {
             return timeout;
         }
 
+        @Override
         public boolean isClosing() {
             return isClosing;
         }
 
+        @Override
         public String toString() {
             return "0x" + Long.toHexString(sessionId);
         }
@@ -107,12 +111,12 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         return nextSid;
     }
 
-    private final SessionExpirer expirer;
+    private final SessionExpirer sessionExpirer;
 
-    public SessionTrackerImpl(SessionExpirer expirer, ConcurrentMap<Long, Integer> sessionsWithTimeout, int tickTime, long serverId, ZooKeeperServerListener listener) {
+    public SessionTrackerImpl(SessionExpirer sessionExpirer, ConcurrentMap<Long, Integer> sessionsWithTimeout, int tickTime, long serverId, ZooKeeperServerListener listener) {
         super("SessionTracker", listener);
-        this.expirer = expirer;
-        this.sessionExpiryQueue = new ExpiryQueue<SessionImpl>(tickTime);
+        this.sessionExpirer = sessionExpirer;
+        this.sessionExpiryQueue = new ExpiryQueue<>(tickTime);
         this.sessionsWithTimeout = sessionsWithTimeout;
         this.nextSessionId.set(initializeNextSessionId(serverId));
         for (Entry<Long, Integer> e : sessionsWithTimeout.entrySet()) {
@@ -124,14 +128,16 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
 
     volatile boolean running = true;
 
-    public void dumpSessions(PrintWriter pwriter) {
-        pwriter.print("Session ");
-        sessionExpiryQueue.dump(pwriter);
+    @Override
+    public void dumpSessions(PrintWriter printWriter) {
+        printWriter.print("Session ");
+        sessionExpiryQueue.dump(printWriter);
     }
 
     /**
      * Returns a mapping from time to session IDs of sessions expiring at that time.
      */
+    @Override
     public synchronized Map<Long, Set<Long>> getSessionExpiryMap() {
         // Convert time -> sessions map to time -> session IDs map
         Map<Long, Set<SessionImpl>> expiryMap = sessionExpiryQueue.getExpiryMap();
@@ -149,10 +155,10 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
     @Override
     public String toString() {
         StringWriter sw = new StringWriter();
-        PrintWriter pwriter = new PrintWriter(sw);
-        dumpSessions(pwriter);
-        pwriter.flush();
-        pwriter.close();
+        PrintWriter pWriter = new PrintWriter(sw);
+        dumpSessions(pWriter);
+        pWriter.flush();
+        pWriter.close();
         return sw.toString();
     }
 
@@ -169,7 +175,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
                 for (SessionImpl s : sessionExpiryQueue.poll()) {
                     ServerMetrics.getMetrics().STALE_SESSIONS_EXPIRED.add(1);
                     setSessionClosing(s.sessionId);
-                    expirer.expire(s);
+                    sessionExpirer.expire(s);
                 }
             }
         } catch (InterruptedException e) {
@@ -178,6 +184,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         LOG.info("SessionTrackerImpl exited loop!");
     }
 
+    @Override
     public synchronized boolean touchSession(long sessionId, int timeout) {
         SessionImpl s = sessionsById.get(sessionId);
 
@@ -224,6 +231,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         return sessionsWithTimeout.get(sessionId);
     }
 
+    @Override
     public synchronized void setSessionClosing(long sessionId) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Session closing: 0x{}", Long.toHexString(sessionId));
@@ -236,6 +244,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         s.isClosing = true;
     }
 
+    @Override
     public synchronized void removeSession(long sessionId) {
         LOG.debug("Removing session 0x{}", Long.toHexString(sessionId));
         SessionImpl s = sessionsById.remove(sessionId);
@@ -260,6 +269,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         }
     }
 
+    @Override
     public long createSession(int sessionTimeout) {
         long sessionId = nextSessionId.getAndIncrement();
         trackSession(sessionId, sessionTimeout);
@@ -299,14 +309,17 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         return added;
     }
 
+    @Override
     public synchronized boolean commitSession(long id, int sessionTimeout) {
         return sessionsWithTimeout.put(id, sessionTimeout) == null;
     }
 
+    @Override
     public boolean isTrackingSession(long sessionId) {
         return sessionsById.containsKey(sessionId);
     }
 
+    @Override
     public synchronized void checkSession(long sessionId, Object owner) throws KeeperException.SessionExpiredException, KeeperException.SessionMovedException, KeeperException.UnknownSessionException {
         LOG.debug("Checking session 0x{}", Long.toHexString(sessionId));
         SessionImpl session = sessionsById.get(sessionId);
@@ -326,6 +339,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         }
     }
 
+    @Override
     public synchronized void setOwner(long id, Object owner) throws SessionExpiredException {
         SessionImpl session = sessionsById.get(id);
         if (session == null || session.isClosing()) {
@@ -334,6 +348,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         session.owner = owner;
     }
 
+    @Override
     public void checkGlobalSession(long sessionId, Object owner) throws KeeperException.SessionExpiredException, KeeperException.SessionMovedException {
         try {
             checkSession(sessionId, owner);
@@ -342,6 +357,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
         }
     }
 
+    @Override
     public long getLocalSessionCount() {
         return 0;
     }

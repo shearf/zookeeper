@@ -21,6 +21,9 @@ package org.apache.zookeeper.server.quorum;
 import org.apache.zookeeper.jmx.ZKMBeanInfo;
 import org.apache.zookeeper.server.ZooKeeperServer;
 
+/**
+ * @author ZK
+ */
 public class QuorumBean implements QuorumMXBean, ZKMBeanInfo {
 
     private final QuorumPeer peer;
@@ -46,18 +49,22 @@ public class QuorumBean implements QuorumMXBean, ZKMBeanInfo {
         return peer.getQuorumSize();
     }
 
+    @Override
     public int getSyncLimit() {
         return peer.getSyncLimit();
     }
 
+    @Override
     public int getInitLimit() {
         return peer.getInitLimit();
     }
 
+    @Override
     public void setInitLimit(int initLimit) {
         peer.setInitLimit(initLimit);
     }
 
+    @Override
     public void setSyncLimit(int syncLimit) {
         peer.setSyncLimit(syncLimit);
     }

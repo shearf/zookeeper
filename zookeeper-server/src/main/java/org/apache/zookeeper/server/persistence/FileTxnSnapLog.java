@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
@@ -45,31 +44,37 @@ import java.util.concurrent.ConcurrentHashMap;
  * above the implementations
  * of txnlog and snapshot
  * classes
+ * @author ZK
  */
 public class FileTxnSnapLog {
 
     //the directory containing the
-    //the transaction logs
+    /**
+     * the transaction logs
+     */
     final File dataDir;
-    //the directory containing the
-    //the snapshot directory
+    //
+    /**
+     * the directory containing the
+     * the snapshot directory
+     */
     final File snapDir;
     TxnLog txnLog;
     SnapShot snapLog;
     private final boolean autoCreateDB;
     private final boolean trustEmptySnapshot;
     public static final int VERSION = 2;
-    public static final String version = "version-";
+    public static final String VERSION_PREFIX = "version-";
 
     private static final Logger LOG = LoggerFactory.getLogger(FileTxnSnapLog.class);
 
-    public static final String ZOOKEEPER_DATADIR_AUTOCREATE = "zookeeper.datadir.autocreate";
+    public static final String ZOOKEEPER_DATADIR_AUTO_CREATE = "zookeeper.datadir.autocreate";
 
-    public static final String ZOOKEEPER_DATADIR_AUTOCREATE_DEFAULT = "true";
+    public static final String ZOOKEEPER_DATADIR_AUTO_CREATE_DEFAULT = "true";
 
-    static final String ZOOKEEPER_DB_AUTOCREATE = "zookeeper.db.autocreate";
+    static final String ZOOKEEPER_DB_AUTO_CREATE = "zookeeper.db.autocreate";
 
-    private static final String ZOOKEEPER_DB_AUTOCREATE_DEFAULT = "true";
+    private static final String ZOOKEEPER_DB_AUTO_CREATE_DEFAULT = "true";
 
     public static final String ZOOKEEPER_SNAPSHOT_TRUST_EMPTY = "zookeeper.snapshot.trust.empty";
 
@@ -102,7 +107,7 @@ public class FileTxnSnapLog {
 
     /**
      * the constructor which takes the datadir and
-     * snapdir.
+     * snapDir.
      *
      * @param dataDir the transaction directory
      * @param snapDir the snapshot directory
@@ -110,24 +115,24 @@ public class FileTxnSnapLog {
     public FileTxnSnapLog(File dataDir, File snapDir) throws IOException {
         LOG.debug("Opening datadir:{} snapDir:{}", dataDir, snapDir);
 
-        this.dataDir = new File(dataDir, version + VERSION);
-        this.snapDir = new File(snapDir, version + VERSION);
+        this.dataDir = new File(dataDir, VERSION_PREFIX + VERSION);
+        this.snapDir = new File(snapDir, VERSION_PREFIX + VERSION);
 
         // by default create snap/log dirs, but otherwise complain instead
         // See ZOOKEEPER-1161 for more details
-        boolean enableAutocreate = Boolean.parseBoolean(
-                System.getProperty(ZOOKEEPER_DATADIR_AUTOCREATE, ZOOKEEPER_DATADIR_AUTOCREATE_DEFAULT));
+        boolean enableAutoCreate = Boolean.parseBoolean(
+                System.getProperty(ZOOKEEPER_DATADIR_AUTO_CREATE, ZOOKEEPER_DATADIR_AUTO_CREATE_DEFAULT));
 
         trustEmptySnapshot = Boolean.getBoolean(ZOOKEEPER_SNAPSHOT_TRUST_EMPTY);
         LOG.info("{} : {}", ZOOKEEPER_SNAPSHOT_TRUST_EMPTY, trustEmptySnapshot);
 
         if (!this.dataDir.exists()) {
-            if (!enableAutocreate) {
+            if (!enableAutoCreate) {
                 throw new DatadirException(String.format(
                         "Missing data directory %s, automatic data directory creation is disabled (%s is false)."
                                 + " Please create this directory manually.",
                         this.dataDir,
-                        ZOOKEEPER_DATADIR_AUTOCREATE));
+                        ZOOKEEPER_DATADIR_AUTO_CREATE));
             }
 
             if (!this.dataDir.mkdirs() && !this.dataDir.exists()) {
@@ -141,12 +146,12 @@ public class FileTxnSnapLog {
         if (!this.snapDir.exists()) {
             // by default create this directory, but otherwise complain instead
             // See ZOOKEEPER-1161 for more details
-            if (!enableAutocreate) {
+            if (!enableAutoCreate) {
                 throw new DatadirException(String.format(
                         "Missing snap directory %s, automatic data directory creation is disabled (%s is false)."
                                 + "Please create this directory manually.",
                         this.snapDir,
-                        ZOOKEEPER_DATADIR_AUTOCREATE));
+                        ZOOKEEPER_DATADIR_AUTO_CREATE));
             }
 
             if (!this.snapDir.mkdirs() && !this.snapDir.exists()) {
@@ -168,7 +173,7 @@ public class FileTxnSnapLog {
         snapLog = new FileSnap(this.snapDir);
 
         autoCreateDB = Boolean.parseBoolean(
-                System.getProperty(ZOOKEEPER_DB_AUTOCREATE, ZOOKEEPER_DB_AUTOCREATE_DEFAULT));
+                System.getProperty(ZOOKEEPER_DB_AUTO_CREATE, ZOOKEEPER_DB_AUTO_CREATE_DEFAULT));
     }
 
     public void setServerStats(ServerStats serverStats) {
@@ -176,12 +181,7 @@ public class FileTxnSnapLog {
     }
 
     private void checkLogDir() throws LogDirContentCheckException {
-        File[] files = this.dataDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return Util.isSnapshotFileName(name);
-            }
-        });
+        File[] files = this.dataDir.listFiles((dir, name) -> Util.isSnapshotFileName(name));
         if (files != null && files.length > 0) {
             throw new LogDirContentCheckException(
                     "Log directory has snapshot files. Check if dataLogDir and dataDir configuration is correct.");
@@ -189,12 +189,7 @@ public class FileTxnSnapLog {
     }
 
     private void checkSnapDir() throws SnapDirContentCheckException {
-        File[] files = this.snapDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return Util.isLogFileName(name);
-            }
-        });
+        File[] files = this.snapDir.listFiles((dir, name) -> Util.isLogFileName(name));
         if (files != null && files.length > 0) {
             throw new SnapDirContentCheckException(
                     "Snapshot directory has log files. Check if dataLogDir and dataDir configuration is correct.");
@@ -327,7 +322,7 @@ public class FileTxnSnapLog {
         int txnLoaded = 0;
         long startTime = Time.currentElapsedTime();
         try {
-            while (true) {
+            do {
                 // iterator points to
                 // the first valid txn when initialized
                 hdr = itr.getHeader();
@@ -352,10 +347,7 @@ public class FileTxnSnapLog {
                             e);
                 }
                 listener.onTxnLoaded(hdr, itr.getTxn(), itr.getDigest());
-                if (!itr.next()) {
-                    break;
-                }
-            }
+            } while (itr.next());
         } finally {
             if (itr != null) {
                 itr.close();
@@ -552,8 +544,8 @@ public class FileTxnSnapLog {
      * @throws IOException
      */
     public List<File> findNRecentSnapshots(int n) throws IOException {
-        FileSnap snaplog = new FileSnap(snapDir);
-        return snaplog.findNRecentSnapshots(n);
+        FileSnap snapLog = new FileSnap(snapDir);
+        return snapLog.findNRecentSnapshots(n);
     }
 
     /**

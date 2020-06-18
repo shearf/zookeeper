@@ -40,6 +40,7 @@ public class LocalSessionTracker extends SessionTrackerImpl {
         return false;
     }
 
+    @Override
     public long createSession(int sessionTimeout) {
         long sessionId = super.createSession(sessionTimeout);
         commitSession(sessionId, sessionTimeout);

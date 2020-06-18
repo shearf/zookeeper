@@ -41,6 +41,7 @@ import java.util.zip.CheckedOutputStream;
  * it is responsible for storing, serializing
  * and deserializing the right snapshot.
  * and provides access to the snapshots.
+ * @author ZK
  */
 public class FileSnap implements SnapShot {
 
@@ -48,7 +49,7 @@ public class FileSnap implements SnapShot {
     SnapshotInfo lastSnapshotInfo = null;
     private volatile boolean close = false;
     private static final int VERSION = 2;
-    private static final long dbId = -1;
+    private static final long DB_ID = -1;
     private static final Logger LOG = LoggerFactory.getLogger(FileSnap.class);
     public static final int SNAP_MAGIC = ByteBuffer.wrap("ZKSN".getBytes()).getInt();
 
@@ -63,6 +64,7 @@ public class FileSnap implements SnapShot {
      *
      * @return info of last snapshot
      */
+    @Override
     public SnapshotInfo getLastSnapshotInfo() {
         return this.lastSnapshotInfo;
     }
@@ -72,6 +74,7 @@ public class FileSnap implements SnapShot {
      *
      * @return the zxid of the snapshot
      */
+    @Override
     public long deserialize(DataTree dt, Map<Long, Integer> sessions) throws IOException {
         // we run through 100 snapshots (not all of them)
         // if we cannot get it running within 100 snapshots
@@ -83,8 +86,8 @@ public class FileSnap implements SnapShot {
         File snap = null;
         long snapZxid = -1;
         boolean foundValid = false;
-        for (int i = 0, snapListSize = snapList.size(); i < snapListSize; i++) {
-            snap = snapList.get(i);
+        for (File file : snapList) {
+            snap = file;
             LOG.info("Reading snapshot {}", snap);
             snapZxid = Util.getZxidFromName(snap.getName(), SNAPSHOT_FILE_PREFIX);
             try (CheckedInputStream snapIS = SnapStream.getInputStream(snap)) {
@@ -144,6 +147,7 @@ public class FileSnap implements SnapShot {
      *
      * @return the file containing the most recent snapshot
      */
+    @Override
     public File findMostRecentSnapshot() throws IOException {
         List<File> files = findNValidSnapshots(1);
         if (files.size() == 0) {
@@ -168,7 +172,7 @@ public class FileSnap implements SnapShot {
     protected List<File> findNValidSnapshots(int n) throws IOException {
         List<File> files = Util.sortDataDir(snapDir.listFiles(), SNAPSHOT_FILE_PREFIX, false);
         int count = 0;
-        List<File> list = new ArrayList<File>();
+        List<File> list = new ArrayList<>();
         for (File f : files) {
             // we should catch the exceptions
             // from the valid snapshot and continue
@@ -199,7 +203,7 @@ public class FileSnap implements SnapShot {
     public List<File> findNRecentSnapshots(int n) throws IOException {
         List<File> files = Util.sortDataDir(snapDir.listFiles(), SNAPSHOT_FILE_PREFIX, false);
         int count = 0;
-        List<File> list = new ArrayList<File>();
+        List<File> list = new ArrayList<>();
         for (File f : files) {
             if (count == n) {
                 break;
@@ -243,6 +247,7 @@ public class FileSnap implements SnapShot {
      * @param snapShot the file to store snapshot into
      * @param fsync    sync the file immediately after write
      */
+    @Override
     public synchronized void serialize(
             DataTree dt,
             Map<Long, Integer> sessions,
@@ -251,7 +256,7 @@ public class FileSnap implements SnapShot {
         if (!close) {
             try (CheckedOutputStream snapOS = SnapStream.getOutputStream(snapShot, fsync)) {
                 OutputArchive oa = BinaryOutputArchive.getArchive(snapOS);
-                FileHeader header = new FileHeader(SNAP_MAGIC, VERSION, dbId);
+                FileHeader header = new FileHeader(SNAP_MAGIC, VERSION, DB_ID);
                 serialize(dt, sessions, oa, header);
                 SnapStream.sealStream(snapOS, oa);
 

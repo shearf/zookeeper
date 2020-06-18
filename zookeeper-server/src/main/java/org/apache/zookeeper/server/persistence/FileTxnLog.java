@@ -97,7 +97,7 @@ public class FileTxnLog implements TxnLog, Closeable {
     /**
      * Maximum time we allow for elapsed fsync before WARNing
      */
-    private static final long fsyncWarningThresholdMS;
+    private static final long FSYNC_WARNING_THRESHOLD_MS;
 
     /**
      * This parameter limit the size of each txnlog to a given limit (KB).
@@ -107,7 +107,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      * this limit by the maximum size of a serialized transaction.
      * The feature is disabled by default (-1)
      */
-    private static final String txnLogSizeLimitSetting = "zookeeper.txnLogSizeLimitInKb";
+    private static final String TXN_LOG_SIZE_LIMIT_SETTING = "zookeeper.txnLogSizeLimitInKb";
 
     /**
      * The actual txnlog size limit in bytes.
@@ -117,16 +117,16 @@ public class FileTxnLog implements TxnLog, Closeable {
     static {
         LOG = LoggerFactory.getLogger(FileTxnLog.class);
 
-        /** Local variable to read fsync.warningthresholdms into */
+        /* Local variable to read fsync.warningthresholdms into */
         Long fsyncWarningThreshold;
         if ((fsyncWarningThreshold = Long.getLong(ZOOKEEPER_FSYNC_WARNING_THRESHOLD_MS_PROPERTY)) == null) {
             fsyncWarningThreshold = Long.getLong(FSYNC_WARNING_THRESHOLD_MS_PROPERTY, 1000);
         }
-        fsyncWarningThresholdMS = fsyncWarningThreshold;
+        FSYNC_WARNING_THRESHOLD_MS = fsyncWarningThreshold;
 
-        Long logSize = Long.getLong(txnLogSizeLimitSetting, -1);
+        Long logSize = Long.getLong(TXN_LOG_SIZE_LIMIT_SETTING, -1);
         if (logSize > 0) {
-            LOG.info("{} = {}", txnLogSizeLimitSetting, logSize);
+            LOG.info("{} = {}", TXN_LOG_SIZE_LIMIT_SETTING, logSize);
 
             // Convert to bytes
             logSize = logSize * 1024;
@@ -140,7 +140,7 @@ public class FileTxnLog implements TxnLog, Closeable {
     volatile FileOutputStream fos = null;
 
     File logDir;
-    private final boolean forceSync = !System.getProperty("zookeeper.forceSync", "yes").equals("no");
+    private final boolean forceSync = !"no".equals(System.getProperty("zookeeper.forceSync", "yes"));
     long dbId;
     private final Queue<FileOutputStream> streamsToFlush = new ArrayDeque<>();
     File logFileWrite = null;
@@ -204,10 +204,12 @@ public class FileTxnLog implements TxnLog, Closeable {
         return 0;
     }
 
+    @Override
     public synchronized void setTotalLogSize(long size) {
         prevLogsRunningTotal = size;
     }
 
+    @Override
     public synchronized long getTotalLogSize() {
         return prevLogsRunningTotal + getCurrentLogSize();
     }
@@ -226,6 +228,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      *
      * @throws IOException
      */
+    @Override
     public synchronized void rollLog() throws IOException {
         if (logStream != null) {
             this.logStream.flush();
@@ -242,6 +245,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      *
      * @throws IOException
      */
+    @Override
     public synchronized void close() throws IOException {
         if (logStream != null) {
             logStream.close();
@@ -258,6 +262,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      * @param txn the transaction part of the entry
      *            returns true iff something appended, otw false
      */
+    @Override
     public synchronized boolean append(TxnHeader hdr, Record txn) throws IOException {
         return append(hdr, txn, null);
     }
@@ -292,7 +297,7 @@ public class FileTxnLog implements TxnLog, Closeable {
         }
         filePadding.padFile(fos.getChannel());
         byte[] buf = Util.marshallTxnEntry(hdr, txn, digest);
-        if (buf == null || buf.length == 0) {
+        if (buf.length == 0) {
             throw new IOException("Faulty serialization for header " + "and txn");
         }
         Checksum crc = makeChecksumAlgorithm();
@@ -328,7 +333,7 @@ public class FileTxnLog implements TxnLog, Closeable {
                 logZxid = fzxid;
             }
         }
-        List<File> v = new ArrayList<File>(5);
+        List<File> v = new ArrayList<>(5);
         for (File f : files) {
             long fzxid = Util.getZxidFromName(f.getName(), LOG_FILE_PREFIX);
             if (fzxid < logZxid) {
@@ -345,6 +350,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      *
      * @return the last zxid logged in the transaction logs
      */
+    @Override
     public long getLastLoggedZxid() {
         File[] files = getLogFiles(logDir.listFiles(), 0);
         long maxLog = files.length > 0 ? Util.getZxidFromName(files[files.length - 1].getName(), LOG_FILE_PREFIX) : -1;
@@ -356,10 +362,7 @@ public class FileTxnLog implements TxnLog, Closeable {
         try {
             FileTxnLog txn = new FileTxnLog(logDir);
             itr = txn.read(maxLog);
-            while (true) {
-                if (!itr.next()) {
-                    break;
-                }
+            while (itr.next()) {
                 TxnHeader hdr = itr.getHeader();
                 zxid = hdr.getZxid();
             }
@@ -385,6 +388,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      * commit the logs. make sure that everything hits the
      * disk
      */
+    @Override
     public synchronized void commit() throws IOException {
         if (logStream != null) {
             logStream.flush();
@@ -398,7 +402,7 @@ public class FileTxnLog implements TxnLog, Closeable {
                 channel.force(false);
 
                 syncElapsedMS = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startSyncNS);
-                if (syncElapsedMS > fsyncWarningThresholdMS) {
+                if (syncElapsedMS > FSYNC_WARNING_THRESHOLD_MS) {
                     if (serverStats != null) {
                         serverStats.incrementFsyncThresholdExceedCount();
                     }
@@ -432,6 +436,7 @@ public class FileTxnLog implements TxnLog, Closeable {
     /**
      * @return elapsed sync time of transaction log in milliseconds
      */
+    @Override
     public long getTxnLogSyncElapsedTime() {
         return syncElapsedMS;
     }
@@ -443,6 +448,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      * @return returns an iterator to iterate through the transaction
      * logs
      */
+    @Override
     public TxnIterator read(long zxid) throws IOException {
         return read(zxid, true);
     }
@@ -466,6 +472,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      * @param zxid the zxid to truncate the logs to
      * @return true if successful false if not
      */
+    @Override
     public boolean truncate(long zxid) throws IOException {
         FileTxnIterator itr = null;
         try {
@@ -523,6 +530,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      *
      * @return the dbid of this database
      */
+    @Override
     public long getDbId() throws IOException {
         FileTxnIterator itr = new FileTxnIterator(logDir, 0);
         FileHeader fh = readHeader(itr.logFile);
@@ -567,6 +575,7 @@ public class FileTxnLog implements TxnLog, Closeable {
             return rc;
         }
 
+        @Override
         public int read(byte[] b) throws IOException {
             int rc = super.read(b);
             if (rc > 0) {
@@ -698,6 +707,7 @@ public class FileTxnLog implements TxnLog, Closeable {
         /**
          * Return total storage size of txnlog that will return by this iterator.
          */
+        @Override
         public long getStorageSize() {
             long sum = 0;
             for (File f : storedFiles) {
@@ -771,6 +781,7 @@ public class FileTxnLog implements TxnLog, Closeable {
          * @return true if there is more transactions to be read
          * false if not.
          */
+        @Override
         public boolean next() throws IOException {
             if (ia == null) {
                 return false;
@@ -819,6 +830,7 @@ public class FileTxnLog implements TxnLog, Closeable {
          * @return the current header that
          * is read
          */
+        @Override
         public TxnHeader getHeader() {
             return hdr;
         }
@@ -829,10 +841,12 @@ public class FileTxnLog implements TxnLog, Closeable {
          * @return the current transaction
          * that is read
          */
+        @Override
         public Record getTxn() {
             return record;
         }
 
+        @Override
         public TxnDigest getDigest() {
             return digest;
         }
@@ -841,6 +855,7 @@ public class FileTxnLog implements TxnLog, Closeable {
          * close the iterator
          * and release the resources.
          */
+        @Override
         public void close() throws IOException {
             if (inputStream != null) {
                 inputStream.close();

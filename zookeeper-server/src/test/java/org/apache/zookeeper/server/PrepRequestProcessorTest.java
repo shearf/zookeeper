@@ -332,7 +332,7 @@ public class PrepRequestProcessorTest extends ClientBase {
         }
 
         @Override
-        public void dumpSessions(PrintWriter pwriter) {
+        public void dumpSessions(PrintWriter printWriter) {
             // TODO Auto-generated method stub
 
         }

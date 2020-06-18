@@ -87,6 +87,7 @@ public class ZabUtils {
 
     private static final class NullServerCnxnFactory extends ServerCnxnFactory {
 
+        @Override
         public void startup(ZooKeeperServer zkServer, boolean startServer) throws IOException, InterruptedException {
         }
 
@@ -96,32 +97,40 @@ public class ZabUtils {
         public void shutdown() {
         }
 
+        @Override
         public void setMaxClientCnxnsPerHost(int max) {
         }
 
+        @Override
         public void join() throws InterruptedException {
         }
 
+        @Override
         public int getMaxClientCnxnsPerHost() {
             return 0;
         }
 
+        @Override
         public int getSocketListenBacklog() {
             return -1;
         }
 
+        @Override
         public int getLocalPort() {
             return 0;
         }
 
+        @Override
         public InetSocketAddress getLocalAddress() {
             return null;
         }
 
+        @Override
         public Iterable<ServerCnxn> getConnections() {
             return null;
         }
 
+        @Override
         public void configure(InetSocketAddress addr, int maxcc, int listenBacklog, boolean secure) throws IOException {
         }
 

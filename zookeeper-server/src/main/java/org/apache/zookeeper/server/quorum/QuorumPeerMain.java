@@ -63,6 +63,8 @@ import java.io.IOException;
  * </ol>
  * In addition to the config file. There is a file in the data directory called
  * "myid" that contains the server id as an ASCII decimal value.
+ *
+ * @author ZK
  */
 @InterfaceAudience.Public
 public class QuorumPeerMain {

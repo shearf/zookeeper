@@ -72,7 +72,7 @@ public class EmptiedSnapshotRecoveryTest extends ZKTestCase implements Watcher {
 
         // start server again with intact database
         zks = new ZooKeeperServer(tmpSnapDir, tmpLogDir, 3000);
-        zks.startdata();
+        zks.startData();
         long zxid = zks.getZKDatabase().getDataTreeLastProcessedZxid();
         LOG.info("After clean restart, zxid = {}", zxid);
         assertTrue("zxid > 0", zxid > 0);
@@ -96,7 +96,7 @@ public class EmptiedSnapshotRecoveryTest extends ZKTestCase implements Watcher {
         // start server again with corrupted database
         zks = new ZooKeeperServer(tmpSnapDir, tmpLogDir, 3000);
         try {
-            zks.startdata();
+            zks.startData();
             long currentZxid = zks.getZKDatabase().getDataTreeLastProcessedZxid();
             if (!trustEmptySnap) {
                 fail("Should have gotten exception for corrupted database");

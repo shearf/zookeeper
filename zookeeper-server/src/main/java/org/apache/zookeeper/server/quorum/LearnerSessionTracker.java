@@ -70,6 +70,7 @@ public class LearnerSessionTracker extends UpgradeableSessionTracker {
         }
     }
 
+    @Override
     public void removeSession(long sessionId) {
         if (localSessionTracker != null) {
             localSessionTracker.removeSession(sessionId);
@@ -94,6 +95,7 @@ public class LearnerSessionTracker extends UpgradeableSessionTracker {
         return globalSessionsWithTimeouts.containsKey(sessionId);
     }
 
+    @Override
     public boolean trackSession(long sessionId, int sessionTimeout) {
         // Learner doesn't track global session, do nothing here
         return false;
@@ -104,6 +106,7 @@ public class LearnerSessionTracker extends UpgradeableSessionTracker {
      * after committed global session, which may cause the same session being
      * tracked on this server and leader.
      */
+    @Override
     public synchronized boolean commitSession(long sessionId, int sessionTimeout) {
         boolean added = globalSessionsWithTimeouts.put(sessionId, sessionTimeout) == null;
 
@@ -133,6 +136,7 @@ public class LearnerSessionTracker extends UpgradeableSessionTracker {
         return added;
     }
 
+    @Override
     public boolean touchSession(long sessionId, int sessionTimeout) {
         if (localSessionsEnabled) {
             if (localSessionTracker.touchSession(sessionId, sessionTimeout)) {
@@ -150,6 +154,7 @@ public class LearnerSessionTracker extends UpgradeableSessionTracker {
         return touchTable.getAndSet(new ConcurrentHashMap<Long, Integer>());
     }
 
+    @Override
     public long createSession(int sessionTimeout) {
         if (localSessionsEnabled) {
             return localSessionTracker.createSession(sessionTimeout);
@@ -157,6 +162,7 @@ public class LearnerSessionTracker extends UpgradeableSessionTracker {
         return nextSessionId.getAndIncrement();
     }
 
+    @Override
     public void checkSession(long sessionId, Object owner) throws SessionExpiredException, SessionMovedException {
         if (localSessionTracker != null) {
             try {
@@ -174,6 +180,7 @@ public class LearnerSessionTracker extends UpgradeableSessionTracker {
         }
     }
 
+    @Override
     public void setOwner(long sessionId, Object owner) throws SessionExpiredException {
         if (localSessionTracker != null) {
             try {
@@ -191,24 +198,26 @@ public class LearnerSessionTracker extends UpgradeableSessionTracker {
         }
     }
 
-    public void dumpSessions(PrintWriter pwriter) {
+    @Override
+    public void dumpSessions(PrintWriter printWriter) {
         if (localSessionTracker != null) {
-            pwriter.print("Local ");
-            localSessionTracker.dumpSessions(pwriter);
+            printWriter.print("Local ");
+            localSessionTracker.dumpSessions(printWriter);
         }
-        pwriter.print("Global Sessions(");
-        pwriter.print(globalSessionsWithTimeouts.size());
-        pwriter.println("):");
+        printWriter.print("Global Sessions(");
+        printWriter.print(globalSessionsWithTimeouts.size());
+        printWriter.println("):");
         SortedSet<Long> sessionIds = new TreeSet<Long>(globalSessionsWithTimeouts.keySet());
         for (long sessionId : sessionIds) {
-            pwriter.print("0x");
-            pwriter.print(Long.toHexString(sessionId));
-            pwriter.print("\t");
-            pwriter.print(globalSessionsWithTimeouts.get(sessionId));
-            pwriter.println("ms");
+            printWriter.print("0x");
+            printWriter.print(Long.toHexString(sessionId));
+            printWriter.print("\t");
+            printWriter.print(globalSessionsWithTimeouts.get(sessionId));
+            printWriter.println("ms");
         }
     }
 
+    @Override
     public void setSessionClosing(long sessionId) {
         // Global sessions handled on the leader; this call is a no-op if
         // not tracked as a local session so safe to call in both cases.

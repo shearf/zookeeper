@@ -89,7 +89,7 @@ public class GetProposalFromTxnTest extends ZKTestCase {
         zks.shutdown();
         assertTrue("waiting for server to shutdown", ClientBase.waitForServerDown(HOSTPORT, CONNECTION_TIMEOUT));
         zks = new ZooKeeperServer(tmpDir, tmpDir, 3000);
-        zks.startdata();
+        zks.startData();
 
         ZKDatabase db = zks.getZKDatabase();
 

@@ -20,6 +20,7 @@ package org.apache.zookeeper.server.quorum;
 
 /**
  * An MBean representing a zookeeper cluster nodes (aka quorum peers)
+ * @author ZK
  */
 public interface QuorumMXBean {
 
