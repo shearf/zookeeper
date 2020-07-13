@@ -67,6 +67,7 @@ import static org.apache.zookeeper.common.NetUtils.formatInetAddr;
  * message to the tail of the queue, thus changing the order of messages.
  * Although this is not a problem for the leader election, it could be a problem
  * when consolidating peer communication. This is to be verified, though.
+ * @author ZK
  */
 
 public class QuorumCnxManager {
@@ -81,7 +82,7 @@ public class QuorumCnxManager {
     // stale notifications to peers
     static final int SEND_CAPACITY = 1;
 
-    static final int PACKETMAXSIZE = 1024 * 512;
+    static final int PACKET_MAX_SIZE = 1024 * 512;
 
     /*
      * Negative counter for observer server ids.
@@ -164,7 +165,7 @@ public class QuorumCnxManager {
     /*
      * Socket factory, allowing the injection of custom socket implementations for testing
      */
-    static final Supplier<Socket> DEFAULT_SOCKET_FACTORY = () -> new Socket();
+    static final Supplier<Socket> DEFAULT_SOCKET_FACTORY = Socket::new;
     private static Supplier<Socket> SOCKET_FACTORY = DEFAULT_SOCKET_FACTORY;
 
     static void setSocketFactory(Supplier<Socket> factory) {
@@ -1353,7 +1354,7 @@ public class QuorumCnxManager {
                      * message
                      */
                     int length = din.readInt();
-                    if (length <= 0 || length > PACKETMAXSIZE) {
+                    if (length <= 0 || length > PACKET_MAX_SIZE) {
                         throw new IOException("Received packet with invalid packet: " + length);
                     }
                     /**

@@ -56,7 +56,7 @@ public class QuorumPeerConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuorumPeerConfig.class);
     private static final int UNSET_SERVERID = -1;
-    public static final String nextDynamicConfigFileSuffix = ".dynamic.next";
+    public static final String NEXT_DYNAMIC_CONFIG_FILE_SUFFIX = ".dynamic.next";
 
     private static boolean standaloneEnabled = true;
     private static boolean reconfigEnabled = false;
@@ -181,29 +181,23 @@ public class QuorumPeerConfig {
                     .build()).create(path);
 
             Properties cfg = new Properties();
-            FileInputStream in = new FileInputStream(configFile);
-            try {
+            try (FileInputStream in = new FileInputStream(configFile)) {
                 cfg.load(in);
                 configFileStr = path;
-            } finally {
-                in.close();
             }
 
             /* Read entire config file as initial configuration */
             initialConfig = new String(Files.readAllBytes(configFile.toPath()));
 
             parseProperties(cfg);
-        } catch (IOException e) {
-            throw new ConfigException("Error processing " + path, e);
-        } catch (IllegalArgumentException e) {
+        } catch (IOException | IllegalArgumentException e) {
             throw new ConfigException("Error processing " + path, e);
         }
 
         if (dynamicConfigFileStr != null) {
             try {
                 Properties dynamicCfg = new Properties();
-                FileInputStream inConfig = new FileInputStream(dynamicConfigFileStr);
-                try {
+                try (FileInputStream inConfig = new FileInputStream(dynamicConfigFileStr)) {
                     dynamicCfg.load(inConfig);
                     if (dynamicCfg.getProperty("version") != null) {
                         throw new ConfigException("dynamic file shouldn't have version inside");
@@ -215,25 +209,18 @@ public class QuorumPeerConfig {
                     if (version != null) {
                         dynamicCfg.setProperty("version", version);
                     }
-                } finally {
-                    inConfig.close();
                 }
                 setupQuorumPeerConfig(dynamicCfg, false);
 
-            } catch (IOException e) {
-                throw new ConfigException("Error processing " + dynamicConfigFileStr, e);
-            } catch (IllegalArgumentException e) {
+            } catch (IOException | IllegalArgumentException e) {
                 throw new ConfigException("Error processing " + dynamicConfigFileStr, e);
             }
-            File nextDynamicConfigFile = new File(configFileStr + nextDynamicConfigFileSuffix);
+            File nextDynamicConfigFile = new File(configFileStr + NEXT_DYNAMIC_CONFIG_FILE_SUFFIX);
             if (nextDynamicConfigFile.exists()) {
                 try {
                     Properties dynamicConfigNextCfg = new Properties();
-                    FileInputStream inConfigNext = new FileInputStream(nextDynamicConfigFile);
-                    try {
+                    try (FileInputStream inConfigNext = new FileInputStream(nextDynamicConfigFile)) {
                         dynamicConfigNextCfg.load(inConfigNext);
-                    } finally {
-                        inConfigNext.close();
                     }
                     boolean isHierarchical = false;
                     for (Entry<Object, Object> entry : dynamicConfigNextCfg.entrySet()) {
@@ -526,21 +513,12 @@ public class QuorumPeerConfig {
      * if users write dynamic configuration in "zoo.cfg".
      */
     private void backupOldConfig() throws IOException {
-        new AtomicFileWritingIdiom(new File(configFileStr + ".bak"), new OutputStreamStatement() {
-            @Override
-            public void write(OutputStream output) throws IOException {
-                InputStream input = null;
-                try {
-                    input = new FileInputStream(new File(configFileStr));
-                    byte[] buf = new byte[1024];
-                    int bytesRead;
-                    while ((bytesRead = input.read(buf)) > 0) {
-                        output.write(buf, 0, bytesRead);
-                    }
-                } finally {
-                    if (input != null) {
-                        input.close();
-                    }
+        new AtomicFileWritingIdiom(new File(configFileStr + ".bak"), (OutputStreamStatement) output -> {
+            try (InputStream input = new FileInputStream(new File(configFileStr))) {
+                byte[] buf = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buf)) > 0) {
+                    output.write(buf, 0, bytesRead);
                 }
             }
         });
@@ -551,26 +529,23 @@ public class QuorumPeerConfig {
      */
     public static void writeDynamicConfig(final String dynamicConfigFilename, final QuorumVerifier qv, final boolean needKeepVersion) throws IOException {
 
-        new AtomicFileWritingIdiom(new File(dynamicConfigFilename), new WriterStatement() {
-            @Override
-            public void write(Writer out) throws IOException {
-                Properties cfg = new Properties();
-                cfg.load(new StringReader(qv.toString()));
+        new AtomicFileWritingIdiom(new File(dynamicConfigFilename), (WriterStatement) out -> {
+            Properties cfg = new Properties();
+            cfg.load(new StringReader(qv.toString()));
 
-                List<String> servers = new ArrayList<String>();
-                for (Entry<Object, Object> entry : cfg.entrySet()) {
-                    String key = entry.getKey().toString().trim();
-                    if (!needKeepVersion && key.startsWith("version")) {
-                        continue;
-                    }
-
-                    String value = entry.getValue().toString().trim();
-                    servers.add(key.concat("=").concat(value));
+            List<String> servers = new ArrayList<>();
+            for (Entry<Object, Object> entry : cfg.entrySet()) {
+                String key = entry.getKey().toString().trim();
+                if (!needKeepVersion && key.startsWith("version")) {
+                    continue;
                 }
 
-                Collections.sort(servers);
-                out.write(StringUtils.joinStrings(servers, "\n"));
+                String value = entry.getValue().toString().trim();
+                servers.add(key.concat("=").concat(value));
             }
+
+            Collections.sort(servers);
+            out.write(StringUtils.joinStrings(servers, "\n"));
         });
     }
 
@@ -597,39 +572,33 @@ public class QuorumPeerConfig {
                 .build()).create(dynamicFileStr);
 
         final Properties cfg = new Properties();
-        FileInputStream in = new FileInputStream(configFile);
-        try {
+        try (FileInputStream in = new FileInputStream(configFile)) {
             cfg.load(in);
-        } finally {
-            in.close();
         }
 
-        new AtomicFileWritingIdiom(new File(configFileStr), new WriterStatement() {
-            @Override
-            public void write(Writer out) throws IOException {
-                for (Entry<Object, Object> entry : cfg.entrySet()) {
-                    String key = entry.getKey().toString().trim();
+        new AtomicFileWritingIdiom(new File(configFileStr), (WriterStatement) out -> {
+            for (Entry<Object, Object> entry : cfg.entrySet()) {
+                String key = entry.getKey().toString().trim();
 
-                    if (key.startsWith("server.")
-                            || key.startsWith("group")
-                            || key.startsWith("weight")
-                            || key.startsWith("dynamicConfigFile")
-                            || key.startsWith("peerType")
-                            || (eraseClientPortAddress
-                            && (key.startsWith("clientPort")
-                            || key.startsWith("clientPortAddress")))) {
-                        // not writing them back to static file
-                        continue;
-                    }
-
-                    String value = entry.getValue().toString().trim();
-                    out.write(key.concat("=").concat(value).concat("\n"));
+                if (key.startsWith("server.")
+                        || key.startsWith("group")
+                        || key.startsWith("weight")
+                        || key.startsWith("dynamicConfigFile")
+                        || key.startsWith("peerType")
+                        || (eraseClientPortAddress
+                        && (key.startsWith("clientPort")
+                        || key.startsWith("clientPortAddress")))) {
+                    // not writing them back to static file
+                    continue;
                 }
 
-                // updates the dynamic file pointer
-                String dynamicConfigFilePath = PathUtils.normalizeFileSystemPath(dynamicFile.getCanonicalPath());
-                out.write("dynamicConfigFile=".concat(dynamicConfigFilePath).concat("\n"));
+                String value = entry.getValue().toString().trim();
+                out.write(key.concat("=").concat(value).concat("\n"));
             }
+
+            // updates the dynamic file pointer
+            String dynamicConfigFilePath = PathUtils.normalizeFileSystemPath(dynamicFile.getCanonicalPath());
+            out.write("dynamicConfigFile=".concat(dynamicConfigFilePath).concat("\n"));
         });
     }
 
@@ -681,7 +650,7 @@ public class QuorumPeerConfig {
             String key = entry.getKey().toString().trim();
             if (key.startsWith("group") || key.startsWith("weight")) {
                 isHierarchical = true;
-            } else if (!configBackwardCompatibilityMode && !key.startsWith("server.") && !key.equals("version")) {
+            } else if (!configBackwardCompatibilityMode && !key.startsWith("server.") && !"version".equals(key)) {
                 LOG.info(dynamicConfigProp.toString());
                 throw new ConfigException("Unrecognised parameter: " + key);
             }
@@ -977,9 +946,9 @@ public class QuorumPeerConfig {
     }
 
     private boolean parseBoolean(String key, String value) throws ConfigException {
-        if (value.equalsIgnoreCase("true")) {
+        if ("true".equalsIgnoreCase(value)) {
             return true;
-        } else if (value.equalsIgnoreCase("false")) {
+        } else if ("false".equalsIgnoreCase(value)) {
             return false;
         } else {
             throw new ConfigException("Invalid option "

@@ -29,6 +29,7 @@ import java.util.function.BiConsumer;
  * and then when the system is ready to work it will call {@link #start() }.
  * <br>
  * Providers can be used both on ZooKeeper servers and on ZooKeeper clients.
+ * @author ZK
  */
 public interface MetricsProvider {
 

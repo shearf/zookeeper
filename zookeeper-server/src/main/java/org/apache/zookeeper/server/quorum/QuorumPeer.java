@@ -1795,7 +1795,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
             LOG.warn("configFilename is null! This should only happen in tests.");
             return null;
         }
-        return configFilename + QuorumPeerConfig.nextDynamicConfigFileSuffix;
+        return configFilename + QuorumPeerConfig.NEXT_DYNAMIC_CONFIG_FILE_SUFFIX;
     }
 
     // On entry to this method, qcm must be non-null and the locks on both qcm and QV_LOCK
@@ -2547,7 +2547,8 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     @InterfaceAudience.Private
     /**
      * This is a metric that depends on the status of the peer.
-     */ public Integer getSynced_observers_metric() {
+     */
+    public Integer getSynced_observers_metric() {
         if (leader != null) {
             return leader.getObservingLearners().size();
         } else if (follower != null) {

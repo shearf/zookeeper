@@ -345,7 +345,7 @@ public class FastLeaderElection implements Election {
                         if (!validVoter(response.sid)) {
                             Vote current = self.getCurrentVote();
                             QuorumVerifier qv = self.getQuorumVerifier();
-                            ToSend notmsg = new ToSend(
+                            ToSend notMsg = new ToSend(
                                     ToSend.mType.notification,
                                     current.getId(),
                                     current.getZxid(),
@@ -355,7 +355,7 @@ public class FastLeaderElection implements Election {
                                     current.getPeerEpoch(),
                                     qv.toString().getBytes());
 
-                            sendQueue.offer(notmsg);
+                            sendQueue.offer(notMsg);
                         } else {
                             // Receive new message
                             LOG.debug("Receive new notification message. My id = {}", self.getId());
@@ -419,7 +419,7 @@ public class FastLeaderElection implements Election {
                                         && (n.electionEpoch < logicalClock.sum())) {
                                     Vote v = getVote();
                                     QuorumVerifier qv = self.getQuorumVerifier();
-                                    ToSend notmsg = new ToSend(
+                                    ToSend notMsg = new ToSend(
                                             ToSend.mType.notification,
                                             v.getId(),
                                             v.getZxid(),
@@ -428,7 +428,7 @@ public class FastLeaderElection implements Election {
                                             response.sid,
                                             v.getPeerEpoch(),
                                             qv.toString().getBytes());
-                                    sendQueue.offer(notmsg);
+                                    sendQueue.offer(notMsg);
                                 }
                             } else {
                                 /*
