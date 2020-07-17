@@ -314,7 +314,7 @@ public class FastLeaderElection implements Election {
                                                     Long.toHexString(self.getQuorumVerifier().getVersion()));
                                             if (self.getPeerState() == ServerState.LOOKING) {
                                                 LOG.debug("Invoking processReconfig(), state: {}", self.getServerState());
-                                                self.processReconfig(rqv, null, null, false);
+                                                self.processReConfig(rqv, null, null, false);
                                                 if (!rqv.equals(quorumVerifier)) {
                                                     LOG.info("restarting leader election");
                                                     self.shuttingDownLE = true;

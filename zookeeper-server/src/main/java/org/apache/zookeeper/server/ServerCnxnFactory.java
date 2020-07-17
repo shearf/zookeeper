@@ -38,6 +38,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author ZK
+ */
 public abstract class ServerCnxnFactory {
 
     public static final String ZOOKEEPER_SERVER_CNXN_FACTORY = "zookeeper.serverCnxnFactory";
@@ -55,7 +58,7 @@ public abstract class ServerCnxnFactory {
     /**
      * The buffer will cause the connection to be close when we do a send.
      */
-    static final ByteBuffer closeConn = ByteBuffer.allocate(0);
+    static final ByteBuffer CLOSE_CONN = ByteBuffer.allocate(0);
 
     /**
      * total number of connections accepted by the ZooKeeper server
@@ -185,8 +188,7 @@ public abstract class ServerCnxnFactory {
             LOG.info("Using {} as server connection factory", serverCnxnFactoryName);
             return serverCnxnFactory;
         } catch (Exception e) {
-            IOException ioe = new IOException("Couldn't instantiate " + serverCnxnFactoryName, e);
-            throw ioe;
+            throw new IOException("Couldn't instantiate " + serverCnxnFactoryName, e);
         }
     }
 

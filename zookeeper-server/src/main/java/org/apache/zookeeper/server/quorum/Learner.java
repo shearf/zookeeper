@@ -630,7 +630,7 @@ public class Learner {
                         pif = packetsNotCommitted.peekFirst();
                         if (pif.hdr.getZxid() == qp.getZxid() && qp.getType() == Leader.COMMITANDACTIVATE) {
                             QuorumVerifier qv = self.configFromString(new String(((SetDataTxn) pif.rec).getData()));
-                            boolean majorChange = self.processReconfig(
+                            boolean majorChange = self.processReConfig(
                                     qv,
                                     ByteBuffer.wrap(qp.getData()).getLong(), qp.getZxid(),
                                     true);
@@ -666,7 +666,7 @@ public class Learner {
                             packet.rec = logEntry.getTxn();
                             packet.digest = logEntry.getDigest();
                             QuorumVerifier qv = self.configFromString(new String(((SetDataTxn) packet.rec).getData()));
-                            boolean majorChange = self.processReconfig(qv, suggestedLeaderId, qp.getZxid(), true);
+                            boolean majorChange = self.processReConfig(qv, suggestedLeaderId, qp.getZxid(), true);
                             if (majorChange) {
                                 throw new Exception("changes proposed in reconfig");
                             }
@@ -696,7 +696,7 @@ public class Learner {
                     case Leader.UPTODATE:
                         LOG.info("Learner received UPTODATE message");
                         if (newLeaderQV != null) {
-                            boolean majorChange = self.processReconfig(newLeaderQV, null, null, true);
+                            boolean majorChange = self.processReConfig(newLeaderQV, null, null, true);
                             if (majorChange) {
                                 throw new Exception("changes proposed in reconfig");
                             }

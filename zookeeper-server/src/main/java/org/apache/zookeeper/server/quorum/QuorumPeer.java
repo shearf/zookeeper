@@ -996,7 +996,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     public QuorumPeer() throws SaslException {
         super("QuorumPeer");
         quorumStats = new QuorumStats(this);
-        jmxRemotePeerBean = new HashMap<Long, RemotePeerBean>();
+        jmxRemotePeerBean = new HashMap<>();
         adminServer = AdminServerFactory.createAdminServer();
         x509Util = createX509Util();
         initialize();
@@ -2171,9 +2171,9 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
         acceptedEpoch = e;
     }
 
-    public boolean processReconfig(QuorumVerifier qv, Long suggestedLeaderId, Long zxid, boolean restartLE) {
+    public boolean processReConfig(QuorumVerifier qv, Long suggestedLeaderId, Long zxid, boolean restartLE) {
         if (!isReconfigEnabled()) {
-            LOG.debug("Reconfig feature is disabled, skip reconfig processing.");
+            LOG.debug("ReConfig feature is disabled, skip reConfig processing.");
             return false;
         }
 

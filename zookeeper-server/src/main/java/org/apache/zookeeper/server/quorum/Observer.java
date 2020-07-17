@@ -225,7 +225,7 @@ public class Observer extends Learner {
                 request.setTxnDigest(digest);
                 obs = (ObserverZooKeeperServer) zk;
 
-                boolean majorChange = self.processReconfig(qv, suggestedLeaderId, qp.getZxid(), true);
+                boolean majorChange = self.processReConfig(qv, suggestedLeaderId, qp.getZxid(), true);
 
                 obs.commitRequest(request);
 

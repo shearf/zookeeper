@@ -393,7 +393,7 @@ public class QuorumPeerConfig {
                     + " is disabled, so cannot enable "
                     + QuorumAuth.QUORUM_LEARNER_SASL_AUTH_REQUIRED);
         }
-        // If quorumpeer learner is not auth enabled then self won't be able to
+        // If quorum peer learner is not auth enabled then self won't be able to
         // join quorum. So this condition is ensuring that the quorumpeer learner
         // is also auth enabled while enabling quorum server require sasl.
         if (!quorumLearnerRequireSasl && quorumServerRequireSasl) {

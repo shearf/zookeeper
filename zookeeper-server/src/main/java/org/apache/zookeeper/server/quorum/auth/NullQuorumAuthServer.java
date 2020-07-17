@@ -24,6 +24,8 @@ import java.net.Socket;
 /**
  * This class represents no authentication server, it just return
  * without performing any authentication.
+ *
+ * @author ZK
  */
 public class NullQuorumAuthServer implements QuorumAuthServer {
 

@@ -208,7 +208,7 @@ public class NettyServerCnxn extends ServerCnxn {
 
     @Override
     public void sendBuffer(ByteBuffer... buffers) {
-        if (buffers.length == 1 && buffers[0] == ServerCnxnFactory.closeConn) {
+        if (buffers.length == 1 && buffers[0] == ServerCnxnFactory.CLOSE_CONN) {
             close(DisconnectReason.CLIENT_CLOSED_CONNECTION);
             return;
         }
@@ -608,7 +608,7 @@ public class NettyServerCnxn extends ServerCnxn {
      */
     @Override
     public void sendCloseSession() {
-        sendBuffer(ServerCnxnFactory.closeConn);
+        sendBuffer(ServerCnxnFactory.CLOSE_CONN);
     }
 
     @Override

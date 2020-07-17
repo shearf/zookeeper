@@ -73,9 +73,9 @@ public class QuorumMaj implements QuorumVerifier {
         this.allMembers = allMembers;
         for (QuorumServer qs : allMembers.values()) {
             if (qs.type == LearnerType.PARTICIPANT) {
-                votingMembers.put(Long.valueOf(qs.id), qs);
+                votingMembers.put(qs.id, qs);
             } else {
-                observingMembers.put(Long.valueOf(qs.id), qs);
+                observingMembers.put(qs.id, qs);
             }
         }
         half = votingMembers.size() / 2;

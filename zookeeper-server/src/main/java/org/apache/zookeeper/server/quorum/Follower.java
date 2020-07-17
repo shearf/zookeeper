@@ -221,7 +221,7 @@ public class Follower extends Learner {
                 ByteBuffer buffer = ByteBuffer.wrap(qp.getData());
                 long suggestedLeaderId = buffer.getLong();
                 final long zxid = qp.getZxid();
-                boolean majorChange = self.processReconfig(qv, suggestedLeaderId, zxid, true);
+                boolean majorChange = self.processReConfig(qv, suggestedLeaderId, zxid, true);
                 // commit (writes the new config to ZK tree (/zookeeper/config)
                 fzk.commit(zxid);
 

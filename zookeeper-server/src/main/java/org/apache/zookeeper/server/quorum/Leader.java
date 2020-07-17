@@ -910,7 +910,7 @@ public class Leader extends LearnerMaster {
 
             QuorumVerifier newQV = p.qvAcksetPairs.get(p.qvAcksetPairs.size() - 1).getQuorumVerifier();
 
-            self.processReconfig(newQV, designatedLeader, zk.getZxid(), true);
+            self.processReConfig(newQV, designatedLeader, zk.getZxid(), true);
 
             if (designatedLeader != self.getId()) {
                 LOG.info(String.format("Committing a reconfiguration (reconfigEnabled=%s); this leader is not the designated "
@@ -1491,7 +1491,7 @@ public class Leader extends LearnerMaster {
 
             Long designatedLeader = getDesignatedLeader(newLeaderProposal, zk.getZxid());
 
-            self.processReconfig(newQV, designatedLeader, zk.getZxid(), true);
+            self.processReConfig(newQV, designatedLeader, zk.getZxid(), true);
             if (designatedLeader != self.getId()) {
                 LOG.warn("This leader is not the designated leader, it will be initialized with allowedToCommit = false");
                 allowedToCommit = false;

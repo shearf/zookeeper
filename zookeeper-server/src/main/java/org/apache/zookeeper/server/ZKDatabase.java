@@ -58,6 +58,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * server states that includes the sessions, datatree and the
  * committed logs. It is booted up  after reading the logs
  * and snapshots from the disk.
+ * @author ZK
  */
 public class ZKDatabase {
 
@@ -101,7 +102,7 @@ public class ZKDatabase {
      */
     public ZKDatabase(FileTxnSnapLog snapLog) {
         dataTree = createDataTree();
-        sessionsWithTimeouts = new ConcurrentHashMap<Long, Integer>();
+        sessionsWithTimeouts = new ConcurrentHashMap<>();
         this.snapLog = snapLog;
 
         try {

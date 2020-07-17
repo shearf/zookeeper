@@ -110,7 +110,7 @@ public class NIOServerCnxn extends ServerCnxn {
      * close the underlying machinery (like socket, selectorkey, etc...)
      */
     public void sendCloseSession() {
-        sendBuffer(ServerCnxnFactory.closeConn);
+        sendBuffer(ServerCnxnFactory.CLOSE_CONN);
     }
 
     /**
@@ -125,7 +125,7 @@ public class NIOServerCnxn extends ServerCnxn {
              * so that we dont have to do write in
              * a tight while loop
              */
-            if (bb != ServerCnxnFactory.closeConn) {
+            if (bb != ServerCnxnFactory.CLOSE_CONN) {
                 if (sock.isOpen()) {
                     sock.configureBlocking(true);
                     sock.write(bb);
@@ -244,7 +244,7 @@ public class NIOServerCnxn extends ServerCnxn {
             // Remove the buffers that we have sent
             ByteBuffer bb;
             while ((bb = outgoingBuffers.peek()) != null) {
-                if (bb == ServerCnxnFactory.closeConn) {
+                if (bb == ServerCnxnFactory.CLOSE_CONN) {
                     throw new CloseRequestException("close requested", DisconnectReason.CLIENT_CLOSED_CONNECTION);
                 }
                 if (bb == packetSentinel) {
@@ -293,7 +293,7 @@ public class NIOServerCnxn extends ServerCnxn {
 
             // Remove the buffers that we have sent
             while ((bb = outgoingBuffers.peek()) != null) {
-                if (bb == ServerCnxnFactory.closeConn) {
+                if (bb == ServerCnxnFactory.CLOSE_CONN) {
                     throw new CloseRequestException("close requested", DisconnectReason.CLIENT_CLOSED_CONNECTION);
                 }
                 if (bb == packetSentinel) {

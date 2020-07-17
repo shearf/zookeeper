@@ -20,6 +20,9 @@ package org.apache.zookeeper.common;
 
 import java.util.Date;
 
+/**
+ * @author ZK
+ */
 public class Time {
 
     /**

@@ -26,6 +26,7 @@ import java.util.zip.CRC32;
 
 /**
  * Defines how to calculate the digest for a given node.
+ * @author ZK
  */
 public class DigestCalculator {
 
@@ -78,7 +79,7 @@ public class DigestCalculator {
         // under "/", it will use "" as the path, but when set data or change
         // ACL on "/", it will use "/" as the path. Always mapping "/" to ""
         // to avoid mismatch.
-        if (path.equals("/")) {
+        if ("/".equals(path)) {
             path = "";
         }
 

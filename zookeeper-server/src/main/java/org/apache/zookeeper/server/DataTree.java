@@ -60,6 +60,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * The tree maintains two parallel data structures: a hashtable that maps from
  * full paths to DataNodes and a tree of DataNodes. All accesses to a path is
  * through the hashtable. The tree is traversed only when serializing to disk.
+ * @author ZK
  */
 public class DataTree {
 
@@ -174,9 +175,9 @@ public class DataTree {
     public Set<String> getEphemerals(long sessionId) {
         HashSet<String> retv = ephemerals.get(sessionId);
         if (retv == null) {
-            return new HashSet<String>();
+            return new HashSet<>();
         }
-        Set<String> cloned = null;
+        Set<String> cloned;
         synchronized (retv) {
             cloned = (HashSet<String>) retv.clone();
         }
@@ -184,11 +185,11 @@ public class DataTree {
     }
 
     public Set<String> getContainers() {
-        return new HashSet<String>(containers);
+        return new HashSet<>(containers);
     }
 
     public Set<String> getTtls() {
-        return new HashSet<String>(ttls);
+        return new HashSet<>(ttls);
     }
 
     public Collection<Long> getSessions() {
@@ -248,17 +249,6 @@ public class DataTree {
      */
     private DataNode root = new DataNode(new byte[0], -1L, new StatPersisted());
 
-    /**
-     * create a /zookeeper filesystem that is the proc filesystem of zookeeper
-     */
-    private final DataNode procDataNode = new DataNode(new byte[0], -1L, new StatPersisted());
-
-    /**
-     * create a /zookeeper/quota node for maintaining quota properties for
-     * zookeeper
-     */
-    private final DataNode quotaDataNode = new DataNode(new byte[0], -1L, new StatPersisted());
-
     public DataTree() {
         this(new DigestCalculator());
     }
@@ -271,11 +261,20 @@ public class DataTree {
         nodes.put("", root);
         nodes.putWithoutDigest(rootZookeeper, root);
 
-        /** add the proc node and quota node */
+        /* add the proc node and quota node */
         root.addChild(procChildZookeeper);
+        /*
+         * create a /zookeeper filesystem that is the proc filesystem of zookeeper
+         */
+        DataNode procDataNode = new DataNode(new byte[0], -1L, new StatPersisted());
         nodes.put(procZookeeper, procDataNode);
 
         procDataNode.addChild(quotaChildZookeeper);
+        /*
+         * create a /zookeeper/quota node for maintaining quota properties for
+         * zookeeper
+         */
+        DataNode quotaDataNode = new DataNode(new byte[0], -1L, new StatPersisted());
         nodes.put(quotaZookeeper, quotaDataNode);
 
         addConfigNode();

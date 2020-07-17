@@ -26,6 +26,8 @@ import java.io.IOException;
 /**
  * A factory used to produce the actual watch manager based on the
  * zookeeper.watchManagerName option.
+ *
+ * @author ZK
  */
 public class WatchManagerFactory {
 
@@ -43,8 +45,7 @@ public class WatchManagerFactory {
             LOG.info("Using {} as watch manager", watchManagerName);
             return watchManager;
         } catch (Exception e) {
-            IOException ioe = new IOException("Couldn't instantiate " + watchManagerName, e);
-            throw ioe;
+            throw new IOException("Couldn't instantiate " + watchManagerName, e);
         }
     }
 

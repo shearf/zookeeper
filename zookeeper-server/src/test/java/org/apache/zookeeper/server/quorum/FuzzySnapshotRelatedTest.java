@@ -474,6 +474,7 @@ public class FuzzySnapshotRelatedTest extends QuorumPeerTestBase {
             return result;
         }
 
+        @Override
         public Stat setData(String path, byte data[], int version, long zxid,
                             long time) throws NoNodeException {
             if (setListener != null) {

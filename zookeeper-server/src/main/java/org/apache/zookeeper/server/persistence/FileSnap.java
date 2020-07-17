@@ -90,10 +90,10 @@ public class FileSnap implements SnapShot {
             snap = file;
             LOG.info("Reading snapshot {}", snap);
             snapZxid = Util.getZxidFromName(snap.getName(), SNAPSHOT_FILE_PREFIX);
-            try (CheckedInputStream snapIS = SnapStream.getInputStream(snap)) {
-                InputArchive ia = BinaryInputArchive.getArchive(snapIS);
+            try (CheckedInputStream snapInputStream = SnapStream.getInputStream(snap)) {
+                InputArchive ia = BinaryInputArchive.getArchive(snapInputStream);
                 deserialize(dt, sessions, ia);
-                SnapStream.checkSealIntegrity(snapIS, ia);
+                SnapStream.checkSealIntegrity(snapInputStream, ia);
 
                 // Digest feature was added after the CRC to make it backward
                 // compatible, the older code can still read snapshots which
@@ -102,7 +102,7 @@ public class FileSnap implements SnapShot {
                 // To check the intact, after adding digest we added another
                 // CRC check.
                 if (dt.deserializeZxidDigest(ia, snapZxid)) {
-                    SnapStream.checkSealIntegrity(snapIS, ia);
+                    SnapStream.checkSealIntegrity(snapInputStream, ia);
                 }
 
                 foundValid = true;

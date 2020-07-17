@@ -1024,7 +1024,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
                         "Invalid session 0x{} for client {}, probably expired",
                         Long.toHexString(cnxn.getSessionId()),
                         cnxn.getRemoteSocketAddress());
-                cnxn.sendBuffer(ServerCnxnFactory.closeConn);
+                cnxn.sendBuffer(ServerCnxnFactory.CLOSE_CONN);
             }
 
         } catch (Exception e) {
@@ -1599,7 +1599,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
                 ReplyHeader rh = new ReplyHeader(h.getXid(), 0, KeeperException.Code.AUTHFAILED.intValue());
                 cnxn.sendResponse(rh, null, null);
                 // ... and close connection
-                cnxn.sendBuffer(ServerCnxnFactory.closeConn);
+                cnxn.sendBuffer(ServerCnxnFactory.CLOSE_CONN);
                 cnxn.disableRecv();
             }
             return;

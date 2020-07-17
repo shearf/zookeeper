@@ -18,6 +18,9 @@
 
 package org.apache.zookeeper.server.quorum;
 
+/**
+ * @author ZK
+ */
 public class QuorumStats {
 
     private final Provider provider;
