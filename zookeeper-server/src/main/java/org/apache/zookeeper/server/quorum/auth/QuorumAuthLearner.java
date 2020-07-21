@@ -23,6 +23,7 @@ import java.net.Socket;
 
 /**
  * Interface for quorum learner authentication mechanisms.
+ * @author ZK
  */
 public interface QuorumAuthLearner {
 

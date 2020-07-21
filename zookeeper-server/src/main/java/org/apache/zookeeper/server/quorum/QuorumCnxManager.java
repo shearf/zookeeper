@@ -88,7 +88,7 @@ public class QuorumCnxManager {
      * Negative counter for observer server ids.
      */
 
-    private AtomicLong observerCounter = new AtomicLong(-1);
+    private final AtomicLong observerCounter = new AtomicLong(-1);
 
     /*
      * Protocol identifier used among peers (must be a negative number for backward compatibility reasons)
@@ -120,13 +120,13 @@ public class QuorumCnxManager {
     final boolean listenOnAllIPs;
     private ThreadPoolExecutor connectionExecutor;
     private final Set<Long> inprogressConnections = Collections.synchronizedSet(new HashSet<>());
-    private QuorumAuthServer authServer;
-    private QuorumAuthLearner authLearner;
-    private boolean quorumSaslAuthEnabled;
+    private final QuorumAuthServer authServer;
+    private final QuorumAuthLearner authLearner;
+    private final boolean quorumSaslAuthEnabled;
     /*
      * Counter to count connection processing threads.
      */
-    private AtomicInteger connectionThreadCnt = new AtomicInteger(0);
+    private final AtomicInteger connectionThreadCnt = new AtomicInteger(0);
 
     /*
      * Mapping from Peer to Thread number
@@ -154,7 +154,7 @@ public class QuorumCnxManager {
     /*
      * Counter to count worker threads
      */
-    private AtomicInteger threadCnt = new AtomicInteger(0);
+    private final AtomicInteger threadCnt = new AtomicInteger(0);
 
     /*
      * Socket options for TCP keepalive

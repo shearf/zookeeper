@@ -98,7 +98,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
 
     // The QuorumCnxManager is held through an AtomicReference to ensure cross-thread visibility
     // of updates; see the implementation comment at setLastSeenQuorumVerifier().
-    private AtomicReference<QuorumCnxManager> qcmRef = new AtomicReference<>();
+    private final AtomicReference<QuorumCnxManager> qcmRef = new AtomicReference<>();
 
     QuorumAuthServer authServer;
     QuorumAuthLearner authLearner;
@@ -397,9 +397,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
         }
 
         private boolean checkAddressesEqual(InetSocketAddress addr1, InetSocketAddress addr2) {
-            return (addr1 != null || addr2 == null)
-                    && (addr1 == null || addr2 != null)
-                    && (addr1 == null || addr2 == null || addr1.equals(addr2));
+            return (addr1 != null || addr2 == null) && (addr1 == null || addr2 != null) && (addr1 == null || addr1.equals(addr2));
         }
 
         @Override
@@ -728,7 +726,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     protected int quorumCnxnThreadsSize = QUORUM_CNXN_THREADS_SIZE_DEFAULT_VALUE;
 
     public static final String QUORUM_CNXN_TIMEOUT_MS = "zookeeper.quorumCnxnTimeoutMs";
-    private static int quorumCnxnTimeoutMs;
+    private static final int quorumCnxnTimeoutMs;
 
     static {
         quorumCnxnTimeoutMs = Integer.getInteger(QUORUM_CNXN_TIMEOUT_MS, -1);
@@ -822,10 +820,10 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
 
     private ServerState state = ServerState.LOOKING;
 
-    private AtomicReference<ZabState> zabState = new AtomicReference<>(ZabState.ELECTION);
-    private AtomicReference<SyncMode> syncMode = new AtomicReference<>(SyncMode.NONE);
-    private AtomicReference<String> leaderAddress = new AtomicReference<String>("");
-    private AtomicLong leaderId = new AtomicLong(-1);
+    private final AtomicReference<ZabState> zabState = new AtomicReference<>(ZabState.ELECTION);
+    private final AtomicReference<SyncMode> syncMode = new AtomicReference<>(SyncMode.NONE);
+    private final AtomicReference<String> leaderAddress = new AtomicReference<>("");
+    private final AtomicLong leaderId = new AtomicLong(-1);
 
     private boolean reconfigFlag = false; // indicates that a reconfig just committed
 
@@ -1563,7 +1561,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     }
 
     public synchronized Set<Long> getCurrentAndNextConfigVoters() {
-        Set<Long> voterIds = new HashSet<Long>(getQuorumVerifier().getVotingMembers().keySet());
+        Set<Long> voterIds = new HashSet<>(getQuorumVerifier().getVotingMembers().keySet());
         if (getLastSeenQuorumVerifier() != null) {
             voterIds.addAll(getLastSeenQuorumVerifier().getVotingMembers().keySet());
         }
@@ -1584,7 +1582,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
      */
     @Override
     public String[] getQuorumPeers() {
-        List<String> l = new ArrayList<String>();
+        List<String> l = new ArrayList<>();
         synchronized (this) {
             if (leader != null) {
                 for (LearnerHandler fh : leader.getLearners()) {
@@ -2138,12 +2136,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     // visibleForTest
     void writeLongToFile(String name, final long value) throws IOException {
         File file = new File(logFactory.getSnapDir(), name);
-        new AtomicFileWritingIdiom(file, new WriterStatement() {
-            @Override
-            public void write(Writer bw) throws IOException {
-                bw.write(Long.toString(value));
-            }
-        });
+        new AtomicFileWritingIdiom(file, (WriterStatement) bw -> bw.write(Long.toString(value)));
     }
 
     public long getCurrentEpoch() throws IOException {
@@ -2207,18 +2200,18 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
             }
 
             boolean roleChange = updateLearnerType(qv);
-            boolean leaderChange = false;
+            boolean leaderChange;
             if (suggestedLeaderId != null) {
                 // zxid should be non-null too
                 leaderChange = updateVote(suggestedLeaderId, zxid);
             } else {
                 long currentLeaderId = getCurrentVote().getId();
-                QuorumServer myleaderInCurQV = prevQV.getVotingMembers().get(currentLeaderId);
-                QuorumServer myleaderInNewQV = qv.getVotingMembers().get(currentLeaderId);
-                leaderChange = (myleaderInCurQV == null
-                        || myleaderInCurQV.addr == null
-                        || myleaderInNewQV == null
-                        || !myleaderInCurQV.addr.equals(myleaderInNewQV.addr));
+                QuorumServer myLeaderInCurQV = prevQV.getVotingMembers().get(currentLeaderId);
+                QuorumServer myLeaderInNewQV = qv.getVotingMembers().get(currentLeaderId);
+                leaderChange = (myLeaderInCurQV == null
+                        || myLeaderInCurQV.addr == null
+                        || myLeaderInNewQV == null
+                        || !myLeaderInCurQV.addr.equals(myLeaderInNewQV.addr));
                 // we don't have a designated leader - need to go into leader
                 // election
                 reconfigFlagClear();
@@ -2231,14 +2224,14 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     }
 
     private void updateRemotePeerMXBeans(Map<Long, QuorumServer> newMembers) {
-        Set<Long> existingMembers = new HashSet<Long>(newMembers.keySet());
+        Set<Long> existingMembers = new HashSet<>(newMembers.keySet());
         existingMembers.retainAll(jmxRemotePeerBean.keySet());
         for (Long id : existingMembers) {
             RemotePeerBean rBean = jmxRemotePeerBean.get(id);
             rBean.setQuorumServer(newMembers.get(id));
         }
 
-        Set<Long> joiningMembers = new HashSet<Long>(newMembers.keySet());
+        Set<Long> joiningMembers = new HashSet<>(newMembers.keySet());
         joiningMembers.removeAll(jmxRemotePeerBean.keySet());
         joiningMembers.remove(getId()); // remove self as it is local bean
         for (Long id : joiningMembers) {
@@ -2252,7 +2245,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
             }
         }
 
-        Set<Long> leavingMembers = new HashSet<Long>(jmxRemotePeerBean.keySet());
+        Set<Long> leavingMembers = new HashSet<>(jmxRemotePeerBean.keySet());
         leavingMembers.removeAll(newMembers.keySet());
         for (Long id : leavingMembers) {
             RemotePeerBean rBean = jmxRemotePeerBean.remove(id);
@@ -2264,7 +2257,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
         }
     }
 
-    private ArrayList<QuorumServer> observerMasters = new ArrayList<>();
+    private final ArrayList<QuorumServer> observerMasters = new ArrayList<>();
 
     private void updateObserverMasterList() {
         if (observerMasterPort <= 0) {
@@ -2545,7 +2538,7 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
     }
 
     @InterfaceAudience.Private
-    /**
+    /*
      * This is a metric that depends on the status of the peer.
      */
     public Integer getSynced_observers_metric() {

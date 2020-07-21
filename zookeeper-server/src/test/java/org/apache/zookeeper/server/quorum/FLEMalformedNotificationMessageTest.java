@@ -130,7 +130,7 @@ public class FLEMalformedNotificationMessageTest extends ZKTestCase {
         requestBuffer.putLong(0);                              // zxid
         requestBuffer.putLong(0);                              // electionEpoch
         requestBuffer.putLong(0);                              // epoch
-        requestBuffer.putInt(FastLeaderElection.Notification.CURRENTVERSION);   // version
+        requestBuffer.putInt(FastLeaderElection.Notification.CURRENT_VERSION);   // version
         requestBuffer.putInt(-123);                            // configData.length
         mockCnxManager.toSend(0L, requestBuffer);
 
@@ -162,7 +162,7 @@ public class FLEMalformedNotificationMessageTest extends ZKTestCase {
         requestBuffer.putLong(0);                              // zxid
         requestBuffer.putLong(0);                              // electionEpoch
         requestBuffer.putLong(0);                              // epoch
-        requestBuffer.putInt(FastLeaderElection.Notification.CURRENTVERSION);   // version
+        requestBuffer.putInt(FastLeaderElection.Notification.CURRENT_VERSION);   // version
         requestBuffer.putInt(10000);                           // configData.length
         requestBuffer.put(CONFIG_BYTES);                       // configData
         mockCnxManager.toSend(0L, requestBuffer);

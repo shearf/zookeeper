@@ -129,13 +129,6 @@ public class QuorumPeerConfig {
                     String.valueOf(MultipleAddresses.DEFAULT_TIMEOUT.toMillis())));
 
     /**
-     * Minimum snapshot retain count.
-     *
-     * @see org.apache.zookeeper.server.PurgeTxnLog#purge(File, File, int)
-     */
-    private final int MIN_SNAP_RETAIN_COUNT = 3;
-
-    /**
      * JVM Pause Monitor feature switch
      */
     protected boolean jvmPauseMonitorToRun = false;
@@ -405,6 +398,12 @@ public class QuorumPeerConfig {
         // Reset to MIN_SNAP_RETAIN_COUNT if invalid (less than 3)
         // PurgeTxnLog.purge(File, File, int) will not allow to purge less
         // than 3.
+        /*
+         * Minimum snapshot retain count.
+         *
+         * @see org.apache.zookeeper.server.PurgeTxnLog#purge(File, File, int)
+         */
+        final int MIN_SNAP_RETAIN_COUNT = 3;
         if (snapRetainCount < MIN_SNAP_RETAIN_COUNT) {
             LOG.warn("Invalid autopurge.snapRetainCount: "
                     + snapRetainCount

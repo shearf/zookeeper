@@ -25,6 +25,7 @@ import org.apache.zookeeper.server.ZooKeeperServer;
  * Interface for an embedded admin server that runs Commands. There is only one
  * functional implementation, JettyAdminServer. DummyAdminServer, which does
  * nothing, is used when we do not wish to run a server.
+ * @author xiahaihu
  */
 @InterfaceAudience.Public
 public interface AdminServer {

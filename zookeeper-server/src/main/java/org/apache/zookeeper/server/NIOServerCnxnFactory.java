@@ -654,7 +654,7 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
         // cnxnExpiryQueue. These don't need to be the same, but the expiring
         // interval passed into the ExpiryQueue() constructor below should be
         // less than or equal to the timeout.
-        cnxnExpiryQueue = new ExpiryQueue<NIOServerCnxn>(sessionlessCnxnTimeout);
+        cnxnExpiryQueue = new ExpiryQueue<>(sessionlessCnxnTimeout);
         expireThread = new ConnectionExpireThread();
 
         int numCores = Runtime.getRuntime().availableProcessors();

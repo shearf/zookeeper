@@ -31,15 +31,17 @@ import java.util.Set;
 /**
  * This class implements a validator for majority quorums. The implementation is
  * straightforward.
+ * @author ZK
  */
 public class QuorumMaj implements QuorumVerifier {
 
-    private Map<Long, QuorumServer> allMembers = new HashMap<Long, QuorumServer>();
-    private Map<Long, QuorumServer> votingMembers = new HashMap<Long, QuorumServer>();
-    private Map<Long, QuorumServer> observingMembers = new HashMap<Long, QuorumServer>();
+    private Map<Long, QuorumServer> allMembers = new HashMap<>();
+    private Map<Long, QuorumServer> votingMembers = new HashMap<>();
+    private Map<Long, QuorumServer> observingMembers = new HashMap<>();
     private long version = 0;
     private int half;
 
+    @Override
     public int hashCode() {
         assert false : "hashCode not designed";
         return 42; // any arbitrary constant will do

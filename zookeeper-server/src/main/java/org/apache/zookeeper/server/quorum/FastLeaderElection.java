@@ -115,7 +115,7 @@ public class FastLeaderElection implements Election {
          * Format version, introduced in 3.4.6
          */
 
-        public static final int CURRENTVERSION = 0x2;
+        public static final int CURRENT_VERSION = 0x2;
         int version;
 
         /*
@@ -455,7 +455,7 @@ public class FastLeaderElection implements Election {
                                             Long.toHexString(self.getQuorumVerifier().getVersion()));
 
                                     QuorumVerifier qv = self.getQuorumVerifier();
-                                    ToSend notmsg = new ToSend(
+                                    ToSend noticeMsg = new ToSend(
                                             ToSend.mType.notification,
                                             current.getId(),
                                             current.getZxid(),
@@ -464,7 +464,7 @@ public class FastLeaderElection implements Election {
                                             response.sid,
                                             current.getPeerEpoch(),
                                             qv.toString().getBytes());
-                                    sendQueue.offer(notmsg);
+                                    sendQueue.offer(noticeMsg);
                                 }
                             }
                         }
@@ -615,7 +615,7 @@ public class FastLeaderElection implements Election {
         requestBuffer.putLong(zxid);
         requestBuffer.putLong(electionEpoch);
         requestBuffer.putLong(epoch);
-        requestBuffer.putInt(Notification.CURRENTVERSION);
+        requestBuffer.putInt(Notification.CURRENT_VERSION);
         requestBuffer.putInt(configData.length);
         requestBuffer.put(configData);
 

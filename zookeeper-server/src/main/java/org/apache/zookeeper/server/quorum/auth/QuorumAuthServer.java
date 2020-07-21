@@ -24,6 +24,7 @@ import java.net.Socket;
 
 /**
  * Interface for quorum server authentication mechanisms.
+ * @author ZK
  */
 public interface QuorumAuthServer {
 
