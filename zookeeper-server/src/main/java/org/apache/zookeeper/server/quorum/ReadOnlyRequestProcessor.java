@@ -38,7 +38,7 @@ public class ReadOnlyRequestProcessor extends ZooKeeperCriticalThread implements
 
     private static final Logger LOG = LoggerFactory.getLogger(ReadOnlyRequestProcessor.class);
 
-    private final LinkedBlockingQueue<Request> queuedRequests = new LinkedBlockingQueue<Request>();
+    private final LinkedBlockingQueue<Request> queuedRequests = new LinkedBlockingQueue<>();
 
     private boolean finished = false;
 
@@ -86,7 +86,7 @@ public class ReadOnlyRequestProcessor extends ZooKeeperCriticalThread implements
                         ReplyHeader hdr = new ReplyHeader(
                                 request.cxid,
                                 zks.getZKDatabase().getDataTreeLastProcessedZxid(),
-                                Code.NOTREADONLY.intValue());
+                                Code.NOT_READONLY.intValue());
                         try {
                             request.cnxn.sendResponse(hdr, null, null);
                         } catch (IOException e) {

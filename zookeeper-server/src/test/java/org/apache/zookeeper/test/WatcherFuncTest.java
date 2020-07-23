@@ -138,7 +138,7 @@ public class WatcherFuncTest extends ClientBase {
             client.setData("/car", "missing".getBytes(), -1);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/car", e.getPath());
         }
 
@@ -147,7 +147,7 @@ public class WatcherFuncTest extends ClientBase {
             client.setData("/foo/car", "missing".getBytes(), -1);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo/car", e.getPath());
         }
 
@@ -175,14 +175,14 @@ public class WatcherFuncTest extends ClientBase {
             lsnr.getData("/foo", true, null);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo", e.getPath());
         }
         try {
             lsnr.getData("/foo/bar", true, null);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo/bar", e.getPath());
         }
 
@@ -215,14 +215,14 @@ public class WatcherFuncTest extends ClientBase {
             lsnr.getChildren("/foo", true);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo", e.getPath());
         }
         try {
             lsnr.getChildren("/foo/bar", true);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo/bar", e.getPath());
         }
 
@@ -338,14 +338,14 @@ public class WatcherFuncTest extends ClientBase {
             lsnr.getData("/foo", w1, null);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo", e.getPath());
         }
         try {
             lsnr.getData("/foo/bar", w2, null);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo/bar", e.getPath());
         }
 
@@ -405,14 +405,14 @@ public class WatcherFuncTest extends ClientBase {
             lsnr.getChildren("/foo", true);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo", e.getPath());
         }
         try {
             lsnr.getChildren("/foo/bar", true);
             fail();
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NONODE, e.code());
+            assertEquals(KeeperException.Code.NO_NODE, e.code());
             assertEquals("/foo/bar", e.getPath());
         }
 

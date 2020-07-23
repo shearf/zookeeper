@@ -215,7 +215,7 @@ public class SessionTest extends ZKTestCase {
                 cb.wait(1000);
             }
         }
-        assertEquals(KeeperException.Code.SESSIONEXPIRED.toString(), cb.toString());
+        assertEquals(KeeperException.Code.SESSION_EXPIRED.toString(), cb.toString());
     }
 
     /**

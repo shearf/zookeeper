@@ -344,25 +344,25 @@ public class RemoveWatchesTest extends ClientBase {
         MyWatcher w3 = new MyWatcher("/node1", 2);
 
         try {
-            removeWatches(zk2, "/node1", w3, WatcherType.Any, false, Code.NOWATCHER);
+            removeWatches(zk2, "/node1", w3, WatcherType.Any, false, Code.NO_WATCHER);
             fail("Should throw exception as given watcher doesn't exists");
         } catch (KeeperException.NoWatcherException nwe) {
             // expected
         }
         try {
-            removeWatches(zk2, "/node1", w3, WatcherType.Children, false, Code.NOWATCHER);
+            removeWatches(zk2, "/node1", w3, WatcherType.Children, false, Code.NO_WATCHER);
             fail("Should throw exception as given watcher doesn't exists");
         } catch (KeeperException.NoWatcherException nwe) {
             // expected
         }
         try {
-            removeWatches(zk2, "/node1", w3, WatcherType.Data, false, Code.NOWATCHER);
+            removeWatches(zk2, "/node1", w3, WatcherType.Data, false, Code.NO_WATCHER);
             fail("Should throw exception as given watcher doesn't exists");
         } catch (KeeperException.NoWatcherException nwe) {
             // expected
         }
         try {
-            removeWatches(zk2, "/nonexists", w3, WatcherType.Data, false, Code.NOWATCHER);
+            removeWatches(zk2, "/nonexists", w3, WatcherType.Data, false, Code.NO_WATCHER);
             fail("Should throw exception as given watcher doesn't exists");
         } catch (KeeperException.NoWatcherException nwe) {
             // expected
@@ -439,7 +439,7 @@ public class RemoveWatchesTest extends ClientBase {
         assertTrue("Didn't remove child watcher", w2.matches());
         assertFalse("Shouldn't remove data watcher", w1.matches());
         try {
-            removeWatches(zk2, "/node1", w1, WatcherType.Any, false, Code.CONNECTIONLOSS);
+            removeWatches(zk2, "/node1", w1, WatcherType.Any, false, Code.CONNECTION_LOSS);
             fail("Should throw exception as last watch removal requires server connection");
         } catch (KeeperException.ConnectionLossException nwe) {
             // expected
@@ -658,12 +658,12 @@ public class RemoveWatchesTest extends ClientBase {
         try {
             zk.removeWatches("/nowatchhere", watcher, WatcherType.Data, false);
         } catch (KeeperException nwe) {
-            if (nwe.code().intValue() == Code.NOWATCHER.intValue()) {
+            if (nwe.code().intValue() == Code.NO_WATCHER.intValue()) {
                 nw = true;
             }
         }
 
-        assertThat("Server didn't return NOWATCHER", watchManager.lastReturnCode, is(Code.NOWATCHER.intValue()));
+        assertThat("Server didn't return NOWATCHER", watchManager.lastReturnCode, is(Code.NO_WATCHER.intValue()));
         assertThat("NoWatcherException didn't happen", nw, is(true));
     }
 
@@ -674,7 +674,7 @@ public class RemoveWatchesTest extends ClientBase {
     public void testRemoveAllNoWatcherException() throws IOException, InterruptedException, KeeperException {
         zk1.create("/node1", null, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         try {
-            removeAllWatches(zk2, "/node1", WatcherType.Any, false, Code.NOWATCHER);
+            removeAllWatches(zk2, "/node1", WatcherType.Any, false, Code.NO_WATCHER);
             fail("Should throw exception as given watcher doesn't exists");
         } catch (KeeperException.NoWatcherException nwe) {
             // expected

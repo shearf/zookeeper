@@ -996,7 +996,7 @@ public class DataTree {
                         ByteBufferInputStream.byteBuffer2Record(bb, record);
 
                         if (failed && subtxn.getType() != OpCode.error) {
-                            int ec = post_failed ? Code.RUNTIMEINCONSISTENCY.intValue() : Code.OK.intValue();
+                            int ec = post_failed ? Code.RUNTIME_INCONSISTENCY.intValue() : Code.OK.intValue();
 
                             subtxn.setType(OpCode.error);
                             record = new ErrorTxn(ec);
@@ -1043,7 +1043,7 @@ public class DataTree {
          * Note, such failures on DT should be seen only during
          * restore.
          */
-        if (header.getType() == OpCode.create && rc.err == Code.NODEEXISTS.intValue()) {
+        if (header.getType() == OpCode.create && rc.err == Code.NODE_EXISTS.intValue()) {
             LOG.debug("Adjusting parent cversion for Txn: {} path: {} err: {}", header.getType(), rc.path, rc.err);
             int lastSlash = rc.path.lastIndexOf('/');
             String parentName = rc.path.substring(0, lastSlash);

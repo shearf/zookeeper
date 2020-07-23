@@ -82,7 +82,7 @@ public class CreateTTLTest extends ClientBase {
         CreateTTLRequest request = new CreateTTLRequest(path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_WITH_TTL.toFlag(), -100);
         CreateResponse response = new CreateResponse();
         ReplyHeader r = zk.submitRequest(h, request, response, null);
-        assertEquals("An invalid CreateTTLRequest should throw BadArguments", r.getErr(), Code.BADARGUMENTS.intValue());
+        assertEquals("An invalid CreateTTLRequest should throw BadArguments", r.getErr(), Code.BAD_ARGUMENTS.intValue());
         assertNull("An invalid CreateTTLRequest should not result in znode creation", zk.exists(path, false));
 
         request = new CreateTTLRequest(path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_WITH_TTL.toFlag(),
@@ -90,7 +90,7 @@ public class CreateTTLTest extends ClientBase {
                         + 1);
         response = new CreateResponse();
         r = zk.submitRequest(h, request, response, null);
-        assertEquals("An invalid CreateTTLRequest should throw BadArguments", r.getErr(), Code.BADARGUMENTS.intValue());
+        assertEquals("An invalid CreateTTLRequest should throw BadArguments", r.getErr(), Code.BAD_ARGUMENTS.intValue());
         assertNull("An invalid CreateTTLRequest should not result in znode creation", zk.exists(path, false));
     }
 

@@ -106,7 +106,7 @@ public class DigestAuthenticationProvider implements AuthenticationProvider {
         } catch (NoSuchAlgorithmException e) {
             LOG.error("Missing algorithm", e);
         }
-        return KeeperException.Code.AUTHFAILED;
+        return KeeperException.Code.AUTH_FAILED;
     }
 
     public boolean isAuthenticated() {

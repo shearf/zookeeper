@@ -164,7 +164,7 @@ public class FinalRequestProcessor implements RequestProcessor {
             }
 
             if (request.isThrottled()) {
-                throw KeeperException.create(Code.THROTTLEDOP);
+                throw KeeperException.create(Code.THROTTLED_OP);
             }
 
             AuditHelper.addAuditLog(request, rc);
@@ -213,7 +213,7 @@ public class FinalRequestProcessor implements RequestProcessor {
                                 break;
                             case OpCode.error:
                                 subResult = new ErrorResult(subTxnResult.err);
-                                if (subTxnResult.err == Code.SESSIONMOVED.intValue()) {
+                                if (subTxnResult.err == Code.SESSION_MOVED.intValue()) {
                                     throw new SessionMovedException();
                                 }
                                 break;
@@ -553,7 +553,7 @@ public class FinalRequestProcessor implements RequestProcessor {
                 sb.append(Integer.toHexString(bb.get() & 0xff));
             }
             LOG.error("Dumping request buffer: 0x{}", sb.toString());
-            err = Code.MARSHALLINGERROR;
+            err = Code.MARSHALLING_ERROR;
         }
 
         ReplyHeader hdr = new ReplyHeader(request.cxid, lastZxid, err.intValue());

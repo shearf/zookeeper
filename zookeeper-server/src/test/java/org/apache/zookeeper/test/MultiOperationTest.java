@@ -177,9 +177,9 @@ public class MultiOperationTest extends ClientBase {
     @Test(timeout = 90000)
     public void testInvalidPath() throws Exception {
         List<Integer> expectedResultCodes = new ArrayList<Integer>();
-        expectedResultCodes.add(KeeperException.Code.RUNTIMEINCONSISTENCY.intValue());
-        expectedResultCodes.add(KeeperException.Code.BADARGUMENTS.intValue());
-        expectedResultCodes.add(KeeperException.Code.RUNTIMEINCONSISTENCY.intValue());
+        expectedResultCodes.add(KeeperException.Code.RUNTIME_INCONSISTENCY.intValue());
+        expectedResultCodes.add(KeeperException.Code.BAD_ARGUMENTS.intValue());
+        expectedResultCodes.add(KeeperException.Code.RUNTIME_INCONSISTENCY.intValue());
         // create with CreateMode
         List<Op> opList = Arrays.asList(
                 Op.create("/multi0", new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT),
@@ -211,7 +211,7 @@ public class MultiOperationTest extends ClientBase {
         multiHavingErrors(zk, opList, expectedResultCodes, expectedErr);
 
         // Multiple bad arguments
-        expectedResultCodes.add(KeeperException.Code.BADARGUMENTS.intValue());
+        expectedResultCodes.add(KeeperException.Code.BAD_ARGUMENTS.intValue());
 
         // setdata
         opList = Arrays.asList(
@@ -277,10 +277,10 @@ public class MultiOperationTest extends ClientBase {
     @Test(timeout = 90000)
     public void testBlankPath() throws Exception {
         List<Integer> expectedResultCodes = new ArrayList<Integer>();
-        expectedResultCodes.add(KeeperException.Code.RUNTIMEINCONSISTENCY.intValue());
-        expectedResultCodes.add(KeeperException.Code.BADARGUMENTS.intValue());
-        expectedResultCodes.add(KeeperException.Code.RUNTIMEINCONSISTENCY.intValue());
-        expectedResultCodes.add(KeeperException.Code.BADARGUMENTS.intValue());
+        expectedResultCodes.add(KeeperException.Code.RUNTIME_INCONSISTENCY.intValue());
+        expectedResultCodes.add(KeeperException.Code.BAD_ARGUMENTS.intValue());
+        expectedResultCodes.add(KeeperException.Code.RUNTIME_INCONSISTENCY.intValue());
+        expectedResultCodes.add(KeeperException.Code.BAD_ARGUMENTS.intValue());
 
         // delete
         String expectedErr = "Path cannot be null";
@@ -298,16 +298,16 @@ public class MultiOperationTest extends ClientBase {
     @Test(timeout = 90000)
     public void testInvalidCreateModeFlag() throws Exception {
         List<Integer> expectedResultCodes = new ArrayList<Integer>();
-        expectedResultCodes.add(KeeperException.Code.RUNTIMEINCONSISTENCY.intValue());
-        expectedResultCodes.add(KeeperException.Code.BADARGUMENTS.intValue());
-        expectedResultCodes.add(KeeperException.Code.RUNTIMEINCONSISTENCY.intValue());
+        expectedResultCodes.add(KeeperException.Code.RUNTIME_INCONSISTENCY.intValue());
+        expectedResultCodes.add(KeeperException.Code.BAD_ARGUMENTS.intValue());
+        expectedResultCodes.add(KeeperException.Code.RUNTIME_INCONSISTENCY.intValue());
 
         int createModeFlag = 6789;
         List<Op> opList = Arrays.asList(
                 Op.create("/multi0", new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT),
                 Op.create("/multi1", new byte[0], Ids.OPEN_ACL_UNSAFE, createModeFlag),
                 Op.create("/multi2", new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT));
-        String expectedErr = KeeperException.Code.BADARGUMENTS.name();
+        String expectedErr = KeeperException.Code.BAD_ARGUMENTS.name();
         multiHavingErrors(zk, opList, expectedResultCodes, expectedErr);
     }
 
@@ -765,7 +765,7 @@ public class MultiOperationTest extends ClientBase {
 
         assertEquals(multiChildrenList.size(), 1);
         assertTrue(multiChildrenList.get(0) instanceof OpResult.ErrorResult);
-        assertEquals("Expected NoAuthException for getting the children of a write only node", ((OpResult.ErrorResult) multiChildrenList.get(0)).getErr(), KeeperException.Code.NOAUTH.intValue());
+        assertEquals("Expected NoAuthException for getting the children of a write only node", ((OpResult.ErrorResult) multiChildrenList.get(0)).getErr(), KeeperException.Code.NO_AUTH.intValue());
 
     }
 
@@ -782,7 +782,7 @@ public class MultiOperationTest extends ClientBase {
 
         assertEquals(multiChildrenList.size(), 2);
         assertTrue(multiChildrenList.get(0) instanceof OpResult.ErrorResult);
-        assertEquals("Expected NoAuthException for getting the children of a write only node", ((OpResult.ErrorResult) multiChildrenList.get(0)).getErr(), KeeperException.Code.NOAUTH.intValue());
+        assertEquals("Expected NoAuthException for getting the children of a write only node", ((OpResult.ErrorResult) multiChildrenList.get(0)).getErr(), KeeperException.Code.NO_AUTH.intValue());
 
         assertTrue(multiChildrenList.get(1) instanceof OpResult.GetChildrenResult);
         List<String> childrenList = ((OpResult.GetChildrenResult) multiChildrenList.get(1)).getChildren();
@@ -809,7 +809,7 @@ public class MultiOperationTest extends ClientBase {
         assertEquals(childrenList.get(0), "bar");
 
         assertTrue(multiChildrenList.get(1) instanceof OpResult.ErrorResult);
-        assertEquals("Expected NoAuthException for getting the children of a write only node", ((OpResult.ErrorResult) multiChildrenList.get(1)).getErr(), KeeperException.Code.NOAUTH.intValue());
+        assertEquals("Expected NoAuthException for getting the children of a write only node", ((OpResult.ErrorResult) multiChildrenList.get(1)).getErr(), KeeperException.Code.NO_AUTH.intValue());
     }
 
     @Test

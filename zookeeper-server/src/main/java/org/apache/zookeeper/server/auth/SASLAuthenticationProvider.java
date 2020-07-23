@@ -31,7 +31,7 @@ public class SASLAuthenticationProvider implements AuthenticationProvider {
         // Should never call this: SASL authentication is negotiated at session initiation.
         // TODO: consider substituting current implementation of direct ClientCnxn manipulation with
         // a call to this method (SASLAuthenticationProvider:handleAuthentication()) at session initiation.
-        return KeeperException.Code.AUTHFAILED;
+        return KeeperException.Code.AUTH_FAILED;
 
     }
 

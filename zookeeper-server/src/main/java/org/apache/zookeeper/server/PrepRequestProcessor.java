@@ -464,7 +464,7 @@ public class PrepRequestProcessor extends ZooKeeperCriticalThread implements Req
                                     throw new KeeperException.BadArgumentsException("Wrong format of server string");
                                 }
                                 // extract server id x from first part of joiner: server.x
-                                Long sid = Long.parseLong(parts[0].substring(parts[0].lastIndexOf('.') + 1));
+                                long sid = Long.parseLong(parts[0].substring(parts[0].lastIndexOf('.') + 1));
                                 QuorumServer qs = new QuorumServer(sid, parts[1]);
                                 if (qs.clientAddr == null || qs.electionAddr == null || qs.addr == null) {
                                     throw new KeeperException.BadArgumentsException("Wrong format of server string - each server should have 3 ports specified");
@@ -817,7 +817,7 @@ public class PrepRequestProcessor extends ZooKeeperCriticalThread implements Req
                          */
                         if (ke != null) {
                             type = OpCode.error;
-                            txn = new ErrorTxn(Code.RUNTIMEINCONSISTENCY.intValue());
+                            txn = new ErrorTxn(Code.RUNTIME_INCONSISTENCY.intValue());
                         } else {
                             /* Prep the request and convert to a Txn */
                             try {
@@ -829,7 +829,7 @@ public class PrepRequestProcessor extends ZooKeeperCriticalThread implements Req
                                 type = OpCode.error;
                                 txn = new ErrorTxn(e.code().intValue());
 
-                                if (e.code().intValue() > Code.APIERROR.intValue()) {
+                                if (e.code().intValue() > Code.API_ERROR.intValue()) {
                                     LOG.info("Got user-level KeeperException when processing {} aborting"
                                                     + " remaining multi ops. Error Path:{} Error:{}",
                                             request.toString(),
@@ -898,7 +898,7 @@ public class PrepRequestProcessor extends ZooKeeperCriticalThread implements Req
                 request.setTxn(new ErrorTxn(e.code().intValue()));
             }
 
-            if (e.code().intValue() > Code.APIERROR.intValue()) {
+            if (e.code().intValue() > Code.API_ERROR.intValue()) {
                 LOG.info(
                         "Got user-level KeeperException when processing {} Error Path:{} Error:{}",
                         request.toString(),
@@ -925,7 +925,7 @@ public class PrepRequestProcessor extends ZooKeeperCriticalThread implements Req
             LOG.error("Dumping request buffer: 0x{}", sb.toString());
             if (request.getHdr() != null) {
                 request.getHdr().setType(OpCode.error);
-                request.setTxn(new ErrorTxn(Code.MARSHALLINGERROR.intValue()));
+                request.setTxn(new ErrorTxn(Code.MARSHALLING_ERROR.intValue()));
             }
         }
     }

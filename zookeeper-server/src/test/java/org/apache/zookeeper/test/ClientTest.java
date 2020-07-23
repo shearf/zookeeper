@@ -168,7 +168,7 @@ public class ClientTest extends ClientBase {
                     zk.getData("/acltest", false, null);
                     fail("Should have received a permission error");
                 } catch (KeeperException e) {
-                    assertEquals(Code.NOAUTH, e.code());
+                    assertEquals(Code.NO_AUTH, e.code());
                 }
             }
             zk.addAuthInfo("digest", "ben:passwd".getBytes());
@@ -217,7 +217,7 @@ public class ClientTest extends ClientBase {
                     zk.getData("/acltest", false, null);
                     fail("Should have received a permission error");
                 } catch (KeeperException e) {
-                    assertEquals(Code.NOAUTH, e.code());
+                    assertEquals(Code.NO_AUTH, e.code());
                 }
             }
             zk.addAuthInfo("digest", "ben:passwd".getBytes());
@@ -687,7 +687,7 @@ public class ClientTest extends ClientBase {
             zk.delete("/parent", -1);
             fail("Should have received a not equals message");
         } catch (KeeperException e) {
-            assertEquals(KeeperException.Code.NOTEMPTY, e.code());
+            assertEquals(KeeperException.Code.NOT_EMPTY, e.code());
         }
         zk.delete("/parent/child", -1);
         zk.delete("/parent", -1);

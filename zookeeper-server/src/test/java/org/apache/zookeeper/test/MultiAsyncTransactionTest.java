@@ -103,9 +103,9 @@ public class MultiAsyncTransactionTest extends ClientBase {
 
         // Check that return code of all request are correct
         assertEquals(KeeperException.Code.OK.intValue(), results.get(0).rc);
-        assertEquals(KeeperException.Code.NODEEXISTS.intValue(), results.get(1).rc);
-        assertEquals(KeeperException.Code.NODEEXISTS.intValue(), results.get(2).rc);
-        assertEquals(KeeperException.Code.NODEEXISTS.intValue(), results.get(3).rc);
+        assertEquals(KeeperException.Code.NODE_EXISTS.intValue(), results.get(1).rc);
+        assertEquals(KeeperException.Code.NODE_EXISTS.intValue(), results.get(2).rc);
+        assertEquals(KeeperException.Code.NODE_EXISTS.intValue(), results.get(3).rc);
 
         // Check that the first operation is successful in all request
         assertTrue(results.get(0).results.get(0) instanceof CreateResult);
@@ -114,9 +114,9 @@ public class MultiAsyncTransactionTest extends ClientBase {
         assertEquals(KeeperException.Code.OK.intValue(), ((ErrorResult) results.get(3).results.get(0)).getErr());
 
         // Check that the second operation failed after the first request
-        assertEquals(KeeperException.Code.NODEEXISTS.intValue(), ((ErrorResult) results.get(1).results.get(1)).getErr());
-        assertEquals(KeeperException.Code.NODEEXISTS.intValue(), ((ErrorResult) results.get(2).results.get(1)).getErr());
-        assertEquals(KeeperException.Code.NODEEXISTS.intValue(), ((ErrorResult) results.get(3).results.get(1)).getErr());
+        assertEquals(KeeperException.Code.NODE_EXISTS.intValue(), ((ErrorResult) results.get(1).results.get(1)).getErr());
+        assertEquals(KeeperException.Code.NODE_EXISTS.intValue(), ((ErrorResult) results.get(2).results.get(1)).getErr());
+        assertEquals(KeeperException.Code.NODE_EXISTS.intValue(), ((ErrorResult) results.get(3).results.get(1)).getErr());
 
     }
 

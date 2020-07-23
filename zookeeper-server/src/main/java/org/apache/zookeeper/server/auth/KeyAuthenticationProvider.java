@@ -110,7 +110,7 @@ public class KeyAuthenticationProvider extends ServerAuthenticationProvider {
                     keyStr = authStr;
                 }
                 LOG.debug("KeyAuthenticationProvider handleAuthentication ({}, {}) -> FAIL.\n", keyStr, authStr);
-                return KeeperException.Code.AUTHFAILED;
+                return KeeperException.Code.AUTH_FAILED;
             }
         }
         // default to allow, so the key can be initially written

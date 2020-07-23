@@ -89,63 +89,63 @@ public abstract class KeeperException extends Exception {
      */
     public static KeeperException create(Code code) {
         switch (code) {
-            case SYSTEMERROR:
+            case SYSTEM_ERROR:
                 return new SystemErrorException();
-            case RUNTIMEINCONSISTENCY:
+            case RUNTIME_INCONSISTENCY:
                 return new RuntimeInconsistencyException();
-            case DATAINCONSISTENCY:
+            case DATA_INCONSISTENCY:
                 return new DataInconsistencyException();
-            case CONNECTIONLOSS:
+            case CONNECTION_LOSS:
                 return new ConnectionLossException();
-            case MARSHALLINGERROR:
+            case MARSHALLING_ERROR:
                 return new MarshallingErrorException();
             case UNIMPLEMENTED:
                 return new UnimplementedException();
-            case OPERATIONTIMEOUT:
+            case OPERATION_TIMEOUT:
                 return new OperationTimeoutException();
-            case NEWCONFIGNOQUORUM:
+            case NEW_CONFIG_NO_QUORUM:
                 return new NewConfigNoQuorum();
-            case RECONFIGINPROGRESS:
+            case RECONFIG_IN_PROGRESS:
                 return new ReconfigInProgress();
-            case BADARGUMENTS:
+            case BAD_ARGUMENTS:
                 return new BadArgumentsException();
-            case APIERROR:
+            case API_ERROR:
                 return new APIErrorException();
-            case NONODE:
+            case NO_NODE:
                 return new NoNodeException();
-            case NOAUTH:
+            case NO_AUTH:
                 return new NoAuthException();
-            case BADVERSION:
+            case BAD_VERSION:
                 return new BadVersionException();
-            case NOCHILDRENFOREPHEMERALS:
+            case NO_CHILDREN_FOR_EPHEMERALS:
                 return new NoChildrenForEphemeralsException();
-            case NODEEXISTS:
+            case NODE_EXISTS:
                 return new NodeExistsException();
-            case INVALIDACL:
+            case INVALID_ACL:
                 return new InvalidACLException();
-            case AUTHFAILED:
+            case AUTH_FAILED:
                 return new AuthFailedException();
-            case NOTEMPTY:
+            case NOT_EMPTY:
                 return new NotEmptyException();
-            case SESSIONEXPIRED:
+            case SESSION_EXPIRED:
                 return new SessionExpiredException();
-            case INVALIDCALLBACK:
+            case INVALID_CALLBACK:
                 return new InvalidCallbackException();
-            case SESSIONMOVED:
+            case SESSION_MOVED:
                 return new SessionMovedException();
-            case NOTREADONLY:
+            case NOT_READONLY:
                 return new NotReadOnlyException();
-            case EPHEMERALONLOCALSESSION:
+            case EPHEMERAL_ON_LOCAL_SESSION:
                 return new EphemeralOnLocalSessionException();
-            case NOWATCHER:
+            case NO_WATCHER:
                 return new NoWatcherException();
-            case RECONFIGDISABLED:
+            case RECONFIG_DISABLED:
                 return new ReconfigDisabledException();
-            case SESSIONCLOSEDREQUIRESASLAUTH:
+            case SESSION_CLOSED_REQUIRE_SASL_AUTH:
                 return new SessionClosedRequireAuthException();
-            case REQUESTTIMEOUT:
+            case REQUEST_TIMEOUT:
                 return new RequestTimeoutException();
-            case THROTTLEDOP:
+            case THROTTLED_OP:
                 return new ThrottledOpException();
             case OK:
             default:
@@ -190,30 +190,30 @@ public abstract class KeeperException extends Exception {
         int Ok = 0;
 
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#SYSTEMERROR} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#SYSTEM_ERROR} instead
          */
         @Deprecated
         int SystemError = -1;
         /**
          * @deprecated deprecated in 3.1.0, use
-         * {@link Code#RUNTIMEINCONSISTENCY} instead
+         * {@link Code#RUNTIME_INCONSISTENCY} instead
          */
         @Deprecated
         int RuntimeInconsistency = -2;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#DATAINCONSISTENCY}
+         * @deprecated deprecated in 3.1.0, use {@link Code#DATA_INCONSISTENCY}
          * instead
          */
         @Deprecated
         int DataInconsistency = -3;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#CONNECTIONLOSS}
+         * @deprecated deprecated in 3.1.0, use {@link Code#CONNECTION_LOSS}
          * instead
          */
         @Deprecated
         int ConnectionLoss = -4;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#MARSHALLINGERROR}
+         * @deprecated deprecated in 3.1.0, use {@link Code#MARSHALLING_ERROR}
          * instead
          */
         @Deprecated
@@ -225,13 +225,13 @@ public abstract class KeeperException extends Exception {
         @Deprecated
         int Unimplemented = -6;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#OPERATIONTIMEOUT}
+         * @deprecated deprecated in 3.1.0, use {@link Code#OPERATION_TIMEOUT}
          * instead
          */
         @Deprecated
         int OperationTimeout = -7;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#BADARGUMENTS}
+         * @deprecated deprecated in 3.1.0, use {@link Code#BAD_ARGUMENTS}
          * instead
          */
         @Deprecated
@@ -241,75 +241,75 @@ public abstract class KeeperException extends Exception {
         int UnknownSession = -12;
 
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#NEWCONFIGNOQUORUM}
+         * @deprecated deprecated in 3.1.0, use {@link Code#NEW_CONFIG_NO_QUORUM}
          * instead
          */
         @Deprecated
         int NewConfigNoQuorum = -13;
 
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#RECONFIGINPROGRESS}
+         * @deprecated deprecated in 3.1.0, use {@link Code#RECONFIG_IN_PROGRESS}
          * instead
          */
         @Deprecated
         int ReconfigInProgress = -14;
 
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#APIERROR} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#API_ERROR} instead
          */
         @Deprecated
         int APIError = -100;
 
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#NONODE} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#NO_NODE} instead
          */
         @Deprecated
         int NoNode = -101;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#NOAUTH} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#NO_AUTH} instead
          */
         @Deprecated
         int NoAuth = -102;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#BADVERSION} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#BAD_VERSION} instead
          */
         @Deprecated
         int BadVersion = -103;
         /**
          * @deprecated deprecated in 3.1.0, use
-         * {@link Code#NOCHILDRENFOREPHEMERALS}
+         * {@link Code#NO_CHILDREN_FOR_EPHEMERALS}
          * instead
          */
         @Deprecated
         int NoChildrenForEphemerals = -108;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#NODEEXISTS} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#NODE_EXISTS} instead
          */
         @Deprecated
         int NodeExists = -110;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#NOTEMPTY} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#NOT_EMPTY} instead
          */
         @Deprecated
         int NotEmpty = -111;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#SESSIONEXPIRED} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#SESSION_EXPIRED} instead
          */
         @Deprecated
         int SessionExpired = -112;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#INVALIDCALLBACK}
+         * @deprecated deprecated in 3.1.0, use {@link Code#INVALID_CALLBACK}
          * instead
          */
         @Deprecated
         int InvalidCallback = -113;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#INVALIDACL} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#INVALID_ACL} instead
          */
         @Deprecated
         int InvalidACL = -114;
         /**
-         * @deprecated deprecated in 3.1.0, use {@link Code#AUTHFAILED} instead
+         * @deprecated deprecated in 3.1.0, use {@link Code#AUTH_FAILED} instead
          */
         @Deprecated
         int AuthFailed = -115;
@@ -339,26 +339,26 @@ public abstract class KeeperException extends Exception {
          * System and server-side errors.
          * This is never thrown by the server, it shouldn't be used other than
          * to indicate a range. Specifically error codes greater than this
-         * value, but lesser than {@link #APIERROR}, are system errors.
+         * value, but lesser than {@link #API_ERROR}, are system errors.
          */
-        SYSTEMERROR(SystemError),
+        SYSTEM_ERROR(SystemError),
 
         /**
          * A runtime inconsistency was found
          */
-        RUNTIMEINCONSISTENCY(RuntimeInconsistency),
+        RUNTIME_INCONSISTENCY(RuntimeInconsistency),
         /**
          * A data inconsistency was found
          */
-        DATAINCONSISTENCY(DataInconsistency),
+        DATA_INCONSISTENCY(DataInconsistency),
         /**
          * Connection to the server has been lost
          */
-        CONNECTIONLOSS(ConnectionLoss),
+        CONNECTION_LOSS(ConnectionLoss),
         /**
          * Error while marshalling or unmarshalling data
          */
-        MARSHALLINGERROR(MarshallingError),
+        MARSHALLING_ERROR(MarshallingError),
         /**
          * Operation is unimplemented
          */
@@ -366,110 +366,110 @@ public abstract class KeeperException extends Exception {
         /**
          * Operation timeout
          */
-        OPERATIONTIMEOUT(OperationTimeout),
+        OPERATION_TIMEOUT(OperationTimeout),
         /**
          * Invalid arguments
          */
-        BADARGUMENTS(BadArguments),
+        BAD_ARGUMENTS(BadArguments),
         /**
          * No quorum of new config is connected and up-to-date with the leader of last commmitted config - try
          * invoking reconfiguration after new servers are connected and synced
          */
-        NEWCONFIGNOQUORUM(NewConfigNoQuorum),
+        NEW_CONFIG_NO_QUORUM(NewConfigNoQuorum),
         /**
          * Another reconfiguration is in progress -- concurrent reconfigs not supported (yet)
          */
-        RECONFIGINPROGRESS(ReconfigInProgress),
+        RECONFIG_IN_PROGRESS(ReconfigInProgress),
         /**
          * Unknown session (internal server use only)
          */
-        UNKNOWNSESSION(UnknownSession),
+        UNKNOWN_SESSION(UnknownSession),
 
         /**
          * API errors.
          * This is never thrown by the server, it shouldn't be used other than
          * to indicate a range. Specifically error codes greater than this
          * value are API errors (while values less than this indicate a
-         * {@link #SYSTEMERROR}).
+         * {@link #SYSTEM_ERROR}).
          */
-        APIERROR(APIError),
+        API_ERROR(APIError),
 
         /**
          * Node does not exist
          */
-        NONODE(NoNode),
+        NO_NODE(NoNode),
         /**
          * Not authenticated
          */
-        NOAUTH(NoAuth),
+        NO_AUTH(NoAuth),
         /**
          * Version conflict
          * In case of reconfiguration: reconfig requested from config version X but last seen config has a different version Y
          */
-        BADVERSION(BadVersion),
+        BAD_VERSION(BadVersion),
         /**
          * Ephemeral nodes may not have children
          */
-        NOCHILDRENFOREPHEMERALS(NoChildrenForEphemerals),
+        NO_CHILDREN_FOR_EPHEMERALS(NoChildrenForEphemerals),
         /**
          * The node already exists
          */
-        NODEEXISTS(NodeExists),
+        NODE_EXISTS(NodeExists),
         /**
          * The node has children
          */
-        NOTEMPTY(NotEmpty),
+        NOT_EMPTY(NotEmpty),
         /**
          * The session has been expired by the server
          */
-        SESSIONEXPIRED(SessionExpired),
+        SESSION_EXPIRED(SessionExpired),
         /**
          * Invalid callback specified
          */
-        INVALIDCALLBACK(InvalidCallback),
+        INVALID_CALLBACK(InvalidCallback),
         /**
          * Invalid ACL specified
          */
-        INVALIDACL(InvalidACL),
+        INVALID_ACL(InvalidACL),
         /**
          * Client authentication failed
          */
-        AUTHFAILED(AuthFailed),
+        AUTH_FAILED(AuthFailed),
         /**
          * Session moved to another server, so operation is ignored
          */
-        SESSIONMOVED(-118),
+        SESSION_MOVED(-118),
         /**
          * State-changing request is passed to read-only server
          */
-        NOTREADONLY(-119),
+        NOT_READONLY(-119),
         /**
          * Attempt to create ephemeral node on a local session
          */
-        EPHEMERALONLOCALSESSION(EphemeralOnLocalSession),
+        EPHEMERAL_ON_LOCAL_SESSION(EphemeralOnLocalSession),
         /**
          * Attempts to remove a non-existing watcher
          */
-        NOWATCHER(-121),
+        NO_WATCHER(-121),
         /**
          * Request not completed within max allowed time.
          */
-        REQUESTTIMEOUT(-122),
+        REQUEST_TIMEOUT(-122),
         /**
          * Attempts to perform a reconfiguration operation when reconfiguration feature is disabled.
          */
-        RECONFIGDISABLED(-123),
+        RECONFIG_DISABLED(-123),
         /**
          * The session has been closed by server because server requires client to do SASL authentication,
          * but client is not configured with SASL authentication or configuted with SASL but failed
          * (i.e. wrong credential used.).
          */
-        SESSIONCLOSEDREQUIRESASLAUTH(-124),
+        SESSION_CLOSED_REQUIRE_SASL_AUTH(-124),
         /**
          * Operation was throttled and not executed at all. This error code indicates that zookeeper server
          * is under heavy load and can't process incoming requests at full speed; please retry with back off.
          */
-        THROTTLEDOP(-127);
+        THROTTLED_OP(-127);
 
         private static final Map<Integer, Code> lookup = new HashMap<Integer, Code>();
 
@@ -509,61 +509,61 @@ public abstract class KeeperException extends Exception {
         switch (code) {
             case OK:
                 return "ok";
-            case SYSTEMERROR:
+            case SYSTEM_ERROR:
                 return "SystemError";
-            case RUNTIMEINCONSISTENCY:
+            case RUNTIME_INCONSISTENCY:
                 return "RuntimeInconsistency";
-            case DATAINCONSISTENCY:
+            case DATA_INCONSISTENCY:
                 return "DataInconsistency";
-            case CONNECTIONLOSS:
+            case CONNECTION_LOSS:
                 return "ConnectionLoss";
-            case MARSHALLINGERROR:
+            case MARSHALLING_ERROR:
                 return "MarshallingError";
-            case NEWCONFIGNOQUORUM:
+            case NEW_CONFIG_NO_QUORUM:
                 return "NewConfigNoQuorum";
-            case RECONFIGINPROGRESS:
+            case RECONFIG_IN_PROGRESS:
                 return "ReconfigInProgress";
             case UNIMPLEMENTED:
                 return "Unimplemented";
-            case OPERATIONTIMEOUT:
+            case OPERATION_TIMEOUT:
                 return "OperationTimeout";
-            case BADARGUMENTS:
+            case BAD_ARGUMENTS:
                 return "BadArguments";
-            case APIERROR:
+            case API_ERROR:
                 return "APIError";
-            case NONODE:
+            case NO_NODE:
                 return "NoNode";
-            case NOAUTH:
+            case NO_AUTH:
                 return "NoAuth";
-            case BADVERSION:
+            case BAD_VERSION:
                 return "BadVersion";
-            case NOCHILDRENFOREPHEMERALS:
+            case NO_CHILDREN_FOR_EPHEMERALS:
                 return "NoChildrenForEphemerals";
-            case NODEEXISTS:
+            case NODE_EXISTS:
                 return "NodeExists";
-            case INVALIDACL:
+            case INVALID_ACL:
                 return "InvalidACL";
-            case AUTHFAILED:
+            case AUTH_FAILED:
                 return "AuthFailed";
-            case NOTEMPTY:
+            case NOT_EMPTY:
                 return "Directory not empty";
-            case SESSIONEXPIRED:
+            case SESSION_EXPIRED:
                 return "Session expired";
-            case INVALIDCALLBACK:
+            case INVALID_CALLBACK:
                 return "Invalid callback";
-            case SESSIONMOVED:
+            case SESSION_MOVED:
                 return "Session moved";
-            case NOTREADONLY:
+            case NOT_READONLY:
                 return "Not a read-only call";
-            case EPHEMERALONLOCALSESSION:
+            case EPHEMERAL_ON_LOCAL_SESSION:
                 return "Ephemeral node on local session";
-            case NOWATCHER:
+            case NO_WATCHER:
                 return "No such watcher";
-            case RECONFIGDISABLED:
+            case RECONFIG_DISABLED:
                 return "Reconfig is disabled";
-            case SESSIONCLOSEDREQUIRESASLAUTH:
+            case SESSION_CLOSED_REQUIRE_SASL_AUTH:
                 return "Session closed because client failed to authenticate";
-            case THROTTLEDOP:
+            case THROTTLED_OP:
                 return "Op throttled due to high load";
             default:
                 return "Unknown error " + code;
@@ -636,317 +636,317 @@ public abstract class KeeperException extends Exception {
     }
 
     /**
-     * @see Code#APIERROR
+     * @see Code#API_ERROR
      */
     @InterfaceAudience.Public
     public static class APIErrorException extends KeeperException {
 
         public APIErrorException() {
-            super(Code.APIERROR);
+            super(Code.API_ERROR);
         }
 
     }
 
     /**
-     * @see Code#AUTHFAILED
+     * @see Code#AUTH_FAILED
      */
     @InterfaceAudience.Public
     public static class AuthFailedException extends KeeperException {
 
         public AuthFailedException() {
-            super(Code.AUTHFAILED);
+            super(Code.AUTH_FAILED);
         }
 
     }
 
     /**
-     * @see Code#BADARGUMENTS
+     * @see Code#BAD_ARGUMENTS
      */
     @InterfaceAudience.Public
     public static class BadArgumentsException extends KeeperException {
 
         public BadArgumentsException() {
-            super(Code.BADARGUMENTS);
+            super(Code.BAD_ARGUMENTS);
         }
 
         public BadArgumentsException(String path) {
-            super(Code.BADARGUMENTS, path);
+            super(Code.BAD_ARGUMENTS, path);
         }
 
     }
 
     /**
-     * @see Code#BADVERSION
+     * @see Code#BAD_VERSION
      */
     @InterfaceAudience.Public
     public static class BadVersionException extends KeeperException {
 
         public BadVersionException() {
-            super(Code.BADVERSION);
+            super(Code.BAD_VERSION);
         }
 
         public BadVersionException(String path) {
-            super(Code.BADVERSION, path);
+            super(Code.BAD_VERSION, path);
         }
 
     }
 
     /**
-     * @see Code#CONNECTIONLOSS
+     * @see Code#CONNECTION_LOSS
      */
     @InterfaceAudience.Public
     public static class ConnectionLossException extends KeeperException {
 
         public ConnectionLossException() {
-            super(Code.CONNECTIONLOSS);
+            super(Code.CONNECTION_LOSS);
         }
 
     }
 
     /**
-     * @see Code#DATAINCONSISTENCY
+     * @see Code#DATA_INCONSISTENCY
      */
     @InterfaceAudience.Public
     public static class DataInconsistencyException extends KeeperException {
 
         public DataInconsistencyException() {
-            super(Code.DATAINCONSISTENCY);
+            super(Code.DATA_INCONSISTENCY);
         }
 
     }
 
     /**
-     * @see Code#INVALIDACL
+     * @see Code#INVALID_ACL
      */
     @InterfaceAudience.Public
     public static class InvalidACLException extends KeeperException {
 
         public InvalidACLException() {
-            super(Code.INVALIDACL);
+            super(Code.INVALID_ACL);
         }
 
         public InvalidACLException(String path) {
-            super(Code.INVALIDACL, path);
+            super(Code.INVALID_ACL, path);
         }
 
     }
 
     /**
-     * @see Code#INVALIDCALLBACK
+     * @see Code#INVALID_CALLBACK
      */
     @InterfaceAudience.Public
     public static class InvalidCallbackException extends KeeperException {
 
         public InvalidCallbackException() {
-            super(Code.INVALIDCALLBACK);
+            super(Code.INVALID_CALLBACK);
         }
 
     }
 
     /**
-     * @see Code#MARSHALLINGERROR
+     * @see Code#MARSHALLING_ERROR
      */
     @InterfaceAudience.Public
     public static class MarshallingErrorException extends KeeperException {
 
         public MarshallingErrorException() {
-            super(Code.MARSHALLINGERROR);
+            super(Code.MARSHALLING_ERROR);
         }
 
     }
 
     /**
-     * @see Code#NOAUTH
+     * @see Code#NO_AUTH
      */
     @InterfaceAudience.Public
     public static class NoAuthException extends KeeperException {
 
         public NoAuthException() {
-            super(Code.NOAUTH);
+            super(Code.NO_AUTH);
         }
 
     }
 
     /**
-     * @see Code#NEWCONFIGNOQUORUM
+     * @see Code#NEW_CONFIG_NO_QUORUM
      */
     @InterfaceAudience.Public
     public static class NewConfigNoQuorum extends KeeperException {
 
         public NewConfigNoQuorum() {
-            super(Code.NEWCONFIGNOQUORUM);
+            super(Code.NEW_CONFIG_NO_QUORUM);
         }
 
     }
 
     /**
-     * @see Code#RECONFIGINPROGRESS
+     * @see Code#RECONFIG_IN_PROGRESS
      */
     @InterfaceAudience.Public
     public static class ReconfigInProgress extends KeeperException {
 
         public ReconfigInProgress() {
-            super(Code.RECONFIGINPROGRESS);
+            super(Code.RECONFIG_IN_PROGRESS);
         }
 
     }
 
     /**
-     * @see Code#NOCHILDRENFOREPHEMERALS
+     * @see Code#NO_CHILDREN_FOR_EPHEMERALS
      */
     @InterfaceAudience.Public
     public static class NoChildrenForEphemeralsException extends KeeperException {
 
         public NoChildrenForEphemeralsException() {
-            super(Code.NOCHILDRENFOREPHEMERALS);
+            super(Code.NO_CHILDREN_FOR_EPHEMERALS);
         }
 
         public NoChildrenForEphemeralsException(String path) {
-            super(Code.NOCHILDRENFOREPHEMERALS, path);
+            super(Code.NO_CHILDREN_FOR_EPHEMERALS, path);
         }
 
     }
 
     /**
-     * @see Code#NODEEXISTS
+     * @see Code#NODE_EXISTS
      */
     @InterfaceAudience.Public
     public static class NodeExistsException extends KeeperException {
 
         public NodeExistsException() {
-            super(Code.NODEEXISTS);
+            super(Code.NODE_EXISTS);
         }
 
         public NodeExistsException(String path) {
-            super(Code.NODEEXISTS, path);
+            super(Code.NODE_EXISTS, path);
         }
 
     }
 
     /**
-     * @see Code#NONODE
+     * @see Code#NO_NODE
      */
     @InterfaceAudience.Public
     public static class NoNodeException extends KeeperException {
 
         public NoNodeException() {
-            super(Code.NONODE);
+            super(Code.NO_NODE);
         }
 
         public NoNodeException(String path) {
-            super(Code.NONODE, path);
+            super(Code.NO_NODE, path);
         }
 
     }
 
     /**
-     * @see Code#NOTEMPTY
+     * @see Code#NOT_EMPTY
      */
     @InterfaceAudience.Public
     public static class NotEmptyException extends KeeperException {
 
         public NotEmptyException() {
-            super(Code.NOTEMPTY);
+            super(Code.NOT_EMPTY);
         }
 
         public NotEmptyException(String path) {
-            super(Code.NOTEMPTY, path);
+            super(Code.NOT_EMPTY, path);
         }
 
     }
 
     /**
-     * @see Code#OPERATIONTIMEOUT
+     * @see Code#OPERATION_TIMEOUT
      */
     @InterfaceAudience.Public
     public static class OperationTimeoutException extends KeeperException {
 
         public OperationTimeoutException() {
-            super(Code.OPERATIONTIMEOUT);
+            super(Code.OPERATION_TIMEOUT);
         }
 
     }
 
     /**
-     * @see Code#RUNTIMEINCONSISTENCY
+     * @see Code#RUNTIME_INCONSISTENCY
      */
     @InterfaceAudience.Public
     public static class RuntimeInconsistencyException extends KeeperException {
 
         public RuntimeInconsistencyException() {
-            super(Code.RUNTIMEINCONSISTENCY);
+            super(Code.RUNTIME_INCONSISTENCY);
         }
 
     }
 
     /**
-     * @see Code#SESSIONEXPIRED
+     * @see Code#SESSION_EXPIRED
      */
     @InterfaceAudience.Public
     public static class SessionExpiredException extends KeeperException {
 
         public SessionExpiredException() {
-            super(Code.SESSIONEXPIRED);
+            super(Code.SESSION_EXPIRED);
         }
 
     }
 
     /**
-     * @see Code#UNKNOWNSESSION
+     * @see Code#UNKNOWN_SESSION
      */
     @InterfaceAudience.Public
     public static class UnknownSessionException extends KeeperException {
 
         public UnknownSessionException() {
-            super(Code.UNKNOWNSESSION);
+            super(Code.UNKNOWN_SESSION);
         }
 
     }
 
     /**
-     * @see Code#SESSIONMOVED
+     * @see Code#SESSION_MOVED
      */
     @InterfaceAudience.Public
     public static class SessionMovedException extends KeeperException {
 
         public SessionMovedException() {
-            super(Code.SESSIONMOVED);
+            super(Code.SESSION_MOVED);
         }
 
     }
 
     /**
-     * @see Code#NOTREADONLY
+     * @see Code#NOT_READONLY
      */
     @InterfaceAudience.Public
     public static class NotReadOnlyException extends KeeperException {
 
         public NotReadOnlyException() {
-            super(Code.NOTREADONLY);
+            super(Code.NOT_READONLY);
         }
 
     }
 
     /**
-     * @see Code#EPHEMERALONLOCALSESSION
+     * @see Code#EPHEMERAL_ON_LOCAL_SESSION
      */
     @InterfaceAudience.Public
     public static class EphemeralOnLocalSessionException extends KeeperException {
 
         public EphemeralOnLocalSessionException() {
-            super(Code.EPHEMERALONLOCALSESSION);
+            super(Code.EPHEMERAL_ON_LOCAL_SESSION);
         }
 
     }
 
     /**
-     * @see Code#SYSTEMERROR
+     * @see Code#SYSTEM_ERROR
      */
     @InterfaceAudience.Public
     public static class SystemErrorException extends KeeperException {
 
         public SystemErrorException() {
-            super(Code.SYSTEMERROR);
+            super(Code.SYSTEM_ERROR);
         }
 
     }
@@ -964,69 +964,69 @@ public abstract class KeeperException extends Exception {
     }
 
     /**
-     * @see Code#NOWATCHER
+     * @see Code#NO_WATCHER
      */
     @InterfaceAudience.Public
     public static class NoWatcherException extends KeeperException {
 
         public NoWatcherException() {
-            super(Code.NOWATCHER);
+            super(Code.NO_WATCHER);
         }
 
         public NoWatcherException(String path) {
-            super(Code.NOWATCHER, path);
+            super(Code.NO_WATCHER, path);
         }
 
     }
 
     /**
-     * @see Code#RECONFIGDISABLED
+     * @see Code#RECONFIG_DISABLED
      */
     @InterfaceAudience.Public
     public static class ReconfigDisabledException extends KeeperException {
 
         public ReconfigDisabledException() {
-            super(Code.RECONFIGDISABLED);
+            super(Code.RECONFIG_DISABLED);
         }
 
         public ReconfigDisabledException(String path) {
-            super(Code.RECONFIGDISABLED, path);
+            super(Code.RECONFIG_DISABLED, path);
         }
 
     }
 
     /**
-     * @see Code#SESSIONCLOSEDREQUIRESASLAUTH
+     * @see Code#SESSION_CLOSED_REQUIRE_SASL_AUTH
      */
     public static class SessionClosedRequireAuthException extends KeeperException {
 
         public SessionClosedRequireAuthException() {
-            super(Code.SESSIONCLOSEDREQUIRESASLAUTH);
+            super(Code.SESSION_CLOSED_REQUIRE_SASL_AUTH);
         }
 
         public SessionClosedRequireAuthException(String path) {
-            super(Code.SESSIONCLOSEDREQUIRESASLAUTH, path);
+            super(Code.SESSION_CLOSED_REQUIRE_SASL_AUTH, path);
         }
 
     }
 
     /**
-     * @see Code#REQUESTTIMEOUT
+     * @see Code#REQUEST_TIMEOUT
      */
     public static class RequestTimeoutException extends KeeperException {
 
         public RequestTimeoutException() {
-            super(Code.REQUESTTIMEOUT);
+            super(Code.REQUEST_TIMEOUT);
         }
 
     }
 
     /**
-     * @see Code#THROTTLEDOP
+     * @see Code#THROTTLED_OP
      */
     public static class ThrottledOpException extends KeeperException {
         public ThrottledOpException() {
-            super(Code.THROTTLEDOP);
+            super(Code.THROTTLED_OP);
         }
     }
 }

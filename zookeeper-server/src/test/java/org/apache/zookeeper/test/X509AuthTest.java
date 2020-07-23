@@ -77,7 +77,7 @@ public class X509AuthTest extends ZKTestCase {
         X509AuthenticationProvider provider = createProvider(clientCert);
         MockServerCnxn cnxn = new MockServerCnxn();
         cnxn.clientChain = new X509Certificate[]{unknownCert};
-        assertEquals(KeeperException.Code.AUTHFAILED, provider.handleAuthentication(cnxn, null));
+        assertEquals(KeeperException.Code.AUTH_FAILED, provider.handleAuthentication(cnxn, null));
     }
 
     private static class TestPublicKey implements PublicKey {

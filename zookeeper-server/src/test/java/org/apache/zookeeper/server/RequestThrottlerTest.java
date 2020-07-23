@@ -257,7 +257,7 @@ public class RequestThrottlerTest extends ZKTestCase {
         ServerMetrics.getMetrics().resetAll();
 
         AsyncCallback.StringCallback createCallback = (rc, path, ctx, name) -> {
-            if (KeeperException.Code.get(rc) == KeeperException.Code.CONNECTIONLOSS) {
+            if (KeeperException.Code.get(rc) == KeeperException.Code.CONNECTION_LOSS) {
                 disconnected.countDown();
                 connectionLossCount++;
             }

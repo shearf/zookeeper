@@ -50,7 +50,7 @@ public class SaslAuthRequiredFailNoSASLTest extends ClientBase {
             zk.create("/foo", null, Ids.CREATOR_ALL_ACL, CreateMode.PERSISTENT);
             fail("Client is not configured with SASL authentication, so zk.create operation should fail.");
         } catch (KeeperException e) {
-            assertTrue(e.code() == KeeperException.Code.SESSIONCLOSEDREQUIRESASLAUTH);
+            assertTrue(e.code() == KeeperException.Code.SESSION_CLOSED_REQUIRE_SASL_AUTH);
             // Verify that "eventually" (within the bound of timeouts)
             // this client closes the connection between itself and the server.
             watcher.waitForDisconnected(SaslTestUtil.CLIENT_DISCONNECT_TIMEOUT);

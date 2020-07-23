@@ -85,7 +85,7 @@ public class AsyncTest extends ZKTestCase implements StringCallback, VoidCallbac
                 }
             }
             assertEquals(0, (int) results.get(0));
-            assertEquals(Code.NOAUTH, Code.get(results.get(1)));
+            assertEquals(Code.NO_AUTH, Code.get(results.get(1)));
             assertEquals(0, (int) results.get(2));
             assertEquals(0, (int) results.get(3));
             assertEquals(0, (int) results.get(4));
@@ -100,7 +100,7 @@ public class AsyncTest extends ZKTestCase implements StringCallback, VoidCallbac
                 zk.getData("/ben2", false, new Stat());
                 fail("Should have received a permission error");
             } catch (KeeperException e) {
-                assertEquals(Code.NOAUTH, e.code());
+                assertEquals(Code.NO_AUTH, e.code());
             }
         } finally {
             zk.close();

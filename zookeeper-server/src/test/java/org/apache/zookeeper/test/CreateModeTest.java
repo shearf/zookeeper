@@ -79,14 +79,14 @@ public class CreateModeTest extends ZKTestCase {
             CreateMode.fromFlag(99);
             fail("Shouldn't be able to convert 99 to a CreateMode.");
         } catch (KeeperException ke) {
-            assertEquals(Code.BADARGUMENTS, ke.code());
+            assertEquals(Code.BAD_ARGUMENTS, ke.code());
         }
 
         try {
             CreateMode.fromFlag(-1);
             fail("Shouldn't be able to convert -1 to a CreateMode.");
         } catch (KeeperException ke) {
-            assertEquals(Code.BADARGUMENTS, ke.code());
+            assertEquals(Code.BAD_ARGUMENTS, ke.code());
         }
     }
 

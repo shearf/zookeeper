@@ -167,7 +167,7 @@ public class AsyncOps {
         public void verifyCreateFailure_NodeExists() {
             new StringCB(zk).verifyCreate();
 
-            rc = Code.NODEEXISTS;
+            rc = Code.NODE_EXISTS;
             name = null;
             zk.create(path, data, acl, flags, this, toString());
             verify();
@@ -175,7 +175,7 @@ public class AsyncOps {
 
         public void verifyCreateFailure_NoNode() {
 
-            rc = Code.NONODE;
+            rc = Code.NO_NODE;
             name = null;
             path = path + "/bar";
             zk.create(path, data, acl, flags, this, toString());
@@ -186,7 +186,7 @@ public class AsyncOps {
         public void verifyCreateFailure_NoChildForEphemeral() {
             new StringCB(zk).verifyCreateEphemeral();
 
-            rc = Code.NOCHILDRENFOREPHEMERALS;
+            rc = Code.NO_CHILDREN_FOR_EPHEMERALS;
             name = null;
             path = path + "/bar";
             zk.create(path, data, acl, flags, this, toString());
@@ -234,7 +234,7 @@ public class AsyncOps {
         }
 
         public void verifyGetACLFailure_NoNode() {
-            rc = Code.NONODE;
+            rc = Code.NO_NODE;
             stat = null;
             acl = null;
             zk.getACL(path, stat, this, toString());
@@ -336,7 +336,7 @@ public class AsyncOps {
         }
 
         public void verifyGetChildrenFailure_NoNode() {
-            rc = KeeperException.Code.NONODE;
+            rc = KeeperException.Code.NO_NODE;
             verify();
         }
 
@@ -421,7 +421,7 @@ public class AsyncOps {
         }
 
         public void verifyGetChildrenFailure_NoNode() {
-            rc = KeeperException.Code.NONODE;
+            rc = KeeperException.Code.NO_NODE;
             verify();
         }
 
@@ -481,7 +481,7 @@ public class AsyncOps {
 
         public void verifyCreateFailure_NodeExists() {
             new Create2CB(zk).verifyCreate();
-            rc = Code.NODEEXISTS;
+            rc = Code.NODE_EXISTS;
             name = null;
             stat = null;
             zk.create(path, data, acl, flags, this, toString());
@@ -489,7 +489,7 @@ public class AsyncOps {
         }
 
         public void verifyCreateFailure_NoNode() {
-            rc = Code.NONODE;
+            rc = Code.NO_NODE;
             name = null;
             stat = null;
             path = path + "/bar";
@@ -501,7 +501,7 @@ public class AsyncOps {
         public void verifyCreateFailure_NoChildForEphemeral() {
             new StringCB(zk).verifyCreateEphemeral();
 
-            rc = Code.NOCHILDRENFOREPHEMERALS;
+            rc = Code.NO_CHILDREN_FOR_EPHEMERALS;
             name = null;
             stat = null;
             path = path + "/bar";
@@ -555,7 +555,7 @@ public class AsyncOps {
         }
 
         public void verifyGetDataFailure_NoNode() {
-            rc = KeeperException.Code.NONODE;
+            rc = KeeperException.Code.NO_NODE;
             data = null;
             stat = null;
             zk.getData(path, false, this, toString());
@@ -607,7 +607,7 @@ public class AsyncOps {
         }
 
         public void verifySetACLFailure_NoNode() {
-            rc = KeeperException.Code.NONODE;
+            rc = KeeperException.Code.NO_NODE;
             stat = null;
             zk.setACL(path, acl, version, this, toString());
             verify();
@@ -616,7 +616,7 @@ public class AsyncOps {
         public void verifySetACLFailure_BadVersion() {
             new StringCB(zk).verifyCreate();
 
-            rc = Code.BADVERSION;
+            rc = Code.BAD_VERSION;
             stat = null;
             zk.setACL(path, acl, version + 1, this, toString());
 
@@ -636,7 +636,7 @@ public class AsyncOps {
         }
 
         public void verifySetDataFailure_NoNode() {
-            rc = KeeperException.Code.NONODE;
+            rc = KeeperException.Code.NO_NODE;
             stat = null;
             zk.setData(path, data, version, this, toString());
             verify();
@@ -645,7 +645,7 @@ public class AsyncOps {
         public void verifySetDataFailure_BadVersion() {
             new StringCB(zk).verifyCreate();
 
-            rc = Code.BADVERSION;
+            rc = Code.BAD_VERSION;
             stat = null;
             zk.setData(path, data, version + 1, this, toString());
 
@@ -660,7 +660,7 @@ public class AsyncOps {
         }
 
         public void verifyExistsFailure_NoNode() {
-            rc = KeeperException.Code.NONODE;
+            rc = KeeperException.Code.NO_NODE;
             stat = null;
             zk.exists(path, false, this, toString());
             verify();
@@ -706,14 +706,14 @@ public class AsyncOps {
         }
 
         public void verifyDeleteFailure_NoNode() {
-            rc = Code.NONODE;
+            rc = Code.NO_NODE;
             zk.delete(path, version, this, toString());
             verify();
         }
 
         public void verifyDeleteFailure_BadVersion() {
             new StringCB(zk).verifyCreate();
-            rc = Code.BADVERSION;
+            rc = Code.BAD_VERSION;
             zk.delete(path, version + 1, this, toString());
             verify();
         }
@@ -724,7 +724,7 @@ public class AsyncOps {
             scb.setPath(path + "/bar");
             scb.create();
 
-            rc = Code.NOTEMPTY;
+            rc = Code.NOT_EMPTY;
             zk.delete(path, version, this, toString());
             verify();
         }

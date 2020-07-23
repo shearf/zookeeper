@@ -83,7 +83,7 @@ public class ClientRequestTimeoutTest extends QuorumPeerTestBase {
             zk.create("/clientHang2", data.getBytes(), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             fail("KeeperException is expected.");
         } catch (KeeperException exception) {
-            assertEquals(KeeperException.Code.REQUESTTIMEOUT.intValue(), exception.code().intValue());
+            assertEquals(KeeperException.Code.REQUEST_TIMEOUT.intValue(), exception.code().intValue());
         }
 
         // do cleanup

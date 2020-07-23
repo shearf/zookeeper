@@ -111,7 +111,7 @@ public class FinalRequestProcessorTest {
         processor.processRequest(r);
 
         // Assert
-        assertThat(KeeperException.Code.get(replyHeaders[0].getErr()), equalTo(KeeperException.Code.NOAUTH));
+        assertThat(KeeperException.Code.get(replyHeaders[0].getErr()), equalTo(KeeperException.Code.NO_AUTH));
     }
 
     @Test

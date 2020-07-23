@@ -106,7 +106,7 @@ public class ReconfigExceptionTest extends ZKTestCase {
             reconfigPort();
             fail("Reconfig should be disabled.");
         } catch (KeeperException e) {
-            assertTrue(e.code() == KeeperException.Code.RECONFIGDISABLED);
+            assertTrue(e.code() == KeeperException.Code.RECONFIG_DISABLED);
         }
     }
 
@@ -117,7 +117,7 @@ public class ReconfigExceptionTest extends ZKTestCase {
             fail("Reconfig should fail without auth.");
         } catch (KeeperException e) {
             // However a failure is still expected as user is not authenticated, so ACL check will fail.
-            assertTrue(e.code() == KeeperException.Code.NOAUTH);
+            assertTrue(e.code() == KeeperException.Code.NO_AUTH);
         }
     }
 
@@ -141,7 +141,7 @@ public class ReconfigExceptionTest extends ZKTestCase {
             fail("Reconfig should fail without a valid ACL associated with user.");
         } catch (KeeperException e) {
             // Again failure is expected because no ACL is associated with this user.
-            assertTrue(e.code() == KeeperException.Code.NOAUTH);
+            assertTrue(e.code() == KeeperException.Code.NO_AUTH);
         }
     }
 
@@ -159,7 +159,7 @@ public class ReconfigExceptionTest extends ZKTestCase {
             reconfigPort();
             fail("Reconfig should fail with an ACL that is read only!");
         } catch (KeeperException e) {
-            assertTrue(e.code() == KeeperException.Code.NOAUTH);
+            assertTrue(e.code() == KeeperException.Code.NO_AUTH);
         }
     }
 

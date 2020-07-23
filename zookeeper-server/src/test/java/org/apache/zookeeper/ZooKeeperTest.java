@@ -414,7 +414,7 @@ public class ZooKeeperTest extends ClientBase {
             assertFalse(zkMain.processZKCmd(zkMain.cl));
             fail("Path doesn't exists so, command should fail.");
         } catch (CliWrapperException e) {
-            assertEquals(KeeperException.Code.NONODE, ((KeeperException) e.getCause()).code());
+            assertEquals(KeeperException.Code.NO_NODE, ((KeeperException) e.getCause()).code());
         }
     }
 
@@ -607,7 +607,7 @@ public class ZooKeeperTest extends ClientBase {
             runCommandExpect(cmd, new ArrayList<String>());
             fail("Path doesn't exists so, command should fail.");
         } catch (CliWrapperException e) {
-            assertEquals(KeeperException.Code.NONODE, ((KeeperException) e.getCause()).code());
+            assertEquals(KeeperException.Code.NO_NODE, ((KeeperException) e.getCause()).code());
         }
     }
 

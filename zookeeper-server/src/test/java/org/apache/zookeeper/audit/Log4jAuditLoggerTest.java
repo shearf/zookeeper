@@ -92,7 +92,7 @@ public class Log4jAuditLoggerTest extends QuorumPeerTestBase {
                     CreateMode.PERSISTENT);
         } catch (KeeperException exception) {
             Code code = exception.code();
-            assertEquals(Code.NODEEXISTS, code);
+            assertEquals(Code.NODE_EXISTS, code);
         }
         // Verify create operation log
         verifyLog(
@@ -111,7 +111,7 @@ public class Log4jAuditLoggerTest extends QuorumPeerTestBase {
             zk.delete(path, -100);
         } catch (KeeperException exception) {
             Code code = exception.code();
-            assertEquals(Code.BADVERSION, code);
+            assertEquals(Code.BAD_VERSION, code);
         }
         verifyLog(getAuditLog(AuditConstants.OP_DELETE, path,
                 Result.FAILURE),
@@ -132,7 +132,7 @@ public class Log4jAuditLoggerTest extends QuorumPeerTestBase {
             zk.setData(path, "newData".getBytes(), -100);
         } catch (KeeperException exception) {
             Code code = exception.code();
-            assertEquals(Code.BADVERSION, code);
+            assertEquals(Code.BAD_VERSION, code);
         }
         verifyLog(getAuditLog(AuditConstants.OP_SETDATA, path,
                 Result.FAILURE),
@@ -154,7 +154,7 @@ public class Log4jAuditLoggerTest extends QuorumPeerTestBase {
             zk.setACL(path, openAclUnsafe, -100);
         } catch (KeeperException exception) {
             Code code = exception.code();
-            assertEquals(Code.BADVERSION, code);
+            assertEquals(Code.BAD_VERSION, code);
         }
         verifyLog(
                 getAuditLog(AuditConstants.OP_SETACL, path, Result.FAILURE,
@@ -204,7 +204,7 @@ public class Log4jAuditLoggerTest extends QuorumPeerTestBase {
             zk.multi(ops);
         } catch (KeeperException exception) {
             Code code = exception.code();
-            assertEquals(Code.NODEEXISTS, code);
+            assertEquals(Code.NODE_EXISTS, code);
         }
 
         // Verify that multi operation failure is logged, and there is no path

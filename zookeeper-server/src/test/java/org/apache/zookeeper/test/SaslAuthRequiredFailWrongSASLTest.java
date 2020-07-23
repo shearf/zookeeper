@@ -54,7 +54,7 @@ public class SaslAuthRequiredFailWrongSASLTest extends ClientBase {
             zk.create("/bar", null, Ids.CREATOR_ALL_ACL, CreateMode.PERSISTENT);
             fail("Client with wrong SASL config should not pass SASL authentication.");
         } catch (KeeperException e) {
-            assertTrue(e.code() == KeeperException.Code.AUTHFAILED);
+            assertTrue(e.code() == KeeperException.Code.AUTH_FAILED);
             // Verify that "eventually" this client closes the connection between itself and the server.
             watcher.waitForDisconnected(SaslTestUtil.CLIENT_DISCONNECT_TIMEOUT);
         } finally {

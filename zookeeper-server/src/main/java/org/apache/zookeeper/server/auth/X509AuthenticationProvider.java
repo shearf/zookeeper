@@ -136,12 +136,12 @@ public class X509AuthenticationProvider implements AuthenticationProvider {
         X509Certificate[] certChain = (X509Certificate[]) cnxn.getClientCertificateChain();
 
         if (certChain == null || certChain.length == 0) {
-            return KeeperException.Code.AUTHFAILED;
+            return KeeperException.Code.AUTH_FAILED;
         }
 
         if (trustManager == null) {
             LOG.error("No trust manager available to authenticate session 0x{}", Long.toHexString(cnxn.getSessionId()));
-            return KeeperException.Code.AUTHFAILED;
+            return KeeperException.Code.AUTH_FAILED;
         }
 
         X509Certificate clientCert = certChain[0];
@@ -151,7 +151,7 @@ public class X509AuthenticationProvider implements AuthenticationProvider {
             trustManager.checkClientTrusted(certChain, clientCert.getPublicKey().getAlgorithm());
         } catch (CertificateException ce) {
             LOG.error("Failed to trust certificate for session 0x{}", Long.toHexString(cnxn.getSessionId()), ce);
-            return KeeperException.Code.AUTHFAILED;
+            return KeeperException.Code.AUTH_FAILED;
         }
 
         String clientId = getClientId(clientCert);

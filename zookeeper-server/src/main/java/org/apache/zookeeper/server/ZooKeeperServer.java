@@ -1568,7 +1568,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
             ByteBufferInputStream.byteBuffer2Record(incomingBuffer, authPacket);
             String scheme = authPacket.getScheme();
             ServerAuthenticationProvider ap = ProviderRegistry.getServerProvider(scheme);
-            Code authReturn = KeeperException.Code.AUTHFAILED;
+            Code authReturn = KeeperException.Code.AUTH_FAILED;
             if (ap != null) {
                 try {
                     // handleAuthentication may close the connection, to allow the client to choose
@@ -1578,7 +1578,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
                             authPacket.getAuth());
                 } catch (RuntimeException e) {
                     LOG.warn("Caught runtime exception from AuthenticationProvider: {}", scheme, e);
-                    authReturn = KeeperException.Code.AUTHFAILED;
+                    authReturn = KeeperException.Code.AUTH_FAILED;
                 }
             }
             if (authReturn == KeeperException.Code.OK) {
@@ -1596,7 +1596,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
                     LOG.warn("Authentication failed for scheme: {}", scheme);
                 }
                 // send a response...
-                ReplyHeader rh = new ReplyHeader(h.getXid(), 0, KeeperException.Code.AUTHFAILED.intValue());
+                ReplyHeader rh = new ReplyHeader(h.getXid(), 0, KeeperException.Code.AUTH_FAILED.intValue());
                 cnxn.sendResponse(rh, null, null);
                 // ... and close connection
                 cnxn.sendBuffer(ServerCnxnFactory.CLOSE_CONN);
@@ -1607,7 +1607,7 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
             processSasl(incomingBuffer, cnxn, h);
         } else {
             if (shouldRequireClientSaslAuth() && !hasCnxSASLAuthenticated(cnxn)) {
-                ReplyHeader replyHeader = new ReplyHeader(h.getXid(), 0, Code.SESSIONCLOSEDREQUIRESASLAUTH.intValue());
+                ReplyHeader replyHeader = new ReplyHeader(h.getXid(), 0, Code.SESSION_CLOSED_REQUIRE_SASL_AUTH.intValue());
                 cnxn.sendResponse(replyHeader, null, "response");
                 cnxn.sendCloseSession();
                 cnxn.disableRecv();
@@ -1676,10 +1676,10 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
                                 "Closing client connection due to server requires client SASL authenticaiton,"
                                         + "but client SASL authentication has failed, or client is not configured with SASL "
                                         + "authentication.");
-                        error = Code.SESSIONCLOSEDREQUIRESASLAUTH.intValue();
+                        error = Code.SESSION_CLOSED_REQUIRE_SASL_AUTH.intValue();
                     } else {
                         LOG.warn("Closing client connection due to SASL authentication failure.");
-                        error = Code.AUTHFAILED.intValue();
+                        error = Code.AUTH_FAILED.intValue();
                     }
 
                     ReplyHeader replyHeader = new ReplyHeader(requestHeader.getXid(), 0, error);

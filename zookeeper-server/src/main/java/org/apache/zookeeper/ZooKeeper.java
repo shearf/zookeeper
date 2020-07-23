@@ -274,7 +274,7 @@ public class ZooKeeper implements AutoCloseable {
 
         @Override
         protected boolean shouldAddWatch(int rc) {
-            return rc == 0 || rc == KeeperException.Code.NONODE.intValue();
+            return rc == 0 || rc == KeeperException.Code.NO_NODE.intValue();
         }
 
     }
@@ -326,7 +326,7 @@ public class ZooKeeper implements AutoCloseable {
 
         @Override
         protected boolean shouldAddWatch(int rc) {
-            return rc == 0 || rc == KeeperException.Code.NONODE.intValue();
+            return rc == 0 || rc == KeeperException.Code.NO_NODE.intValue();
         }
     }
 
@@ -1529,7 +1529,7 @@ public class ZooKeeper implements AutoCloseable {
     public void multi(Iterable<Op> ops, MultiCallback cb, Object ctx) {
         List<OpResult> results = validatePath(ops);
         if (results.size() > 0) {
-            cb.processResult(KeeperException.Code.BADARGUMENTS.intValue(), null, ctx, results);
+            cb.processResult(KeeperException.Code.BAD_ARGUMENTS.intValue(), null, ctx, results);
             return;
         }
         multiInternal(generateMultiTransaction(ops), cb, ctx);
@@ -1543,7 +1543,7 @@ public class ZooKeeper implements AutoCloseable {
                 op.validate();
             } catch (IllegalArgumentException iae) {
                 LOG.error("Unexpected exception", iae);
-                ErrorResult err = new ErrorResult(KeeperException.Code.BADARGUMENTS.intValue());
+                ErrorResult err = new ErrorResult(KeeperException.Code.BAD_ARGUMENTS.intValue());
                 results.add(err);
                 error = true;
                 continue;
@@ -1554,7 +1554,7 @@ public class ZooKeeper implements AutoCloseable {
                 error = true;
                 continue;
             }
-            ErrorResult err = new ErrorResult(KeeperException.Code.RUNTIMEINCONSISTENCY.intValue());
+            ErrorResult err = new ErrorResult(KeeperException.Code.RUNTIME_INCONSISTENCY.intValue());
             results.add(err);
         }
         if (!error) {
@@ -1724,7 +1724,7 @@ public class ZooKeeper implements AutoCloseable {
         SetDataResponse response = new SetDataResponse();
         ReplyHeader r = cnxn.submitRequest(h, request, response, wcb);
         if (r.getErr() != 0) {
-            if (r.getErr() == KeeperException.Code.NONODE.intValue()) {
+            if (r.getErr() == KeeperException.Code.NO_NODE.intValue()) {
                 return null;
             }
             throw KeeperException.create(KeeperException.Code.get(r.getErr()), clientPath);

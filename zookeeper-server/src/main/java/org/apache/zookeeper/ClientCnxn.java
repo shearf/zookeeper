@@ -731,8 +731,8 @@ public class ClientCnxn {
 
     void queueEvent(String clientPath, int err, Set<Watcher> materializedWatchers, EventType eventType) {
         KeeperState sessionState = KeeperState.SyncConnected;
-        if (KeeperException.Code.SESSIONEXPIRED.intValue() == err
-                || KeeperException.Code.CONNECTIONLOSS.intValue() == err) {
+        if (KeeperException.Code.SESSION_EXPIRED.intValue() == err
+                || KeeperException.Code.CONNECTION_LOSS.intValue() == err) {
             sessionState = Event.KeeperState.Disconnected;
         }
         WatchedEvent event = new WatchedEvent(eventType, sessionState, clientPath);
@@ -754,13 +754,13 @@ public class ClientCnxn {
         }
         switch (state) {
             case AUTH_FAILED:
-                p.replyHeader.setErr(KeeperException.Code.AUTHFAILED.intValue());
+                p.replyHeader.setErr(KeeperException.Code.AUTH_FAILED.intValue());
                 break;
             case CLOSED:
-                p.replyHeader.setErr(KeeperException.Code.SESSIONEXPIRED.intValue());
+                p.replyHeader.setErr(KeeperException.Code.SESSION_EXPIRED.intValue());
                 break;
             default:
-                p.replyHeader.setErr(KeeperException.Code.CONNECTIONLOSS.intValue());
+                p.replyHeader.setErr(KeeperException.Code.CONNECTION_LOSS.intValue());
         }
         finishPacket(p);
     }
@@ -841,7 +841,7 @@ public class ClientCnxn {
                     return;
                 case AUTHPACKET_XID:
                     LOG.debug("Got auth session id: 0x{}", Long.toHexString(sessionId));
-                    if (replyHdr.getErr() == KeeperException.Code.AUTHFAILED.intValue()) {
+                    if (replyHdr.getErr() == KeeperException.Code.AUTH_FAILED.intValue()) {
                         changeZkState(States.AUTH_FAILED);
                         eventThread.queueEvent(new WatchedEvent(Watcher.Event.EventType.None,
                                 Watcher.Event.KeeperState.AuthFailed, null));
@@ -898,7 +898,7 @@ public class ClientCnxn {
              */
             try {
                 if (packet.requestHeader.getXid() != replyHdr.getXid()) {
-                    packet.replyHeader.setErr(KeeperException.Code.CONNECTIONLOSS.intValue());
+                    packet.replyHeader.setErr(KeeperException.Code.CONNECTION_LOSS.intValue());
                     throw new IOException("Xid out of order. Got Xid " + replyHdr.getXid()
                             + " with err " + replyHdr.getErr()
                             + " expected Xid " + packet.requestHeader.getXid()
@@ -1542,7 +1542,7 @@ public class ClientCnxn {
                 }
             }
         }
-        if (r.getErr() == Code.REQUESTTIMEOUT.intValue()) {
+        if (r.getErr() == Code.REQUEST_TIMEOUT.intValue()) {
             sendThread.cleanAndNotifyState();
         }
         return r;
@@ -1557,7 +1557,7 @@ public class ClientCnxn {
             packet.wait(requestTimeout);
             if (!packet.finished && ((Time.currentElapsedTime() - waitStartTime) >= requestTimeout)) {
                 LOG.error("Timeout error occurred for the packet '{}'.", packet);
-                r.setErr(Code.REQUESTTIMEOUT.intValue());
+                r.setErr(Code.REQUEST_TIMEOUT.intValue());
                 break;
             }
         }
