@@ -822,9 +822,9 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
         // make sure it has a chance to write it to disk
         int sleepTime = 0;
         Long longLeader = (long) leader;
-        while (!p.qvAcksetPairs.get(0).getAckset().contains(longLeader)) {
+        while (!p.qvAckSetPairs.get(0).getAckset().contains(longLeader)) {
             if (sleepTime > 2000) {
-                fail("Transaction not synced to disk within 1 second " + p.qvAcksetPairs.get(0).getAckset() + " expected " + leader);
+                fail("Transaction not synced to disk within 1 second " + p.qvAckSetPairs.get(0).getAckset() + " expected " + leader);
             }
             Thread.sleep(100);
             sleepTime += 100;

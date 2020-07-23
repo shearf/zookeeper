@@ -640,7 +640,7 @@ public class Leader extends LearnerMaster {
                     }
                 }
                 boolean initTicksShouldBeIncreased = true;
-                for (Proposal.QuorumVerifierAcksetPair qvAckset : newLeaderProposal.qvAcksetPairs) {
+                for (SyncedLearnerTracker.QuorumVerifierAckSetPair qvAckset : newLeaderProposal.qvAckSetPairs) {
                     if (!qvAckset.getQuorumVerifier().containsQuorum(followerSet)) {
                         initTicksShouldBeIncreased = false;
                         break;
@@ -817,7 +817,7 @@ public class Leader extends LearnerMaster {
 
     private long getDesignatedLeader(Proposal reconfigProposal, long zxid) {
         //new configuration
-        Proposal.QuorumVerifierAcksetPair newQVAcksetPair = reconfigProposal.qvAcksetPairs.get(reconfigProposal.qvAcksetPairs.size() - 1);
+        SyncedLearnerTracker.QuorumVerifierAckSetPair newQVAcksetPair = reconfigProposal.qvAckSetPairs.get(reconfigProposal.qvAckSetPairs.size() - 1);
 
         //check if I'm in the new configuration with the same quorum address -
         // if so, I'll remain the leader
@@ -839,7 +839,7 @@ public class Leader extends LearnerMaster {
         Proposal p = outstandingProposals.get(curZxid);
 
         while (p != null && !candidates.isEmpty()) {
-            for (Proposal.QuorumVerifierAcksetPair qvAckset : p.qvAcksetPairs) {
+            for (SyncedLearnerTracker.QuorumVerifierAckSetPair qvAckset : p.qvAckSetPairs) {
                 //reduce the set of candidates to those that acknowledged p
                 candidates.retainAll(qvAckset.getAckset());
                 //no candidate acked p, return the best candidate found so far
@@ -908,7 +908,7 @@ public class Leader extends LearnerMaster {
             Long designatedLeader = getDesignatedLeader(p, zxid);
             //LOG.warn("designated leader is: " + designatedLeader);
 
-            QuorumVerifier newQV = p.qvAcksetPairs.get(p.qvAcksetPairs.size() - 1).getQuorumVerifier();
+            QuorumVerifier newQV = p.qvAckSetPairs.get(p.qvAckSetPairs.size() - 1).getQuorumVerifier();
 
             self.processReConfig(newQV, designatedLeader, zk.getZxid(), true);
 
@@ -1524,7 +1524,7 @@ public class Leader extends LearnerMaster {
     @Override
     public void waitForNewLeaderAck(long sid, long zxid) throws InterruptedException {
 
-        synchronized (newLeaderProposal.qvAcksetPairs) {
+        synchronized (newLeaderProposal.qvAckSetPairs) {
 
             if (quorumFormed) {
                 return;
@@ -1548,13 +1548,13 @@ public class Leader extends LearnerMaster {
 
             if (newLeaderProposal.hasAllQuorums()) {
                 quorumFormed = true;
-                newLeaderProposal.qvAcksetPairs.notifyAll();
+                newLeaderProposal.qvAckSetPairs.notifyAll();
             } else {
                 long start = Time.currentElapsedTime();
                 long cur = start;
                 long end = start + self.getInitLimit() * self.getTickTime();
                 while (!quorumFormed && cur < end) {
-                    newLeaderProposal.qvAcksetPairs.wait(end - cur);
+                    newLeaderProposal.qvAckSetPairs.wait(end - cur);
                     cur = Time.currentElapsedTime();
                 }
                 if (!quorumFormed) {

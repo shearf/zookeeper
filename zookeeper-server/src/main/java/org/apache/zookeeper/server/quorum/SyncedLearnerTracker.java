@@ -25,17 +25,17 @@ import java.util.HashSet;
 
 public class SyncedLearnerTracker {
 
-    protected ArrayList<QuorumVerifierAcksetPair> qvAcksetPairs = new ArrayList<QuorumVerifierAcksetPair>();
+    protected ArrayList<QuorumVerifierAckSetPair> qvAckSetPairs = new ArrayList<>();
 
     public void addQuorumVerifier(QuorumVerifier qv) {
-        qvAcksetPairs.add(new QuorumVerifierAcksetPair(qv, new HashSet<Long>(qv.getVotingMembers().size())));
+        qvAckSetPairs.add(new QuorumVerifierAckSetPair(qv, new HashSet<>(qv.getVotingMembers().size())));
     }
 
     public boolean addAck(Long sid) {
         boolean change = false;
-        for (QuorumVerifierAcksetPair qvAckset : qvAcksetPairs) {
-            if (qvAckset.getQuorumVerifier().getVotingMembers().containsKey(sid)) {
-                qvAckset.getAckset().add(sid);
+        for (QuorumVerifierAckSetPair qvAckSet : qvAckSetPairs) {
+            if (qvAckSet.getQuorumVerifier().getVotingMembers().containsKey(sid)) {
+                qvAckSet.getAckSet().add(sid);
                 change = true;
             }
         }
@@ -43,8 +43,8 @@ public class SyncedLearnerTracker {
     }
 
     public boolean hasSid(long sid) {
-        for (QuorumVerifierAcksetPair qvAckset : qvAcksetPairs) {
-            if (!qvAckset.getQuorumVerifier().getVotingMembers().containsKey(sid)) {
+        for (QuorumVerifierAckSetPair qvAckSet : qvAckSetPairs) {
+            if (!qvAckSet.getQuorumVerifier().getVotingMembers().containsKey(sid)) {
                 return false;
             }
         }
@@ -52,8 +52,8 @@ public class SyncedLearnerTracker {
     }
 
     public boolean hasAllQuorums() {
-        for (QuorumVerifierAcksetPair qvAckset : qvAcksetPairs) {
-            if (!qvAckset.getQuorumVerifier().containsQuorum(qvAckset.getAckset())) {
+        for (QuorumVerifierAckSetPair qvAckSet : qvAckSetPairs) {
+            if (!qvAckSet.getQuorumVerifier().containsQuorum(qvAckSet.getAckSet())) {
                 return false;
             }
         }
@@ -63,29 +63,29 @@ public class SyncedLearnerTracker {
     public String ackSetsToString() {
         StringBuilder sb = new StringBuilder();
 
-        for (QuorumVerifierAcksetPair qvAckset : qvAcksetPairs) {
-            sb.append(qvAckset.getAckset().toString()).append(",");
+        for (QuorumVerifierAckSetPair qvAckSet : qvAckSetPairs) {
+            sb.append(qvAckSet.getAckSet().toString()).append(",");
         }
 
         return sb.substring(0, sb.length() - 1);
     }
 
-    public static class QuorumVerifierAcksetPair {
+    public static class QuorumVerifierAckSetPair {
 
         private final QuorumVerifier qv;
-        private final HashSet<Long> ackset;
+        private final HashSet<Long> ackSet;
 
-        public QuorumVerifierAcksetPair(QuorumVerifier qv, HashSet<Long> ackset) {
+        public QuorumVerifierAckSetPair(QuorumVerifier qv, HashSet<Long> ackSet) {
             this.qv = qv;
-            this.ackset = ackset;
+            this.ackSet = ackSet;
         }
 
         public QuorumVerifier getQuorumVerifier() {
             return this.qv;
         }
 
-        public HashSet<Long> getAckset() {
-            return this.ackset;
+        public HashSet<Long> getAckSet() {
+            return this.ackSet;
         }
 
     }

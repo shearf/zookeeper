@@ -748,10 +748,8 @@ public class FastLeaderElection implements Election {
          */
 
         return ((newEpoch > curEpoch)
-                || ((newEpoch == curEpoch)
-                && ((newZxid > curZxid)
-                || ((newZxid == curZxid)
-                && (newId > curId)))));
+                || ((newEpoch == curEpoch) && ((newZxid > curZxid)
+                || ((newZxid == curZxid) && (newId > curId)))));
     }
 
     /**

@@ -146,7 +146,7 @@ public class LeaderWithObserverTest {
         leader.newLeaderProposal.packet = new QuorumPacket(0, zxid, null, null);
         leader.newLeaderProposal.addQuorumVerifier(peer.getQuorumVerifier());
 
-        Set<Long> ackSet = leader.newLeaderProposal.qvAcksetPairs.get(0).getAckset();
+        Set<Long> ackSet = leader.newLeaderProposal.qvAckSetPairs.get(0).getAckset();
         assertEquals("Unexpected vote in ackSet", 0, ackSet.size());
         assertFalse(leader.quorumFormed);
         try {

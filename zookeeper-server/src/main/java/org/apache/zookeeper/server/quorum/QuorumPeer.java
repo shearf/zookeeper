@@ -2105,15 +2105,12 @@ public class QuorumPeer extends ZooKeeperThread implements QuorumStats.Provider 
 
     private long readLongFromFile(String name) throws IOException {
         File file = new File(logFactory.getSnapDir(), name);
-        BufferedReader br = new BufferedReader(new FileReader(file));
         String line = "";
-        try {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             line = br.readLine();
             return Long.parseLong(line);
         } catch (NumberFormatException e) {
             throw new IOException("Found " + line + " in " + file);
-        } finally {
-            br.close();
         }
     }
 
