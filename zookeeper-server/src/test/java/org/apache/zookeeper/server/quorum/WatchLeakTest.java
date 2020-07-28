@@ -336,7 +336,7 @@ public class WatchLeakTest {
         dos.writeLong(SESSION_ID);
         dos.writeInt(3000);
         dos.close();
-        QuorumPacket qp = new QuorumPacket(Leader.REVALIDATE, -1, baos.toByteArray(), null);
+        QuorumPacket qp = new QuorumPacket(Leader.RE_VALIDATE, -1, baos.toByteArray(), null);
         return qp;
     }
 

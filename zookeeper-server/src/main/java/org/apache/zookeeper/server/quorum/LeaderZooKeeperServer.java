@@ -108,7 +108,7 @@ public class LeaderZooKeeperServer extends QuorumZooKeeperServer {
             return getLeader().getNumPendingSyncs();
         });
         rootContext.registerGauge("leader_uptime", () -> {
-            return getLeader().getUptime();
+            return getLeader().getUpTime();
         });
         rootContext.registerGauge("last_proposal_size", () -> {
             return getLeader().getProposalStats().getLastBufferSize();

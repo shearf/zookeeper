@@ -23,9 +23,14 @@ import org.apache.zookeeper.server.quorum.flexible.QuorumVerifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * 投票追踪器
+ *
+ * 关联集群的投票结果
+ */
 public class SyncedLearnerTracker {
 
-    protected ArrayList<QuorumVerifierAckSetPair> qvAckSetPairs = new ArrayList<>();
+    protected final ArrayList<QuorumVerifierAckSetPair> qvAckSetPairs = new ArrayList<>();
 
     public void addQuorumVerifier(QuorumVerifier qv) {
         qvAckSetPairs.add(new QuorumVerifierAckSetPair(qv, new HashSet<>(qv.getVotingMembers().size())));
@@ -51,6 +56,10 @@ public class SyncedLearnerTracker {
         return true;
     }
 
+    /**
+     * 已应答的投票结果 = 整个集群
+     * @return
+     */
     public boolean hasAllQuorums() {
         for (QuorumVerifierAckSetPair qvAckSet : qvAckSetPairs) {
             if (!qvAckSet.getQuorumVerifier().containsQuorum(qvAckSet.getAckSet())) {
@@ -70,6 +79,9 @@ public class SyncedLearnerTracker {
         return sb.substring(0, sb.length() - 1);
     }
 
+    /**
+     * 集群与响应的集合，成队关联
+     */
     public static class QuorumVerifierAckSetPair {
 
         private final QuorumVerifier qv;

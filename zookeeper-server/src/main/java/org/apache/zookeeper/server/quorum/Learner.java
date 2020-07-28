@@ -146,7 +146,7 @@ public class Learner {
         dos.writeLong(clientId);
         dos.writeInt(timeout);
         dos.close();
-        QuorumPacket qp = new QuorumPacket(Leader.REVALIDATE, -1, baos.toByteArray(), null);
+        QuorumPacket qp = new QuorumPacket(Leader.RE_VALIDATE, -1, baos.toByteArray(), null);
         pendingRevalidations.put(clientId, cnxn);
         if (LOG.isTraceEnabled()) {
             ZooTrace.logTraceMessage(
@@ -485,7 +485,7 @@ public class Learner {
         writePacket(qp, true);
         readPacket(qp);
         final long newEpoch = ZxidUtils.getEpochFromZxid(qp.getZxid());
-        if (qp.getType() == Leader.LEADERINFO) {
+        if (qp.getType() == Leader.LEADER_INFO) {
             // we are connected to a 1.0 server so accept the new epoch and read the next packet
             leaderProtocolVersion = ByteBuffer.wrap(qp.getData()).getInt();
             byte[] epochBytes = new byte[4];
@@ -505,14 +505,14 @@ public class Learner {
                         + " is less than accepted epoch, "
                         + self.getAcceptedEpoch());
             }
-            QuorumPacket ackNewEpoch = new QuorumPacket(Leader.ACKEPOCH, lastLoggedZxid, epochBytes, null);
+            QuorumPacket ackNewEpoch = new QuorumPacket(Leader.ACK_EPOCH, lastLoggedZxid, epochBytes, null);
             writePacket(ackNewEpoch, true);
             return ZxidUtils.makeZxid(newEpoch, 0);
         } else {
             if (newEpoch > self.getAcceptedEpoch()) {
                 self.setAcceptedEpoch(newEpoch);
             }
-            if (qp.getType() != Leader.NEWLEADER) {
+            if (qp.getType() != Leader.NEW_LEADER) {
                 LOG.error("First packet should have been NEWLEADER");
                 throw new IOException("First packet should have been NEWLEADER");
             }
@@ -626,9 +626,9 @@ public class Learner {
                         packetsNotCommitted.add(pif);
                         break;
                     case Leader.COMMIT:
-                    case Leader.COMMITANDACTIVATE:
+                    case Leader.COMMIT_AND_ACTIVATE:
                         pif = packetsNotCommitted.peekFirst();
-                        if (pif.hdr.getZxid() == qp.getZxid() && qp.getType() == Leader.COMMITANDACTIVATE) {
+                        if (pif.hdr.getZxid() == qp.getZxid() && qp.getType() == Leader.COMMIT_AND_ACTIVATE) {
                             QuorumVerifier qv = self.configFromString(new String(((SetDataTxn) pif.rec).getData()));
                             boolean majorChange = self.processReConfig(
                                     qv,
@@ -653,10 +653,10 @@ public class Learner {
                         }
                         break;
                     case Leader.INFORM:
-                    case Leader.INFORMANDACTIVATE:
+                    case Leader.INFORM_AND_ACTIVATE:
                         PacketInFlight packet = new PacketInFlight();
 
-                        if (qp.getType() == Leader.INFORMANDACTIVATE) {
+                        if (qp.getType() == Leader.INFORM_AND_ACTIVATE) {
                             ByteBuffer buffer = ByteBuffer.wrap(qp.getData());
                             long suggestedLeaderId = buffer.getLong();
                             byte[] remainingdata = new byte[buffer.remaining()];
@@ -693,7 +693,7 @@ public class Learner {
                         }
 
                         break;
-                    case Leader.UPTODATE:
+                    case Leader.UP_TO_DATE:
                         LOG.info("Learner received UPTODATE message");
                         if (newLeaderQV != null) {
                             boolean majorChange = self.processReConfig(newLeaderQV, null, null, true);
@@ -708,7 +708,7 @@ public class Learner {
                         self.setZooKeeperServer(zk);
                         self.adminServer.setZooKeeperServer(zk);
                         break outerLoop;
-                    case Leader.NEWLEADER: // Getting NEWLEADER here instead of in discovery
+                    case Leader.NEW_LEADER: // Getting NEWLEADER here instead of in discovery
                         // means this is Zab 1.0
                         LOG.info("Learner received NEWLEADER message");
                         if (qp.getData() != null && qp.getData().length > 1) {

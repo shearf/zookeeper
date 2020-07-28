@@ -95,7 +95,7 @@ public class Leader extends LearnerMaster {
     volatile LearnerCnxAcceptor cnxAcceptor = null;
 
     // list of all the learners, including followers and observers
-    private final HashSet<LearnerHandler> learners = new HashSet<LearnerHandler>();
+    private final HashSet<LearnerHandler> learners = new HashSet<>();
 
     private final BufferStats proposalStats;
 
@@ -111,24 +111,24 @@ public class Leader extends LearnerMaster {
      */
     public List<LearnerHandler> getLearners() {
         synchronized (learners) {
-            return new ArrayList<LearnerHandler>(learners);
+            return new ArrayList<>(learners);
         }
     }
 
     // list of followers that are ready to follow (i.e synced with the leader)
-    private final HashSet<LearnerHandler> forwardingFollowers = new HashSet<LearnerHandler>();
+    private final HashSet<LearnerHandler> forwardingFollowers = new HashSet<>();
 
     /**
      * Returns a copy of the current forwarding follower snapshot
      */
     public List<LearnerHandler> getForwardingFollowers() {
         synchronized (forwardingFollowers) {
-            return new ArrayList<LearnerHandler>(forwardingFollowers);
+            return new ArrayList<>(forwardingFollowers);
         }
     }
 
     public List<LearnerHandler> getNonVotingFollowers() {
-        List<LearnerHandler> nonVotingFollowers = new ArrayList<LearnerHandler>();
+        List<LearnerHandler> nonVotingFollowers = new ArrayList<>();
         synchronized (forwardingFollowers) {
             for (LearnerHandler lh : forwardingFollowers) {
                 if (!isParticipant(lh.getSid())) {
@@ -145,14 +145,14 @@ public class Leader extends LearnerMaster {
         }
     }
 
-    private final HashSet<LearnerHandler> observingLearners = new HashSet<LearnerHandler>();
+    private final HashSet<LearnerHandler> observingLearners = new HashSet<>();
 
     /**
      * Returns a copy of the current observer snapshot
      */
     public List<LearnerHandler> getObservingLearners() {
         synchronized (observingLearners) {
-            return new ArrayList<LearnerHandler>(observingLearners);
+            return new ArrayList<>(observingLearners);
         }
     }
 
@@ -181,7 +181,7 @@ public class Leader extends LearnerMaster {
     }
 
     // Pending sync requests. Must access under 'this' lock.
-    private final Map<Long, List<LearnerSyncRequest>> pendingSyncs = new HashMap<Long, List<LearnerSyncRequest>>();
+    private final Map<Long, List<LearnerSyncRequest>> pendingSyncs = new HashMap<>();
 
     public synchronized int getNumPendingSyncs() {
         return pendingSyncs.size();
@@ -233,7 +233,7 @@ public class Leader extends LearnerMaster {
      * @param qv, a QuorumVerifier
      */
     public boolean isQuorumSynced(QuorumVerifier qv) {
-        HashSet<Long> ids = new HashSet<Long>();
+        HashSet<Long> ids = new HashSet<>();
         if (qv.getVotingMembers().containsKey(self.getId())) {
             ids.add(self.getId());
         }
@@ -308,36 +308,36 @@ public class Leader extends LearnerMaster {
     /**
      * This tells the leader that the connecting peer is actually an observer
      */
-    static final int OBSERVERINFO = 16;
+    static final int OBSERVER_INFO = 16;
 
     /**
      * This message type is sent by the leader to indicate it's zxid and if
      * needed, its database.
      */
-    static final int NEWLEADER = 10;
+    static final int NEW_LEADER = 10;
 
     /**
      * This message type is sent by a follower to pass the last zxid. This is here
      * for backward compatibility purposes.
      */
-    static final int FOLLOWERINFO = 11;
+    static final int FOLLOWER_INFO = 11;
 
     /**
      * This message type is sent by the leader to indicate that the follower is
      * now uptodate andt can start responding to clients.
      */
-    static final int UPTODATE = 12;
+    static final int UP_TO_DATE = 12;
 
     /**
      * This message is the first that a follower receives from the leader.
      * It has the protocol version and the epoch of the leader.
      */
-    public static final int LEADERINFO = 17;
+    public static final int LEADER_INFO = 17;
 
     /**
      * This message is used by the follow to ack a proposed epoch.
      */
-    public static final int ACKEPOCH = 18;
+    public static final int ACK_EPOCH = 18;
 
     /**
      * This message type is sent to a leader to request and mutation operation.
@@ -370,7 +370,7 @@ public class Leader extends LearnerMaster {
     /**
      * This message type is to validate a session that should be active.
      */
-    static final int REVALIDATE = 6;
+    static final int RE_VALIDATE = 6;
 
     /**
      * This message is a reply to a synchronize command flushing the pipe
@@ -386,16 +386,16 @@ public class Leader extends LearnerMaster {
     /**
      * Similar to COMMIT, only for a reconfig operation.
      */
-    static final int COMMITANDACTIVATE = 9;
+    static final int COMMIT_AND_ACTIVATE = 9;
 
     /**
      * Similar to INFORM, only for a reconfig operation.
      */
-    static final int INFORMANDACTIVATE = 19;
+    static final int INFORM_AND_ACTIVATE = 19;
 
-    final ConcurrentMap<Long, Proposal> outstandingProposals = new ConcurrentHashMap<Long, Proposal>();
+    final ConcurrentMap<Long, Proposal> outstandingProposals = new ConcurrentHashMap<>();
 
-    private final ConcurrentLinkedQueue<Proposal> toBeApplied = new ConcurrentLinkedQueue<Proposal>();
+    private final ConcurrentLinkedQueue<Proposal> toBeApplied = new ConcurrentLinkedQueue<>();
 
     // VisibleForTesting
     protected final Proposal newLeaderProposal = new Proposal();
@@ -446,8 +446,8 @@ public class Leader extends LearnerMaster {
         }
 
         class LearnerCnxAcceptorHandler implements Runnable {
-            private ServerSocket serverSocket;
-            private CountDownLatch latch;
+            private final ServerSocket serverSocket;
+            private final CountDownLatch latch;
 
             LearnerCnxAcceptorHandler(ServerSocket serverSocket, CountDownLatch latch) {
                 this.serverSocket = serverSocket;
@@ -530,7 +530,7 @@ public class Leader extends LearnerMaster {
      */
     private long leaderStartTime;
 
-    public long getUptime() {
+    public long getUpTime() {
         if (leaderStartTime > 0) {
             return Time.currentElapsedTime() - leaderStartTime;
         }
@@ -574,10 +574,10 @@ public class Leader extends LearnerMaster {
                 lastProposed = zk.getZxid();
             }
 
-            newLeaderProposal.packet = new QuorumPacket(NEWLEADER, zk.getZxid(), null, null);
+            newLeaderProposal.packet = new QuorumPacket(NEW_LEADER, zk.getZxid(), null, null);
 
             if ((newLeaderProposal.packet.getZxid() & 0xffffffffL) != 0) {
-                LOG.info("NEWLEADER proposal has Zxid of {}", Long.toHexString(newLeaderProposal.packet.getZxid()));
+                LOG.info("NEW_LEADER proposal has Zxid of {}", Long.toHexString(newLeaderProposal.packet.getZxid()));
             }
 
             QuorumVerifier lastSeenQV = self.getLastSeenQuorumVerifier();
@@ -632,7 +632,7 @@ public class Leader extends LearnerMaster {
                 shutdown("Waiting for a quorum of followers, only synced with sids: [ "
                         + newLeaderProposal.ackSetsToString()
                         + " ]");
-                HashSet<Long> followerSet = new HashSet<Long>();
+                HashSet<Long> followerSet = new HashSet<>();
 
                 for (LearnerHandler f : getLearners()) {
                     if (self.getQuorumVerifier().getVotingMembers().containsKey(f.getSid())) {
@@ -654,17 +654,17 @@ public class Leader extends LearnerMaster {
 
             startZkServer();
 
-            /**
-             * WARNING: do not use this for anything other than QA testing
-             * on a real cluster. Specifically to enable verification that quorum
-             * can handle the lower 32bit roll-over issue identified in
-             * ZOOKEEPER-1277. Without this option it would take a very long
-             * time (on order of a month say) to see the 4 billion writes
-             * necessary to cause the roll-over to occur.
-             *
-             * This field allows you to override the zxid of the server. Typically
-             * you'll want to set it to something like 0xfffffff0 and then
-             * start the quorum, run some operations and see the re-election.
+            /*
+              WARNING: do not use this for anything other than QA testing
+              on a real cluster. Specifically to enable verification that quorum
+              can handle the lower 32bit roll-over issue identified in
+              ZOOKEEPER-1277. Without this option it would take a very long
+              time (on order of a month say) to see the 4 billion writes
+              necessary to cause the roll-over to occur.
+
+              This field allows you to override the zxid of the server. Typically
+              you'll want to set it to something like 0xfffffff0 and then
+              start the quorum, run some operations and see the re-election.
              */
             String initialZxid = System.getProperty("zookeeper.testingonly.initialZxid");
             if (initialZxid != null) {
@@ -690,7 +690,7 @@ public class Leader extends LearnerMaster {
             // iteration
             boolean tickSkip = true;
             // If not null then shutdown this leader
-            String shutdownMessage = null;
+            String shutdownMessage;
 
             while (true) {
                 synchronized (this) {
@@ -745,10 +745,8 @@ public class Leader extends LearnerMaster {
                     f.ping();
                 }
             }
-            if (shutdownMessage != null) {
-                shutdown(shutdownMessage);
-                // leader goes in looking state
-            }
+            shutdown(shutdownMessage);
+            // leader goes in looking state
         } finally {
             zk.unregisterJMX(this);
         }
@@ -817,18 +815,18 @@ public class Leader extends LearnerMaster {
 
     private long getDesignatedLeader(Proposal reconfigProposal, long zxid) {
         //new configuration
-        SyncedLearnerTracker.QuorumVerifierAckSetPair newQVAcksetPair = reconfigProposal.qvAckSetPairs.get(reconfigProposal.qvAckSetPairs.size() - 1);
+        SyncedLearnerTracker.QuorumVerifierAckSetPair newQVAckSetPair = reconfigProposal.qvAckSetPairs.get(reconfigProposal.qvAckSetPairs.size() - 1);
 
         //check if I'm in the new configuration with the same quorum address -
         // if so, I'll remain the leader
-        if (newQVAcksetPair.getQuorumVerifier().getVotingMembers().containsKey(self.getId())
-                && newQVAcksetPair.getQuorumVerifier().getVotingMembers().get(self.getId()).addr.equals(self.getQuorumAddress())) {
+        if (newQVAckSetPair.getQuorumVerifier().getVotingMembers().containsKey(self.getId())
+                && newQVAckSetPair.getQuorumVerifier().getVotingMembers().get(self.getId()).addr.equals(self.getQuorumAddress())) {
             return self.getId();
         }
         // start with an initial set of candidates that are voters from new config that
         // acknowledged the reconfig op (there must be a quorum). Choose one of them as
         // current leader candidate
-        HashSet<Long> candidates = new HashSet<Long>(newQVAcksetPair.getAckset());
+        HashSet<Long> candidates = new HashSet<>(newQVAckSetPair.getAckSet());
         candidates.remove(self.getId()); // if we're here, I shouldn't be the leader
         long curCandidate = candidates.iterator().next();
 
@@ -841,7 +839,7 @@ public class Leader extends LearnerMaster {
         while (p != null && !candidates.isEmpty()) {
             for (SyncedLearnerTracker.QuorumVerifierAckSetPair qvAckset : p.qvAckSetPairs) {
                 //reduce the set of candidates to those that acknowledged p
-                candidates.retainAll(qvAckset.getAckset());
+                candidates.retainAll(qvAckset.getAckSet());
                 //no candidate acked p, return the best candidate found so far
                 if (candidates.isEmpty()) {
                     return curCandidate;
@@ -905,7 +903,7 @@ public class Leader extends LearnerMaster {
             //then it will remain the leader
             //otherwise an up-to-date follower will be designated as leader. This saves
             //leader election time, unless the designated leader fails
-            Long designatedLeader = getDesignatedLeader(p, zxid);
+            long designatedLeader = getDesignatedLeader(p, zxid);
             //LOG.warn("designated leader is: " + designatedLeader);
 
             QuorumVerifier newQV = p.qvAckSetPairs.get(p.qvAckSetPairs.size() - 1).getQuorumVerifier();
@@ -1131,7 +1129,7 @@ public class Leader extends LearnerMaster {
         ByteBuffer buffer = ByteBuffer.wrap(data);
         buffer.putLong(designatedLeader);
 
-        QuorumPacket qp = new QuorumPacket(Leader.COMMITANDACTIVATE, zxid, data, null);
+        QuorumPacket qp = new QuorumPacket(Leader.COMMIT_AND_ACTIVATE, zxid, data, null);
         sendPacket(qp);
     }
 
@@ -1149,7 +1147,7 @@ public class Leader extends LearnerMaster {
         buffer.putLong(designatedLeader);
         buffer.put(proposalData);
 
-        return new QuorumPacket(Leader.INFORMANDACTIVATE, zxid, data, null);
+        return new QuorumPacket(Leader.INFORM_AND_ACTIVATE, zxid, data, null);
     }
 
     /**
@@ -1246,7 +1244,7 @@ public class Leader extends LearnerMaster {
         } else {
             List<LearnerSyncRequest> l = pendingSyncs.get(lastProposed);
             if (l == null) {
-                l = new ArrayList<LearnerSyncRequest>();
+                l = new ArrayList<>();
             }
             l.add(r);
             pendingSyncs.put(lastProposed, l);
@@ -1285,7 +1283,7 @@ public class Leader extends LearnerMaster {
             }
             // Only participant need to get outstanding proposals
             if (handler.getLearnerType() == LearnerType.PARTICIPANT) {
-                List<Long> zxids = new ArrayList<Long>(outstandingProposals.keySet());
+                List<Long> zxids = new ArrayList<>(outstandingProposals.keySet());
                 Collections.sort(zxids);
                 for (Long zxid : zxids) {
                     if (zxid <= lastSeenZxid) {
@@ -1314,7 +1312,7 @@ public class Leader extends LearnerMaster {
     }
 
     // VisibleForTesting
-    protected final Set<Long> connectingFollowers = new HashSet<Long>();
+    protected final Set<Long> connectingFollowers = new HashSet<>();
 
     private volatile boolean quitWaitForEpoch = false;
     private volatile long timeStartWaitForEpoch = -1;
@@ -1412,7 +1410,7 @@ public class Leader extends LearnerMaster {
     }
 
     // VisibleForTesting
-    protected final Set<Long> electingFollowers = new HashSet<Long>();
+    protected final Set<Long> electingFollowers = new HashSet<>();
     // VisibleForTesting
     protected boolean electionFinished = false;
 
@@ -1458,10 +1456,10 @@ public class Leader extends LearnerMaster {
      */
     private String getSidSetString(Set<Long> sidSet) {
         StringBuilder sids = new StringBuilder();
-        Iterator<Long> iter = sidSet.iterator();
-        while (iter.hasNext()) {
-            sids.append(iter.next());
-            if (!iter.hasNext()) {
+        Iterator<Long> iterator = sidSet.iterator();
+        while (iterator.hasNext()) {
+            sids.append(iterator.next());
+            if (!iterator.hasNext()) {
                 break;
             }
             sids.append(",");
@@ -1489,7 +1487,7 @@ public class Leader extends LearnerMaster {
              */
             QuorumVerifier newQV = self.getLastSeenQuorumVerifier();
 
-            Long designatedLeader = getDesignatedLeader(newLeaderProposal, zk.getZxid());
+            long designatedLeader = getDesignatedLeader(newLeaderProposal, zk.getZxid());
 
             self.processReConfig(newQV, designatedLeader, zk.getZxid(), true);
             if (designatedLeader != self.getId()) {
@@ -1578,17 +1576,17 @@ public class Leader extends LearnerMaster {
                 return "TRUNC";
             case SNAP:
                 return "SNAP";
-            case OBSERVERINFO:
+            case OBSERVER_INFO:
                 return "OBSERVERINFO";
-            case NEWLEADER:
+            case NEW_LEADER:
                 return "NEWLEADER";
-            case FOLLOWERINFO:
+            case FOLLOWER_INFO:
                 return "FOLLOWERINFO";
-            case UPTODATE:
+            case UP_TO_DATE:
                 return "UPTODATE";
-            case LEADERINFO:
+            case LEADER_INFO:
                 return "LEADERINFO";
-            case ACKEPOCH:
+            case ACK_EPOCH:
                 return "ACKEPOCH";
             case REQUEST:
                 return "REQUEST";
@@ -1598,17 +1596,17 @@ public class Leader extends LearnerMaster {
                 return "ACK";
             case COMMIT:
                 return "COMMIT";
-            case COMMITANDACTIVATE:
+            case COMMIT_AND_ACTIVATE:
                 return "COMMITANDACTIVATE";
             case PING:
                 return "PING";
-            case REVALIDATE:
+            case RE_VALIDATE:
                 return "REVALIDATE";
             case SYNC:
                 return "SYNC";
             case INFORM:
                 return "INFORM";
-            case INFORMANDACTIVATE:
+            case INFORM_AND_ACTIVATE:
                 return "INFORMANDACTIVATE";
             default:
                 return "UNKNOWN";

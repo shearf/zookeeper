@@ -695,6 +695,7 @@ public class FastLeaderElection implements Election {
 
     /**
      * Send notifications to all peers upon a change in our vote
+     * 广播，给所有节点发信息
      */
     private void sendNotifications() {
         for (long sid : self.getCurrentAndNextConfigVoters()) {
@@ -942,6 +943,7 @@ public class FastLeaderElection implements Election {
 
             int notTimeout = minNotificationInterval;
 
+            // 先投票给自己
             synchronized (this) {
                 logicalClock.increment();
                 updateProposal(getInitId(), getInitLastLoggedZxid(), getPeerEpoch());
@@ -951,6 +953,8 @@ public class FastLeaderElection implements Election {
                     "New election. My id = {}, proposed zxid=0x{}",
                     self.getId(),
                     Long.toHexString(proposedZxid));
+
+            // 把自己的投票先广播出去
             sendNotifications();
 
             SyncedLearnerTracker voteSet;
@@ -1027,13 +1031,22 @@ public class FastLeaderElection implements Election {
                                     Long.toHexString(n.electionEpoch));
 
                             // don't care about the version if it's in LOOKING state
+                            // 收到的投票结果，sid对应的投票结果
                             recvSet.put(n.sid, new Vote(n.leader, n.zxid, n.electionEpoch, n.peerEpoch));
 
-                            voteSet = getVoteTracker(recvSet, new Vote(proposedLeader, proposedZxid, logicalClock.sum(), proposedEpoch));
+                            voteSet = getVoteTracker(recvSet,
+                                    // 当前的投票结果
+                                    new Vote(proposedLeader, proposedZxid, logicalClock.sum(), proposedEpoch));
 
+                            // 应答的投票结果超过半数
                             if (voteSet.hasAllQuorums()) {
 
                                 // Verify if there is any change in the proposed leader
+                                /*
+                                 * 一定要接收消息完毕，在一定时间内，可能先选举出一个leader，但是这个leader不一定是真正的leader，因为
+                                 * 一旦投票超过半数就可以到这步，但是可能是没有收到真正leader的消息，要等到周期内消息为空的情况下，
+                                 * 再确认leader，实际操作是更新proposedLeader，重新进行判断流程
+                                 */
                                 while ((n = recvQueue.poll(FINALIZE_WAIT, TimeUnit.MILLISECONDS)) != null) {
                                     if (totalOrderPredicate(n.leader, n.zxid, n.peerEpoch, proposedLeader, proposedZxid, proposedEpoch)) {
                                         recvQueue.put(n);
@@ -1044,6 +1057,7 @@ public class FastLeaderElection implements Election {
                                 /*
                                  * This predicate is true once we don't read any new
                                  * relevant message from the reception queue
+                                 * 没有收到消息之后，再确认leader
                                  */
                                 if (n == null) {
                                     setPeerState(proposedLeader, voteSet);

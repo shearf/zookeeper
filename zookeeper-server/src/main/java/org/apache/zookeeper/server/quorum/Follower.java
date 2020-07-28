@@ -87,7 +87,7 @@ public class Follower extends Learner {
             try {
                 connectToLeader(leaderServer.addr, leaderServer.hostname);
                 connectionTime = System.currentTimeMillis();
-                long newEpochZxid = registerWithLeader(Leader.FOLLOWERINFO);
+                long newEpochZxid = registerWithLeader(Leader.FOLLOWER_INFO);
                 if (self.isReconfigStateChange()) {
                     throw new Exception("learned about role change");
                 }
@@ -211,7 +211,7 @@ public class Follower extends Learner {
                 }
                 break;
 
-            case Leader.COMMITANDACTIVATE:
+            case Leader.COMMIT_AND_ACTIVATE:
                 // get the new configuration from the request
                 Request request = fzk.pendingTxns.element();
                 SetDataTxn setDataTxn = (SetDataTxn) request.getTxn();
@@ -232,10 +232,10 @@ public class Follower extends Learner {
                     throw new Exception("changes proposed in reconfig");
                 }
                 break;
-            case Leader.UPTODATE:
+            case Leader.UP_TO_DATE:
                 LOG.error("Received an UPTODATE message after Follower started");
                 break;
-            case Leader.REVALIDATE:
+            case Leader.RE_VALIDATE:
                 if (om == null || !om.revalidateLearnerSession(qp)) {
                     revalidate(qp);
                 }

@@ -109,7 +109,7 @@ public class Observer extends Learner {
             try {
                 connectToLeader(master.addr, master.hostname);
                 connectTime = System.currentTimeMillis();
-                long newLeaderZxid = registerWithLeader(Leader.OBSERVERINFO);
+                long newLeaderZxid = registerWithLeader(Leader.OBSERVER_INFO);
                 if (self.isReconfigStateChange()) {
                     throw new Exception("learned about role change");
                 }
@@ -187,10 +187,10 @@ public class Observer extends Learner {
             case Leader.COMMIT:
                 LOG.warn("Ignoring commit");
                 break;
-            case Leader.UPTODATE:
+            case Leader.UP_TO_DATE:
                 LOG.error("Received an UPTODATE message after Observer started");
                 break;
-            case Leader.REVALIDATE:
+            case Leader.RE_VALIDATE:
                 revalidate(qp);
                 break;
             case Leader.SYNC:
@@ -208,7 +208,7 @@ public class Observer extends Learner {
                 ObserverZooKeeperServer obs = (ObserverZooKeeperServer) zk;
                 obs.commitRequest(request);
                 break;
-            case Leader.INFORMANDACTIVATE:
+            case Leader.INFORM_AND_ACTIVATE:
                 // get new designated leader from (current) leader's message
                 ByteBuffer buffer = ByteBuffer.wrap(qp.getData());
                 long suggestedLeaderId = buffer.getLong();

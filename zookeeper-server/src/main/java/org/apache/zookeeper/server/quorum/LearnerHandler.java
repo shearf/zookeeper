@@ -376,10 +376,10 @@ public class LearnerHandler extends ZooKeeperThread {
             case Leader.COMMIT:
                 type = "COMMIT";
                 break;
-            case Leader.FOLLOWERINFO:
+            case Leader.FOLLOWER_INFO:
                 type = "FOLLOWERINFO";
                 break;
-            case Leader.NEWLEADER:
+            case Leader.NEW_LEADER:
                 type = "NEWLEADER";
                 break;
             case Leader.PING:
@@ -391,7 +391,7 @@ public class LearnerHandler extends ZooKeeperThread {
             case Leader.REQUEST:
                 type = "REQUEST";
                 break;
-            case Leader.REVALIDATE:
+            case Leader.RE_VALIDATE:
                 type = "REVALIDATE";
                 ByteArrayInputStream bis = new ByteArrayInputStream(p.getData());
                 DataInputStream dis = new DataInputStream(bis);
@@ -403,7 +403,7 @@ public class LearnerHandler extends ZooKeeperThread {
                 }
 
                 break;
-            case Leader.UPTODATE:
+            case Leader.UP_TO_DATE:
                 type = "UPTODATE";
                 break;
             case Leader.DIFF:
@@ -415,7 +415,7 @@ public class LearnerHandler extends ZooKeeperThread {
             case Leader.SNAP:
                 type = "SNAP";
                 break;
-            case Leader.ACKEPOCH:
+            case Leader.ACK_EPOCH:
                 type = "ACKEPOCH";
                 break;
             case Leader.SYNC:
@@ -424,10 +424,10 @@ public class LearnerHandler extends ZooKeeperThread {
             case Leader.INFORM:
                 type = "INFORM";
                 break;
-            case Leader.COMMITANDACTIVATE:
+            case Leader.COMMIT_AND_ACTIVATE:
                 type = "COMMITANDACTIVATE";
                 break;
-            case Leader.INFORMANDACTIVATE:
+            case Leader.INFORM_AND_ACTIVATE:
                 type = "INFORMANDACTIVATE";
                 break;
             default:
@@ -458,13 +458,13 @@ public class LearnerHandler extends ZooKeeperThread {
             ia.readRecord(qp, "packet");
 
             messageTracker.trackReceived(qp.getType());
-            if (qp.getType() != Leader.FOLLOWERINFO && qp.getType() != Leader.OBSERVERINFO) {
+            if (qp.getType() != Leader.FOLLOWER_INFO && qp.getType() != Leader.OBSERVER_INFO) {
                 LOG.error("First packet {} is not FOLLOWERINFO or OBSERVERINFO!", qp.toString());
 
                 return;
             }
 
-            if (learnerMaster instanceof ObserverMaster && qp.getType() != Leader.OBSERVERINFO) {
+            if (learnerMaster instanceof ObserverMaster && qp.getType() != Leader.OBSERVER_INFO) {
                 throw new IOException("Non observer attempting to connect to ObserverMaster. type = " + qp.getType());
             }
             byte[] learnerInfoData = qp.getData();
@@ -496,7 +496,7 @@ public class LearnerHandler extends ZooKeeperThread {
                 LOG.info("Follower sid: {} : info : {}", this.sid, followerInfo);
             }
 
-            if (qp.getType() == Leader.OBSERVERINFO) {
+            if (qp.getType() == Leader.OBSERVER_INFO) {
                 learnerType = LearnerType.OBSERVER;
             }
 
@@ -519,14 +519,14 @@ public class LearnerHandler extends ZooKeeperThread {
             } else {
                 byte[] ver = new byte[4];
                 ByteBuffer.wrap(ver).putInt(0x10000);
-                QuorumPacket newEpochPacket = new QuorumPacket(Leader.LEADERINFO, newLeaderZxid, ver, null);
+                QuorumPacket newEpochPacket = new QuorumPacket(Leader.LEADER_INFO, newLeaderZxid, ver, null);
                 oa.writeRecord(newEpochPacket, "packet");
-                messageTracker.trackSent(Leader.LEADERINFO);
+                messageTracker.trackSent(Leader.LEADER_INFO);
                 bufferedOutput.flush();
                 QuorumPacket ackEpochPacket = new QuorumPacket();
                 ia.readRecord(ackEpochPacket, "packet");
                 messageTracker.trackReceived(ackEpochPacket.getType());
-                if (ackEpochPacket.getType() != Leader.ACKEPOCH) {
+                if (ackEpochPacket.getType() != Leader.ACK_EPOCH) {
                     LOG.error("{} is not ACKEPOCH", ackEpochPacket.toString());
                     return;
                 }
@@ -581,10 +581,10 @@ public class LearnerHandler extends ZooKeeperThread {
             // the leader is just being established. waitForEpochAck makes sure that readyToStart is true if
             // we got here, so the version was set
             if (getVersion() < 0x10000) {
-                QuorumPacket newLeaderQP = new QuorumPacket(Leader.NEWLEADER, newLeaderZxid, null, null);
+                QuorumPacket newLeaderQP = new QuorumPacket(Leader.NEW_LEADER, newLeaderZxid, null, null);
                 oa.writeRecord(newLeaderQP, "packet");
             } else {
-                QuorumPacket newLeaderQP = new QuorumPacket(Leader.NEWLEADER, newLeaderZxid, learnerMaster.getQuorumVerifierBytes(), null);
+                QuorumPacket newLeaderQP = new QuorumPacket(Leader.NEW_LEADER, newLeaderZxid, learnerMaster.getQuorumVerifierBytes(), null);
                 queuedPackets.add(newLeaderQP);
             }
             bufferedOutput.flush();
@@ -628,7 +628,7 @@ public class LearnerHandler extends ZooKeeperThread {
             // using the data
             //
             LOG.debug("Sending UPTODATE message to {}", sid);
-            queuedPackets.add(new QuorumPacket(Leader.UPTODATE, -1, null, null));
+            queuedPackets.add(new QuorumPacket(Leader.UP_TO_DATE, -1, null, null));
 
             while (true) {
                 qp = new QuorumPacket();
@@ -669,7 +669,7 @@ public class LearnerHandler extends ZooKeeperThread {
                             learnerMaster.touch(sess, to);
                         }
                         break;
-                    case Leader.REVALIDATE:
+                    case Leader.RE_VALIDATE:
                         ServerMetrics.getMetrics().REVALIDATE_COUNT.add(1);
                         learnerMaster.revalidateSession(qp, this);
                         break;
