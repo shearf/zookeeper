@@ -32,10 +32,10 @@ import java.util.TreeMap;
 public class BinaryOutputArchive implements OutputArchive {
     private ByteBuffer bb = ByteBuffer.allocate(1024);
 
-    private DataOutput out;
+    private final DataOutput out;
 
-    public static BinaryOutputArchive getArchive(OutputStream strm) {
-        return new BinaryOutputArchive(new DataOutputStream(strm));
+    public static BinaryOutputArchive getArchive(OutputStream stream) {
+        return new BinaryOutputArchive(new DataOutputStream(stream));
     }
 
     /**
@@ -73,7 +73,7 @@ public class BinaryOutputArchive implements OutputArchive {
 
     /**
      * create our own char encoder to utf8. This is faster
-     * then string.getbytes(UTF8).
+     * then string.getBytes(UTF8).
      *
      * @param s the string to encode into utf8
      * @return utf8 byte sequence.

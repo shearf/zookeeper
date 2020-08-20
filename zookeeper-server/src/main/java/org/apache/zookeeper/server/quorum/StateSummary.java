@@ -24,8 +24,8 @@ package org.apache.zookeeper.server.quorum;
  */
 public class StateSummary {
 
-    private long currentEpoch;
-    private long lastZxid;
+    private final long currentEpoch;
+    private final long lastZxid;
 
     public StateSummary(long currentEpoch, long lastZxid) {
         this.currentEpoch = currentEpoch;

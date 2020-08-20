@@ -88,7 +88,7 @@ public class LearnerHandler extends ZooKeeperThread {
     /**
      * The packets to be sent to the learner
      */
-    final LinkedBlockingQueue<QuorumPacket> queuedPackets = new LinkedBlockingQueue<QuorumPacket>();
+    final LinkedBlockingQueue<QuorumPacket> queuedPackets = new LinkedBlockingQueue<>();
     private final AtomicLong queuedPacketsSize = new AtomicLong();
 
     protected final AtomicLong packetsReceived = new AtomicLong();
@@ -114,7 +114,7 @@ public class LearnerHandler extends ZooKeeperThread {
      * It is ok if packetCounter overflows.
      */
     private final int markerPacketInterval = 1000;
-    private AtomicInteger packetCounter = new AtomicInteger();
+    private final AtomicInteger packetCounter = new AtomicInteger();
 
     /**
      * This class controls the time that the Leader has been
@@ -176,7 +176,7 @@ public class LearnerHandler extends ZooKeeperThread {
 
     }
 
-    private SyncLimitCheck syncLimitCheck = new SyncLimitCheck();
+    private final SyncLimitCheck syncLimitCheck = new SyncLimitCheck();
 
     private static class MarkerQuorumPacket extends QuorumPacket {
 
@@ -204,8 +204,6 @@ public class LearnerHandler extends ZooKeeperThread {
         }
 
     }
-
-    private BinaryInputArchive ia;
 
     private BinaryOutputArchive oa;
 
@@ -281,12 +279,10 @@ public class LearnerHandler extends ZooKeeperThread {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("LearnerHandler ").append(sock);
-        sb.append(" tickOfNextAckDeadline:").append(tickOfNextAckDeadline());
-        sb.append(" synced?:").append(synced());
-        sb.append(" queuedPacketLength:").append(queuedPackets.size());
-        return sb.toString();
+        return "LearnerHandler " + sock +
+                " tickOfNextAckDeadline:" + tickOfNextAckDeadline() +
+                " synced?:" + synced() +
+                " queuedPacketLength:" + queuedPackets.size();
     }
 
     /**
@@ -377,10 +373,10 @@ public class LearnerHandler extends ZooKeeperThread {
                 type = "COMMIT";
                 break;
             case Leader.FOLLOWER_INFO:
-                type = "FOLLOWERINFO";
+                type = "FOLLOWER_INFO";
                 break;
             case Leader.NEW_LEADER:
-                type = "NEWLEADER";
+                type = "NEW_LEADER";
                 break;
             case Leader.PING:
                 type = "PING";
@@ -397,14 +393,14 @@ public class LearnerHandler extends ZooKeeperThread {
                 DataInputStream dis = new DataInputStream(bis);
                 try {
                     long id = dis.readLong();
-                    mess = " sessionid = " + id;
+                    mess = " sessionId = " + id;
                 } catch (IOException e) {
                     LOG.warn("Unexpected exception", e);
                 }
 
                 break;
             case Leader.UP_TO_DATE:
-                type = "UPTODATE";
+                type = "UP_TO_DATE";
                 break;
             case Leader.DIFF:
                 type = "DIFF";
@@ -416,7 +412,7 @@ public class LearnerHandler extends ZooKeeperThread {
                 type = "SNAP";
                 break;
             case Leader.ACK_EPOCH:
-                type = "ACKEPOCH";
+                type = "ACK_EPOCH";
                 break;
             case Leader.SYNC:
                 type = "SYNC";
@@ -425,19 +421,15 @@ public class LearnerHandler extends ZooKeeperThread {
                 type = "INFORM";
                 break;
             case Leader.COMMIT_AND_ACTIVATE:
-                type = "COMMITANDACTIVATE";
+                type = "COMMIT_AND_ACTIVATE";
                 break;
             case Leader.INFORM_AND_ACTIVATE:
-                type = "INFORMANDACTIVATE";
+                type = "INFORM_AND_ACTIVATE";
                 break;
             default:
                 type = "UNKNOWN" + p.getType();
         }
-        String entry = null;
-        if (type != null) {
-            entry = type + " " + Long.toHexString(p.getZxid()) + " " + mess;
-        }
-        return entry;
+        return type + " " + Long.toHexString(p.getZxid()) + " " + mess;
     }
 
     /**
@@ -450,7 +442,7 @@ public class LearnerHandler extends ZooKeeperThread {
             learnerMaster.addLearnerHandler(this);
             tickOfNextAckDeadline = learnerMaster.getTickOfInitialAckDeadline();
 
-            ia = BinaryInputArchive.getArchive(bufferedInput);
+            BinaryInputArchive ia = BinaryInputArchive.getArchive(bufferedInput);
             bufferedOutput = new BufferedOutputStream(sock.getOutputStream());
             oa = BinaryOutputArchive.getArchive(bufferedOutput);
 
@@ -459,7 +451,7 @@ public class LearnerHandler extends ZooKeeperThread {
 
             messageTracker.trackReceived(qp.getType());
             if (qp.getType() != Leader.FOLLOWER_INFO && qp.getType() != Leader.OBSERVER_INFO) {
-                LOG.error("First packet {} is not FOLLOWERINFO or OBSERVERINFO!", qp.toString());
+                LOG.error("First packet {} is not FOLLOWER_INFO or OBSERVER_INFO!", qp.toString());
 
                 return;
             }
@@ -505,8 +497,9 @@ public class LearnerHandler extends ZooKeeperThread {
             long lastAcceptedEpoch = ZxidUtils.getEpochFromZxid(qp.getZxid());
 
             long peerLastZxid;
-            StateSummary ss = null;
+            StateSummary ss;
             long zxid = qp.getZxid();
+            // newEpoch是当前集群最高的epoch+1。每一轮选举都会实现epoch+1
             long newEpoch = learnerMaster.getEpochToPropose(this.getSid(), lastAcceptedEpoch);
             long newLeaderZxid = ZxidUtils.makeZxid(newEpoch, 0);
 
@@ -517,21 +510,25 @@ public class LearnerHandler extends ZooKeeperThread {
                 // fake the message
                 learnerMaster.waitForEpochAck(this.getSid(), ss);
             } else {
+
+                // 发送leader信息给follower，ps这是follower第一次收到leader的信息
                 byte[] ver = new byte[4];
                 ByteBuffer.wrap(ver).putInt(0x10000);
                 QuorumPacket newEpochPacket = new QuorumPacket(Leader.LEADER_INFO, newLeaderZxid, ver, null);
                 oa.writeRecord(newEpochPacket, "packet");
                 messageTracker.trackSent(Leader.LEADER_INFO);
                 bufferedOutput.flush();
+
+                // 读取ACK信息
                 QuorumPacket ackEpochPacket = new QuorumPacket();
                 ia.readRecord(ackEpochPacket, "packet");
                 messageTracker.trackReceived(ackEpochPacket.getType());
                 if (ackEpochPacket.getType() != Leader.ACK_EPOCH) {
-                    LOG.error("{} is not ACKEPOCH", ackEpochPacket.toString());
+                    LOG.error("{} is not ACK_EPOCH", ackEpochPacket.toString());
                     return;
                 }
-                ByteBuffer bbepoch = ByteBuffer.wrap(ackEpochPacket.getData());
-                ss = new StateSummary(bbepoch.getInt(), ackEpochPacket.getZxid());
+                ByteBuffer bbEpoch = ByteBuffer.wrap(ackEpochPacket.getData());
+                ss = new StateSummary(bbEpoch.getInt(), ackEpochPacket.getZxid());
                 learnerMaster.waitForEpochAck(this.getSid(), ss);
             }
             peerLastZxid = ss.getLastZxid();

@@ -157,7 +157,7 @@ public class QuorumCnxManager {
     private final AtomicInteger threadCnt = new AtomicInteger(0);
 
     /*
-     * Socket options for TCP keepalive
+     * Socket options for TCP keepAlive
      */
     private final boolean tcpKeepAlive = Boolean.getBoolean("zookeeper.tcpKeepAlive");
 
@@ -440,14 +440,14 @@ public class QuorumCnxManager {
     }
 
     private boolean startConnection(Socket sock, Long sid) throws IOException {
-        DataOutputStream dout = null;
-        DataInputStream din = null;
+        DataOutputStream dOut;
+        DataInputStream dIn;
         LOG.debug("startConnection (myId:{} --> sid:{})", self.getId(), sid);
         try {
             // Use BufferedOutputStream to reduce the number of IP packets. This is
             // important for x-DC scenarios.
             BufferedOutputStream buf = new BufferedOutputStream(sock.getOutputStream());
-            dout = new DataOutputStream(buf);
+            dOut = new DataOutputStream(buf);
 
             // Sending id and challenge
 
@@ -456,8 +456,8 @@ public class QuorumCnxManager {
             // feature is enabled. During rolling upgrade, we must make sure that all the servers can
             // understand the protocol version we use to avoid multiple partitions. see ZOOKEEPER-3720
             long protocolVersion = self.isMultiAddressEnabled() ? PROTOCOL_VERSION_V2 : PROTOCOL_VERSION_V1;
-            dout.writeLong(protocolVersion);
-            dout.writeLong(self.getId());
+            dOut.writeLong(protocolVersion);
+            dOut.writeLong(self.getId());
 
             // now we send our election address. For the new protocol version, we can send multiple addresses.
             Collection<InetSocketAddress> addressesToSend = protocolVersion == PROTOCOL_VERSION_V2
@@ -467,11 +467,11 @@ public class QuorumCnxManager {
             String addr = addressesToSend.stream()
                     .map(NetUtils::formatInetAddr).collect(Collectors.joining("|"));
             byte[] addr_bytes = addr.getBytes();
-            dout.writeInt(addr_bytes.length);
-            dout.write(addr_bytes);
-            dout.flush();
+            dOut.writeInt(addr_bytes.length);
+            dOut.write(addr_bytes);
+            dOut.flush();
 
-            din = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
+            dIn = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
         } catch (IOException e) {
             LOG.warn("Ignoring exception reading or writing challenge: ", e);
             closeSocket(sock);
@@ -493,7 +493,7 @@ public class QuorumCnxManager {
         } else {
             LOG.debug("Have larger server identifier, so keeping the connection: (myId:{} --> sid:{})", self.getId(), sid);
             SendWorker sw = new SendWorker(sock, sid);
-            RecvWorker rw = new RecvWorker(sock, din, sid, sw);
+            RecvWorker rw = new RecvWorker(sock, dIn, sid, sw);
             sw.setRecv(rw);
 
             SendWorker vsw = senderWorkerMap.get(sid);
@@ -1349,7 +1349,7 @@ public class QuorumCnxManager {
             try {
                 LOG.debug("RecvWorker thread towards {} started. myId: {}", sid, QuorumCnxManager.this.mySid);
                 while (running && !shutdown && sock != null) {
-                    /**
+                    /*
                      * Reads the first int to determine the length of the
                      * message
                      */
@@ -1357,7 +1357,7 @@ public class QuorumCnxManager {
                     if (length <= 0 || length > PACKET_MAX_SIZE) {
                         throw new IOException("Received packet with invalid packet: " + length);
                     }
-                    /**
+                    /*
                      * Allocates a new ByteBuffer to receive the message
                      */
                     final byte[] msgArray = new byte[length];

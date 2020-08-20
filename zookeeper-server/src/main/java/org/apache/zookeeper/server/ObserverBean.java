@@ -43,7 +43,7 @@ public class ObserverBean extends ZooKeeperServerBean implements ObserverMXBean 
 
     @Override
     public int getPendingRevalidationCount() {
-        return this.observer.getPendingRevalidationsCount();
+        return this.observer.getPendingReValidationsCount();
     }
 
     @Override

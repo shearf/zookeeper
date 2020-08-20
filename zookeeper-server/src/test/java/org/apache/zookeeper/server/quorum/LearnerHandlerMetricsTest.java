@@ -42,7 +42,7 @@ import static org.mockito.Mockito.*;
 public class LearnerHandlerMetricsTest {
 
     private MockLearnerHandler learnerHandler;
-    private long sid = 5;
+    private final long sid = 5;
     private volatile CountDownLatch allSentLatch = null;
 
     class MockLearnerHandler extends LearnerHandler {

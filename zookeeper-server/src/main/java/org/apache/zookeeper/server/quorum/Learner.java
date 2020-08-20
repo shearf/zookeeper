@@ -101,7 +101,7 @@ public class Learner {
      */
     private static final int leaderConnectDelayDuringRetryMs = Integer.getInteger("zookeeper.leaderConnectDelayDuringRetryMs", 100);
 
-    private static final boolean nodelay = System.getProperty("follower.nodelay", "true").equals("true");
+    private static final boolean NO_DELAY = System.getProperty("follower.nodelay", "true").equals("true");
 
     public static final String LEARNER_ASYNC_SENDING = "learner.asyncSending";
     private static boolean asyncSending = Boolean.getBoolean(LEARNER_ASYNC_SENDING);
@@ -110,15 +110,15 @@ public class Learner {
 
     static {
         LOG.info("leaderConnectDelayDuringRetryMs: {}", leaderConnectDelayDuringRetryMs);
-        LOG.info("TCP NoDelay set to: {}", nodelay);
+        LOG.info("TCP NoDelay set to: {}", NO_DELAY);
         LOG.info("{} = {}", LEARNER_ASYNC_SENDING, asyncSending);
         LOG.info("{} = {}", LEARNER_CLOSE_SOCKET_ASYNC, closeSocketAsync);
     }
 
-    final ConcurrentHashMap<Long, ServerCnxn> pendingRevalidations = new ConcurrentHashMap<Long, ServerCnxn>();
+    final ConcurrentHashMap<Long, ServerCnxn> pendingReValidations = new ConcurrentHashMap<>();
 
-    public int getPendingRevalidationsCount() {
-        return pendingRevalidations.size();
+    public int getPendingReValidationsCount() {
+        return pendingReValidations.size();
     }
 
     // for testing
@@ -147,7 +147,7 @@ public class Learner {
         dos.writeInt(timeout);
         dos.close();
         QuorumPacket qp = new QuorumPacket(Leader.RE_VALIDATE, -1, baos.toByteArray(), null);
-        pendingRevalidations.put(clientId, cnxn);
+        pendingReValidations.put(clientId, cnxn);
         if (LOG.isTraceEnabled()) {
             ZooTrace.logTraceMessage(
                     LOG,
@@ -343,9 +343,9 @@ public class Learner {
 
     class LeaderConnector implements Runnable {
 
-        private AtomicReference<Socket> socket;
-        private InetSocketAddress address;
-        private CountDownLatch latch;
+        private final AtomicReference<Socket> socket;
+        private final InetSocketAddress address;
+        private final CountDownLatch latch;
 
         LeaderConnector(InetSocketAddress address, AtomicReference<Socket> socket, CountDownLatch latch) {
             this.address = address;
@@ -403,7 +403,7 @@ public class Learner {
                     if (self.isSslQuorum()) {
                         ((SSLSocket) sock).startHandshake();
                     }
-                    sock.setTcpNoDelay(nodelay);
+                    sock.setTcpNoDelay(NO_DELAY);
                     break;
                 } catch (IOException e) {
                     remainingTimeout = connectTimeout - (int) ((nanoTime() - startNanoTime) / 1_000_000);
@@ -481,8 +481,11 @@ public class Learner {
         BinaryOutputArchive boa = BinaryOutputArchive.getArchive(bsid);
         boa.writeRecord(li, "LearnerInfo");
         qp.setData(bsid.toByteArray());
-
         writePacket(qp, true);
+
+        // 第一次发送Leader.FOLLOWER_INFO给leader，readPacket会得到一个Leader.LEADER_INFO信息
+        // org.apache.zookeeper.server.quorum.LearnerHandler处理writePacket和readPacket的消息交互
+
         readPacket(qp);
         final long newEpoch = ZxidUtils.getEpochFromZxid(qp.getZxid());
         if (qp.getType() == Leader.LEADER_INFO) {
@@ -490,6 +493,7 @@ public class Learner {
             leaderProtocolVersion = ByteBuffer.wrap(qp.getData()).getInt();
             byte[] epochBytes = new byte[4];
             final ByteBuffer wrappedEpochBytes = ByteBuffer.wrap(epochBytes);
+            // 通常情况下，newEpoch肯定是当前的follower的acceptedEpoch
             if (newEpoch > self.getAcceptedEpoch()) {
                 wrappedEpochBytes.putInt((int) self.getCurrentEpoch());
                 self.setAcceptedEpoch(newEpoch);
@@ -513,8 +517,8 @@ public class Learner {
                 self.setAcceptedEpoch(newEpoch);
             }
             if (qp.getType() != Leader.NEW_LEADER) {
-                LOG.error("First packet should have been NEWLEADER");
-                throw new IOException("First packet should have been NEWLEADER");
+                LOG.error("First packet should have been NEW_LEADER");
+                throw new IOException("First packet should have been NEW_LEADER");
             }
             return qp.getZxid();
         }
@@ -789,7 +793,7 @@ public class Learner {
         DataInputStream dis = new DataInputStream(bis);
         long sessionId = dis.readLong();
         boolean valid = dis.readBoolean();
-        ServerCnxn cnxn = pendingRevalidations.remove(sessionId);
+        ServerCnxn cnxn = pendingReValidations.remove(sessionId);
         if (cnxn == null) {
             LOG.warn("Missing session 0x{} for validation", Long.toHexString(sessionId));
         } else {

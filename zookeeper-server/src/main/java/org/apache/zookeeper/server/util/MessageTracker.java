@@ -145,7 +145,7 @@ public class MessageTracker {
         }
 
         @Override
-        /**
+        /*
          * ToString examples are as follows:
          * TimeStamp: 2016-06-06 11:07:58,594 Type: PROPOSAL
          * TimeStamp: 2016-06-06 11:07:58,187

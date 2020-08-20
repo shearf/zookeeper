@@ -49,10 +49,10 @@ public class Leader extends LearnerMaster {
 
     private static final Logger LOG = LoggerFactory.getLogger(Leader.class);
 
-    private static final boolean nodelay = System.getProperty("leader.nodelay", "true").equals("true");
+    private static final boolean noDelay = System.getProperty("leader.nodelay", "true").equals("true");
 
     static {
-        LOG.info("TCP NoDelay set to: {}", nodelay);
+        LOG.info("TCP NoDelay set to: {}", noDelay);
     }
 
     public static class Proposal extends SyncedLearnerTracker {
@@ -324,7 +324,7 @@ public class Leader extends LearnerMaster {
 
     /**
      * This message type is sent by the leader to indicate that the follower is
-     * now uptodate andt can start responding to clients.
+     * now upToDate andt can start responding to clients.
      */
     static final int UP_TO_DATE = 12;
 
@@ -482,7 +482,7 @@ public class Leader extends LearnerMaster {
                     // start with the initLimit, once the ack is processed
                     // in LearnerHandler switch to the syncLimit
                     socket.setSoTimeout(self.tickTime * self.initLimit);
-                    socket.setTcpNoDelay(nodelay);
+                    socket.setTcpNoDelay(noDelay);
 
                     BufferedInputStream is = new BufferedInputStream(socket.getInputStream());
                     LearnerHandler fh = new LearnerHandler(socket, is, Leader.this);
@@ -1374,6 +1374,7 @@ public class Leader extends LearnerMaster {
             if (!waitingForNewEpoch) {
                 return epoch;
             }
+            // 保证leader的epoch是最高的，follower的最高+1
             if (lastAcceptedEpoch >= epoch) {
                 epoch = lastAcceptedEpoch + 1;
             }
@@ -1433,6 +1434,7 @@ public class Leader extends LearnerMaster {
                 }
             }
             QuorumVerifier verifier = self.getQuorumVerifier();
+            //  ack应答过半数，集群选举完成
             if (electingFollowers.contains(self.getId()) && verifier.containsQuorum(electingFollowers)) {
                 electionFinished = true;
                 electingFollowers.notifyAll();
@@ -1531,7 +1533,7 @@ public class Leader extends LearnerMaster {
             long currentZxid = newLeaderProposal.packet.getZxid();
             if (zxid != currentZxid) {
                 LOG.error(
-                        "NEWLEADER ACK from sid: {} is from a different epoch - current 0x{} received 0x{}",
+                        "NEW_LEADER ACK from sid: {} is from a different epoch - current 0x{} received 0x{}",
                         sid,
                         Long.toHexString(currentZxid),
                         Long.toHexString(zxid));

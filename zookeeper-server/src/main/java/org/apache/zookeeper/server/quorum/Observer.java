@@ -90,7 +90,7 @@ public class Observer extends Learner {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Observer ").append(sock);
-        sb.append(" pendingRevalidationCount:").append(pendingRevalidations.size());
+        sb.append(" pendingRevalidationCount:").append(pendingReValidations.size());
         return sb.toString();
     }
 
@@ -129,7 +129,7 @@ public class Observer extends Learner {
                 closeSocket();
 
                 // clear pending revalidations
-                pendingRevalidations.clear();
+                pendingReValidations.clear();
             }
         } finally {
             currentLearnerMaster = null;

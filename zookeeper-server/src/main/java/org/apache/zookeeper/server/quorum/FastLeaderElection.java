@@ -576,7 +576,7 @@ public class FastLeaderElection implements Election {
     long proposedEpoch;
 
     /**
-     * Returns the current vlue of the logical clock counter
+     * Returns the current value of the logical clock counter
      */
     public long getLogicalClock() {
         return logicalClock.sum();
@@ -926,8 +926,8 @@ public class FastLeaderElection implements Election {
         self.start_fle = Time.currentElapsedTime();
         try {
             /*
-             * The votes from the current leader election are stored in recvset. In other words, a vote v is in recvset
-             * if v.electionEpoch == logicalclock. The current participant uses recvset to deduce on whether a majority
+             * The votes from the current leader election are stored in recvSet. In other words, a vote v is in recvSet
+             * if v.electionEpoch == logical_clock. The current participant uses recvSet to deduce on whether a majority
              * of participants has voted for it.
              */
             Map<Long, Vote> recvSet = new HashMap<>(16);

@@ -56,11 +56,9 @@ public class Follower extends Learner {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Follower ").append(sock);
-        sb.append(" lastQueuedZxid:").append(lastQueued);
-        sb.append(" pendingRevalidationCount:").append(pendingRevalidations.size());
-        return sb.toString();
+        return "Follower " + sock +
+                " lastQueuedZxid:" + lastQueued +
+                " pendingReValidationCount:" + pendingReValidations.size();
     }
 
     /**
@@ -131,7 +129,7 @@ public class Follower extends Learner {
                 closeSocket();
 
                 // clear pending revalidations
-                pendingRevalidations.clear();
+                pendingReValidations.clear();
             }
         } finally {
             if (om != null) {

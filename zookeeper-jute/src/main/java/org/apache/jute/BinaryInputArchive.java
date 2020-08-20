@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class BinaryInputArchive implements InputArchive {
 
-    public static final String UNREASONBLE_LENGTH = "Unreasonable length = ";
+    public static final String UNREASONABLE_LENGTH = "Unreasonable length = ";
 
     // CHECKSTYLE.OFF: ConstantName - for backward compatibility
     public static final int maxBuffer = Integer.getInteger("jute.maxbuffer", 0xfffff);
@@ -47,9 +47,9 @@ public class BinaryInputArchive implements InputArchive {
         }
     }
 
-    private DataInput in;
-    private int maxBufferSize;
-    private int extraMaxBufferSize;
+    private final DataInput in;
+    private final int maxBufferSize;
+    private final int extraMaxBufferSize;
 
     public static BinaryInputArchive getArchive(InputStream strm) {
         return new BinaryInputArchive(new DataInputStream(strm));
@@ -163,7 +163,7 @@ public class BinaryInputArchive implements InputArchive {
     // write buffers larger than we can read from disk!)
     private void checkLength(int len) throws IOException {
         if (len < 0 || len > maxBufferSize + extraMaxBufferSize) {
-            throw new IOException(UNREASONBLE_LENGTH + len);
+            throw new IOException(UNREASONABLE_LENGTH + len);
         }
     }
 }

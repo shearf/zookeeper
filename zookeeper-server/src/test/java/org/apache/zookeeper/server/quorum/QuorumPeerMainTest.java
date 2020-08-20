@@ -822,9 +822,9 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
         // make sure it has a chance to write it to disk
         int sleepTime = 0;
         Long longLeader = (long) leader;
-        while (!p.qvAckSetPairs.get(0).getAckset().contains(longLeader)) {
+        while (!p.qvAckSetPairs.get(0).getAckSet().contains(longLeader)) {
             if (sleepTime > 2000) {
-                fail("Transaction not synced to disk within 1 second " + p.qvAckSetPairs.get(0).getAckset() + " expected " + leader);
+                fail("Transaction not synced to disk within 1 second " + p.qvAckSetPairs.get(0).getAckSet() + " expected " + leader);
             }
             Thread.sleep(100);
             sleepTime += 100;
@@ -1519,8 +1519,8 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
         // setup the logger to capture all logs
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         WriterAppender appender = getConsoleAppender(os, Level.WARN);
-        Logger qlogger = Logger.getLogger("org.apache.zookeeper.server.quorum");
-        qlogger.addAppender(appender);
+        Logger qLogger = Logger.getLogger("org.apache.zookeeper.server.quorum");
+        qLogger.addAppender(appender);
 
         try {
             final int CLIENT_PORT_QP1 = PortAssignment.unique();
@@ -1533,9 +1533,9 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
             MainThread q1 = new MainThread(1, CLIENT_PORT_QP1, quorumCfgSection);
             q1.start();
 
-            boolean isup = ClientBase.waitForServerUp("127.0.0.1:" + CLIENT_PORT_QP1, 5000);
+            boolean isUp = ClientBase.waitForServerUp("127.0.0.1:" + CLIENT_PORT_QP1, 5000);
 
-            assertFalse("Server never came up", isup);
+            assertFalse("Server never came up", isUp);
 
             q1.shutdown();
 
@@ -1544,7 +1544,7 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
                     ClientBase.waitForServerDown("127.0.0.1:" + CLIENT_PORT_QP1, ClientBase.CONNECTION_TIMEOUT));
 
         } finally {
-            qlogger.removeAppender(appender);
+            qLogger.removeAppender(appender);
         }
 
         LineNumberReader r = new LineNumberReader(new StringReader(os.toString()));
@@ -1570,8 +1570,8 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
         // setup the logger to capture all logs
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         WriterAppender appender = getConsoleAppender(os, Level.WARN);
-        Logger qlogger = Logger.getLogger("org.apache.zookeeper.server.quorum");
-        qlogger.addAppender(appender);
+        Logger qLogger = Logger.getLogger("org.apache.zookeeper.server.quorum");
+        qLogger.addAppender(appender);
 
         try {
             final int CLIENT_PORT_QP1 = PortAssignment.unique();
@@ -1595,7 +1595,7 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
                     ClientBase.waitForServerDown("127.0.0.1:" + CLIENT_PORT_QP1, ClientBase.CONNECTION_TIMEOUT));
 
         } finally {
-            qlogger.removeAppender(appender);
+            qLogger.removeAppender(appender);
         }
 
         LineNumberReader r = new LineNumberReader(new StringReader(os.toString()));
@@ -1673,7 +1673,7 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
 
     static class CustomizedQPMain extends TestQPMain {
 
-        private Context context;
+        private final Context context;
 
         public CustomizedQPMain(Context context) {
             this.context = context;
@@ -1688,7 +1688,7 @@ public class QuorumPeerMainTest extends QuorumPeerTestBase {
 
     static class CustomQuorumPeer extends QuorumPeer {
 
-        private Context context;
+        private final Context context;
 
         private LearnerSyncThrottler throttler = null;
         private StartForwardingListener startForwardingListener;

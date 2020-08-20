@@ -46,7 +46,7 @@ public class FollowerBean extends ZooKeeperServerBean implements FollowerMXBean 
     }
 
     public int getPendingRevalidationCount() {
-        return follower.getPendingRevalidationsCount();
+        return follower.getPendingReValidationsCount();
     }
 
     @Override
